@@ -1,12 +1,8 @@
 package com.example.jaycee.pomdpobjectsearch;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -32,9 +28,6 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeListener, RenderListener
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
-
-    private static final int CAMERA_PERMISSION_CODE = 0;
-    private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA;
 
     private static final int O_NOTHING = 0;
     private static final int T_COMPUTER_MONITOR = 1;
@@ -137,11 +130,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
                         return;
                 }
 
-                if(!hasCameraPermission())
-                {
-                    requestCameraPermission();
-                    return;
-                }
                 session = new Session(this);
 
                 // Set config settings
@@ -218,16 +206,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public boolean hasCameraPermission()
-    {
-        return ContextCompat.checkSelfPermission(this, CAMERA_PERMISSION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void requestCameraPermission()
-    {
-        ActivityCompat.requestPermissions(this, new String[] {CAMERA_PERMISSION}, CAMERA_PERMISSION_CODE);
     }
 
     @Override
