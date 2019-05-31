@@ -21,7 +21,6 @@ public class SoundGenerator implements Runnable
     private long prevCameraObservation = O_NOTHING;
     private long target = -1;
 
-    private Vibrator vibrator;
     private Handler handler = new Handler();
 
     private boolean stop = false;
@@ -36,8 +35,6 @@ public class SoundGenerator implements Runnable
 //        this.renderer = renderer;
         this.barcodeListener = (BarcodeListener)context;
         this.guidanceInterface = (GuidanceInterface)context;
-
-        this.vibrator= (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     void stop()
@@ -70,7 +67,6 @@ public class SoundGenerator implements Runnable
             Log.i(TAG, "Target found");
 /*            targetFound = true;
             targetSet = false;*/
-            vibrator.vibrate(350);
             guidanceInterface.onGuidanceEnd();
 
             return;

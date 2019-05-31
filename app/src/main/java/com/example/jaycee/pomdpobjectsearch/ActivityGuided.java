@@ -74,6 +74,8 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     @Override
     public void onGuidanceEnd()
     {
+        getVibrator().vibrate(350);
+
         if(guidanceManager != null)
         {
             guidanceManager.end();

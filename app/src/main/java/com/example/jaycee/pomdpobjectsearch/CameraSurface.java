@@ -12,10 +12,17 @@ import com.google.ar.core.Session;
 
 public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callback
 {
+    public interface ScreenReadRequest
+    {
+        void onScreenTap();
+    }
+
     private static final String TAG = CameraSurface.class.getSimpleName();
 
     private SurfaceRenderer renderer;
     private BarcodeListener barcodeListener;
+
+    private ScreenReadRequest screenReadRequest;
 
     public CameraSurface(Context context, AttributeSet attrs)
     {
@@ -53,6 +60,20 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
     {
         super.surfaceDestroyed(surfaceHolder);
         barcodeListener.onBarcodeScannerStop();
+    }
+
+    @Override
+    public boolean performClick()
+    {
+        super.performClick();
+        screenReadRequest.onScreenTap();
+
+        return true;
+    }
+
+    public void setScreenReadRequest(ScreenReadRequest screenReadRequest)
+    {
+        this.screenReadRequest = screenReadRequest;
     }
 
     public SurfaceRenderer getRenderer()

@@ -1,6 +1,8 @@
 package com.example.jaycee.pomdpobjectsearch;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -42,6 +44,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private DrawerLayout drawerLayout;
     private Toast toast;
 
+    private Vibrator vibrator;
+
     private Session session;
     protected Pose devicePose;
 
@@ -50,7 +54,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
     private boolean requestARCoreInstall = true;
 
-    protected long timestamp;
+    protected long currentTimestamp, startTimestamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -102,6 +106,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
                         break;
                 }
 
+                startTimestamp = 0;
                 targetSelected(target);
                 item.setCheckable(true);
 
@@ -116,6 +121,11 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected void onResume()
     {
         super.onResume();
+
+        if(vibrator == null)
+        {
+            this.vibrator = (Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
+        }
 
         if(session == null)
         {
@@ -186,6 +196,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected void onPause()
     {
         onBarcodeScannerStop();
+
+        if(vibrator != null)
+        {
+            vibrator.cancel();
+            vibrator = null;
+        }
 
         if(session != null)
         {
@@ -258,7 +274,17 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         try
         {
             Frame newFrame = session.update();
-            timestamp = newFrame.getTimestamp();
+            currentTimestamp = newFrame.getTimestamp();
+            if(startTimestamp == 0)
+            {
+                startTimestamp = currentTimestamp;
+            }
+
+            if(currentTimestamp - startTimestamp > 180000)
+            {
+                finish();
+            }
+
             devicePose = newFrame.getCamera().getPose();
 
             return newFrame;
@@ -337,7 +363,9 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         surfaceView.getRenderer().setDrawWaypoint(drawWaypoint);
     }
 
-    public Session getSession() { return this.session; }
+    protected Session getSession() { return this.session; }
+    protected CameraSurface getCameraSurface() { return this.surfaceView; }
+    protected Vibrator getVibrator() { return this.vibrator; }
 
     public abstract void targetSelected(int target);
 }
