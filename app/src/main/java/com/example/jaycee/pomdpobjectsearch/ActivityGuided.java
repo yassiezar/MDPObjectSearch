@@ -6,9 +6,9 @@ import com.example.jaycee.pomdpobjectsearch.mdptools.GuidanceInterface;
 import com.example.jaycee.pomdpobjectsearch.mdptools.GuidanceManager;
 import com.google.ar.core.Pose;
 
-public class ActivityCamera extends CameraActivityBase implements GuidanceInterface
+public class ActivityGuided extends CameraActivityBase implements GuidanceInterface
 {
-    private static final String TAG = ActivityCamera.class.getSimpleName();
+    private static final String TAG = ActivityGuided.class.getSimpleName();
 
     private SoundGenerator soundGenerator;
     private GuidanceManager guidanceManager;
@@ -59,7 +59,7 @@ public class ActivityCamera extends CameraActivityBase implements GuidanceInterf
     @Override
     public void onGuidanceStart(int target)
     {
-        guidanceManager = new GuidanceManager(getSession(), devicePose, ActivityCamera.this, target);
+        guidanceManager = new GuidanceManager(getSession(), devicePose, ActivityGuided.this, target);
         metrics = new Metrics();
         metrics.updateTarget(target);
         metrics.run();
