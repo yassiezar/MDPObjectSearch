@@ -4,5 +4,5 @@ public interface BarcodeListener
 {
     void onBarcodeScannerStart();
     void onBarcodeScannerStop();
-    long onBarcodeScan();
+    long onBarcodeCodeRequest();
 }

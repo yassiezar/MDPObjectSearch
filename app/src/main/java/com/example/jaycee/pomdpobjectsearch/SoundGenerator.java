@@ -63,7 +63,7 @@ public class SoundGenerator implements Runnable
         }*/
 
 //        setObservation(barcodeListener.onBarcodeScan());
-        long observation = barcodeListener.onBarcodeScan();
+        long observation = barcodeListener.onBarcodeCodeRequest();
 
         if(observation == target)
         {

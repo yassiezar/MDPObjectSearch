@@ -115,5 +115,6 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+.idea/encodings.xml
 
 app/CMakeFiles/*
