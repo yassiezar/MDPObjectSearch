@@ -24,9 +24,8 @@ public class SoundGenerator implements Runnable
     private BarcodeListener barcodeListener;
     private GuidanceInterface guidanceInterface;
 
-    SoundGenerator(Context context)//, SurfaceRenderer renderer)
+    SoundGenerator(Context context)
     {
-//        this.renderer = renderer;
         this.barcodeListener = (BarcodeListener)context;
         this.guidanceInterface = (GuidanceInterface)context;
     }
@@ -115,14 +114,7 @@ public class SoundGenerator implements Runnable
     public void setTarget(Objects.Observation target)
     {
         this.target = target;
-/*        this.targetSet = true;
-        this.targetFound = false;*/
-
         prevCameraObservation = Objects.Observation.O_NOTHING;
     }
 
-/*    public void setObservation(long observation)
-    {
-        this.observation = observation;
-    }*/
 }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.example.jaycee.pomdpobjectsearch.helpers.PermissionHelper;
 
@@ -21,33 +20,25 @@ public class ActivityLauncher extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        findViewById(R.id.button_guided).setOnClickListener(new View.OnClickListener()
+        findViewById(R.id.button_guided).setOnClickListener(view ->
         {
-            @Override
-            public void onClick(View view)
+            activityToLaunch = ACTIVITY_GUIDED;
+            if(!PermissionHelper.hasCameraPermission(ActivityLauncher.this))
             {
-                activityToLaunch = ACTIVITY_GUIDED;
-                if(!PermissionHelper.hasCameraPermission(ActivityLauncher.this))
-                {
-                    PermissionHelper.requestCameraPermission(ActivityLauncher.this);
-                    return;
-                }
-                startActivity(new Intent(ActivityLauncher.this, ActivityGuided.class));
+                PermissionHelper.requestCameraPermission(ActivityLauncher.this);
+                return;
             }
+            startActivity(new Intent(ActivityLauncher.this, ActivityGuided.class));
         });
-        findViewById(R.id.button_unguided).setOnClickListener(new View.OnClickListener()
+        findViewById(R.id.button_unguided).setOnClickListener(view ->
         {
-            @Override
-            public void onClick(View view)
+            activityToLaunch = ACTIVITY_UNGUIDED;
+            if(!PermissionHelper.hasCameraPermission(ActivityLauncher.this))
             {
-                activityToLaunch = ACTIVITY_UNGUIDED;
-                if(!PermissionHelper.hasCameraPermission(ActivityLauncher.this))
-                {
-                    PermissionHelper.requestCameraPermission(ActivityLauncher.this);
-                    return;
-                }
-                startActivity(new Intent(ActivityLauncher.this, ActivityUnguided.class));
+                PermissionHelper.requestCameraPermission(ActivityLauncher.this);
+                return;
             }
+            startActivity(new Intent(ActivityLauncher.this, ActivityUnguided.class));
         });
     }
 
