@@ -275,7 +275,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         {
             Frame newFrame = session.update();
             currentTimestamp = newFrame.getTimestamp();
-            if(startTimestamp == 0)
+/*            if(startTimestamp == 0)
             {
                 startTimestamp = currentTimestamp;
             }
@@ -283,7 +283,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             if(currentTimestamp - startTimestamp > 180000)
             {
                 finish();
-            }
+            }*/
 
             devicePose = newFrame.getCamera().getPose();
 
