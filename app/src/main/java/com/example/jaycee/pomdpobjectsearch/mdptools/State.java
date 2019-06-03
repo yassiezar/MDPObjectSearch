@@ -1,5 +1,7 @@
 package com.example.jaycee.pomdpobjectsearch.mdptools;
 
+import com.example.jaycee.pomdpobjectsearch.Objects;
+
 import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.ANGLE_INTERVAL;
 import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.GRID_SIZE_TILT;
 import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.GRID_SIZE_PAN;
@@ -17,9 +19,10 @@ class State
 
     private long state;
 
-    private long observation = 0;
     private long steps = 0;
     private long stateVisted = 0;
+
+    private Objects.Observation observation = Objects.Observation.O_NOTHING;
 
     private int[] panHistory = new int[GRID_SIZE_PAN];
     private int[] tiltHistory = new int[GRID_SIZE_TILT];
@@ -41,7 +44,7 @@ class State
         long state = 0;
         long multiplier = 1;
 
-        state += (multiplier * observation);
+        state += (multiplier * observation.getCode());
         multiplier *= NUM_OBJECTS;
         state += (multiplier * steps);
         multiplier *= MAX_STEPS;
@@ -64,7 +67,7 @@ class State
         return stateVector;
     }
 
-    void addObservation(long observation, float fpan, float ftilt)
+    void addObservation(Objects.Observation observation, float fpan, float ftilt)
     {
         // Origin is top right, not bottom left
         int pan = (int)((Math.floor(Math.toDegrees(fpan)/ANGLE_INTERVAL)) + GRID_SIZE_PAN/2 - 1);

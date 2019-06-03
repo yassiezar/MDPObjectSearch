@@ -16,16 +16,12 @@ public class SoundGenerator implements Runnable
 
     private static final int O_NOTHING = 0;
 
-//    private SurfaceRenderer renderer;
-
-    private long prevCameraObservation = O_NOTHING;
-    private long target = -1;
+    private Objects.Observation prevCameraObservation = Objects.Observation.O_NOTHING;
+    private Objects.Observation target = Objects.Observation.O_NOTHING;
 
     private Handler handler = new Handler();
 
     private boolean stop = false;
-/*    private boolean targetSet = false;
-    private boolean targetFound = false;*/
 
     private BarcodeListener barcodeListener;
     private GuidanceInterface guidanceInterface;
@@ -47,7 +43,7 @@ public class SoundGenerator implements Runnable
     @Override
     public void run()
     {
-        long observation = barcodeListener.onBarcodeCodeRequest();
+        Objects.Observation observation = barcodeListener.onBarcodeCodeRequest();
 
         if(observation == target)
         {
@@ -61,7 +57,7 @@ public class SoundGenerator implements Runnable
         {
             guidanceInterface.onGuidanceLoop();
 
-            if(guidanceInterface.onWaypointReached() || (observation != prevCameraObservation && observation != O_NOTHING))
+            if(guidanceInterface.onWaypointReached() || (observation != prevCameraObservation && observation != Objects.Observation.O_NOTHING))
             {
                 prevCameraObservation = observation;
                 guidanceInterface.onGuidanceRequested(observation);
@@ -118,13 +114,13 @@ public class SoundGenerator implements Runnable
         }
     }
 
-    public void setTarget(long target)
+    public void setTarget(Objects.Observation target)
     {
         this.target = target;
 /*        this.targetSet = true;
         this.targetFound = false;*/
 
-        prevCameraObservation = O_NOTHING;
+        prevCameraObservation = Objects.Observation.O_NOTHING;
     }
 
 /*    public void setObservation(long observation)

@@ -4,5 +4,5 @@ public interface BarcodeListener
 {
     void onBarcodeScannerStart();
     void onBarcodeScannerStop();
-    long onBarcodeCodeRequest();
+    Objects.Observation onBarcodeCodeRequest();
 }

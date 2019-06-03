@@ -1,12 +1,13 @@
 package com.example.jaycee.pomdpobjectsearch.mdptools;
 
+import com.example.jaycee.pomdpobjectsearch.Objects;
 import com.google.ar.core.Pose;
 
 public interface GuidanceInterface
 {
-    void onGuidanceStart(int target);
+    void onGuidanceStart(Objects.Observation target);
     void onGuidanceEnd();
-    void onGuidanceRequested(long observation);
+    void onGuidanceRequested(Objects.Observation observation);
     void onGuidanceLoop();
     boolean onWaypointReached();
     Pose onDrawWaypoint();

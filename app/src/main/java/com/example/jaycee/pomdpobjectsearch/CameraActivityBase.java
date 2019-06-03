@@ -76,45 +76,60 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         drawerLayout = findViewById(R.id.layout_drawer_objects);
         NavigationView navigationView = findViewById(R.id.navigation_view_objects);
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
+        navigationView.setNavigationItemSelectedListener(item ->
         {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            Objects.Observation target;
+            switch (item.getItemId())
             {
-                int target = 0;
-                switch (item.getItemId())
-                {
-                    case R.id.item_object_mug:
-                        target = T_MUG;
-                        break;
-                    case R.id.item_object_desk:
-                        target = T_DESK;
-                        break;
-                    case R.id.item_object_office_supplies:
-                        target = T_OFFICE_SUPPLIES;
-                        break;
-                    case R.id.item_object_keyboard:
-                        target = T_COMPUTER_KEYBOARD;
-                        break;
-                    case R.id.item_object_monitor:
-                        target = T_COMPUTER_MONITOR;
-                        break;
-                    case R.id.item_object_mouse:
-                        target = T_COMPUTER_MOUSE;
-                        break;
-                    case R.id.item_object_window:
-                        target = T_WINDOW;
-                        break;
-                }
-
-                startTimestamp = 0;
-                targetSelected(target);
-                item.setCheckable(true);
-
-                drawerLayout.closeDrawers();
-
-                return true;
+                case R.id.item_object_backpack:
+                    target = Objects.Observation.T_BACKPACK;
+                    break;
+                case R.id.item_object_chair:
+                    target = Objects.Observation.T_CHAIR;
+                    break;
+                case R.id.item_object_couch:
+                    target = Objects.Observation.T_COUCH;
+                    break;
+                case R.id.item_object_desk:
+                    target = Objects.Observation.T_DESK;
+                    break;
+                case R.id.item_object_door:
+                    target = Objects.Observation.T_DOOR;
+                    break;
+                case R.id.item_object_keyboard:
+                    target = Objects.Observation.T_COMPUTER_KEYBOARD;
+                    break;
+                case R.id.item_object_laptop:
+                    target = Objects.Observation.T_LAPTOP;
+                    break;
+                case R.id.item_object_monitor:
+                    target = Objects.Observation.T_COMPUTER_MONITOR;
+                    break;
+                case R.id.item_object_mouse:
+                    target = Objects.Observation.T_COMPUTER_MOUSE;
+                    break;
+                case R.id.item_object_mug:
+                    target = Objects.Observation.T_MUG;
+                    break;
+                case R.id.item_object_plant:
+                    target = Objects.Observation.T_PLANT;
+                    break;
+                case R.id.item_object_telephone:
+                    target = Objects.Observation.T_TELEPHONE;
+                    break;
+                case R.id.item_object_whiteboard:
+                    target = Objects.Observation.T_WHITEBOARD;
+                    break;
+                default: target = null;
             }
+
+            startTimestamp = 0;
+            targetSelected(target);
+            item.setCheckable(true);
+
+            drawerLayout.closeDrawers();
+
+            return true;
         });
     }
 
@@ -226,26 +241,26 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     }
 
     @Override
-    public long onBarcodeCodeRequest()
+    public Objects.Observation onBarcodeCodeRequest()
     {
-        long scannedObject = O_NOTHING;
+        Objects.Observation scannedObject = Objects.Observation.O_NOTHING;
         if(barcodeScanner != null)
         {
-            scannedObject = barcodeScanner.getCode();
+            scannedObject = Objects.getObservation(barcodeScanner.getCode());
         }
 
         if(metrics != null)
         {
-            metrics.updateObservation(scannedObject);
+            metrics.updateObservation(scannedObject.getCode());
         }
 
-        if(scannedObject != O_NOTHING && scannedObject != -1)
+        if(scannedObject != Objects.Observation.O_NOTHING)
         {
             if (toast != null)
             {
                 toast.cancel();
             }
-            toast = Toast.makeText(this, objectCodeToString(scannedObject), Toast.LENGTH_SHORT);
+            toast = Toast.makeText(this, scannedObject.getFriendlyName(), Toast.LENGTH_SHORT);
             toast.show();
         }
 
@@ -320,7 +335,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         session.setCameraTextureName(textureId);
     }
 
-    public String objectCodeToString(long observation)
+/*    public String objectCodeToString(long observation)
     {
         final String val;
         if(observation == 1)
@@ -360,7 +375,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             val = "Unknown";
         }
         return val;
-    }
+    }*/
 
     public void setDrawWaypoint(boolean drawWaypoint)
     {
@@ -371,5 +386,5 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected CameraSurface getCameraSurface() { return this.surfaceView; }
     protected Vibrator getVibrator() { return this.vibrator; }
 
-    public abstract void targetSelected(int target);
+    public abstract void targetSelected(Objects.Observation target);
 }

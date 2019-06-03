@@ -3,6 +3,7 @@ package com.example.jaycee.pomdpobjectsearch.mdptools;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.jaycee.pomdpobjectsearch.Objects;
 import com.example.jaycee.pomdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
@@ -19,7 +20,7 @@ public class GuidanceManager
 
     private Pose devicePose;
 
-    public GuidanceManager(Session session, Pose pose, Context context, int target)
+    public GuidanceManager(Session session, Pose pose, Context context, Objects.Observation target)
     {
         devicePose = pose;
         waypoint = new Waypoint(session, pose);
@@ -55,7 +56,7 @@ public class GuidanceManager
         return Math.abs(Math.sin(cameraTilt) - y) < 0.1 && Math.abs(Math.cos(-cameraPan+Math.PI/2) + x) < 0.1;
     }
 
-    public void provideGuidance(Session session, long observation)
+    public void provideGuidance(Session session, Objects.Observation observation)
     {
         long action = policy.getAction(state);
         float[] phoneRotationAngles = getCameraVector();

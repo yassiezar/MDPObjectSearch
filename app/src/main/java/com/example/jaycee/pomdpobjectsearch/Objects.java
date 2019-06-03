@@ -37,4 +37,27 @@ public class Objects
         public String getFileName() { return this.fileName; }
         public String getFriendlyName() { return this.friendlyName; }
     }
+
+    public static Objects.Observation getObservation(int code)
+    {
+        switch(code)
+        {
+            case 1: return Objects.Observation.T_COMPUTER_MONITOR;
+            case 2: return Objects.Observation.T_COMPUTER_KEYBOARD;
+            case 3: return Objects.Observation.T_COMPUTER_MOUSE;
+            case 4: return Objects.Observation.T_DESK;
+            case 5: return Objects.Observation.T_LAPTOP;
+            case 6: return Objects.Observation.T_MUG;
+            case 7: return Objects.Observation.T_WINDOW;
+            case 8: return Objects.Observation.T_LAMP;
+            case 9: return Objects.Observation.T_BACKPACK;
+            case 10: return Objects.Observation.T_CHAIR;
+            case 11: return Objects.Observation.T_COUCH;
+            case 12: return Objects.Observation.T_PLANT;
+            case 13: return Objects.Observation.T_TELEPHONE;
+            case 14: return Objects.Observation.T_WHITEBOARD;
+            case 15: return Objects.Observation.T_DOOR;
+            default: return Objects.Observation.O_NOTHING;
+        }
+    }
 }

@@ -24,7 +24,8 @@ public class Metrics implements Runnable
     private double waypointX, waypointY, waypointZ;
     private double deviceX, deviceY, deviceZ;
     private double deviceQx, deviceQy, deviceQz, deviceQw;
-    private long observation, target;
+    private long observation;
+    private Objects.Observation target;
 
     private Handler handler = new Handler();
 
@@ -41,7 +42,7 @@ public class Metrics implements Runnable
         String wifiString = String.valueOf(timestamp) + DELIMITER +
                 String.valueOf(observation) + DELIMITER +
 //                String.valueOf(targetObservation) + DELIMITER +
-                String.valueOf(target) + DELIMITER +
+                String.valueOf(target.getCode()) + DELIMITER +
                 String.valueOf(waypointX) + DELIMITER +
                 String.valueOf(waypointY) + DELIMITER +
                 String.valueOf(waypointZ) + DELIMITER +
@@ -97,7 +98,7 @@ public class Metrics implements Runnable
     }
 
     public void updateObservation(long observation) { this.observation = observation; }
-    public void updateTarget (long target) { this.target = target; }
+    public void updateTarget (Objects.Observation target) { this.target = target; }
 
     private static class WifiDataSend extends AsyncTask<String, Void, Void>
     {

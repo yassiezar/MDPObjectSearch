@@ -3,6 +3,8 @@ package com.example.jaycee.pomdpobjectsearch.mdptools;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.jaycee.pomdpobjectsearch.Objects;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,35 +32,9 @@ class Policy
 
     private Map<Long, ArrayList<Long>> policy = new HashMap<>();
 
-    Policy(Context context, int target)
+    Policy(Context context, Objects.Observation target)
     {
-        switch(target)
-        {
-            case O_COMPUTER_MONITOR:
-                this.fileName += "computer_monitor.txt";
-                break;
-            case O_COMPUTER_KEYBOARD:
-                this.fileName += "computer_keyboard.txt";
-                break;
-            case O_COMPUTER_MOUSE:
-                this.fileName += "computer_mouse.txt";
-                break;
-            case O_DESK:
-                this.fileName += "desk.txt";
-                break;
-            case O_LAPTOP:
-                this.fileName += "laptop.txt";
-                break;
-            case O_MUG:
-                this.fileName += "mug.txt";
-                break;
-            case O_OFFICE_SUPPLIES:
-                this.fileName += "office_supplies.txt";
-                break;
-            case O_WINDOW:
-                this.fileName += "window.txt";
-                break;
-        }
+        this.fileName += target.getFileName();
 
         BufferedReader reader = null;
         try
@@ -79,7 +55,7 @@ class Policy
                         long state = Long.valueOf(matcher.group(1));
                         long action = Long.valueOf(matcher.group(2));
 
-                        policy.putIfAbsent(state, new ArrayList<Long>());
+                        policy.putIfAbsent(state, new ArrayList<>());
                         policy.get(state).add(action);
                     }
                 }

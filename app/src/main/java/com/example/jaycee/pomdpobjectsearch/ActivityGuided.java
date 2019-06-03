@@ -50,7 +50,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     }
 
     @Override
-    public void onGuidanceStart(int target)
+    public void onGuidanceStart(Objects.Observation target)
     {
         guidanceManager = new GuidanceManager(getSession(), devicePose, ActivityGuided.this, target);
         metrics = new Metrics();
@@ -96,7 +96,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     }
 
     @Override
-    public void onGuidanceRequested(long observation)
+    public void onGuidanceRequested(Objects.Observation observation)
     {
         if(guidanceManager != null)
         {
@@ -135,7 +135,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         return null;
     }
 
-    public void targetSelected(int target)
+    public void targetSelected(Objects.Observation target)
     {
         onGuidanceStart(target);
     }

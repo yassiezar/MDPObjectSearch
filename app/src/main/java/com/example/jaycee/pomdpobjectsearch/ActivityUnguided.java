@@ -11,10 +11,10 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
 
     private TextToSpeech tts;
 
-    private int target;
+    private Objects.Observation target;
 
     @Override
-    public void targetSelected(int target)
+    public void targetSelected(Objects.Observation target)
     {
         this.target = target;
     }
@@ -26,23 +26,19 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
 
         getCameraSurface().setScreenReadRequest(this);
 
-        tts = new TextToSpeech(ActivityUnguided.this, new TextToSpeech.OnInitListener()
+        tts = new TextToSpeech(ActivityUnguided.this, status ->
         {
-            @Override
-            public void onInit(int status)
+            if(status == TextToSpeech.SUCCESS)
             {
-                if(status == TextToSpeech.SUCCESS)
+                int result = tts.setLanguage(Locale.UK);
+                if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
                 {
-                    int result = tts.setLanguage(Locale.UK);
-                    if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
-                    {
-                        Log.e("error", "This Language is not supported");
-                    }
+                    Log.e("error", "This Language is not supported");
                 }
-                else
-                {
-                    Log.e("error", "Initialisation Failed!");
-                }
+            }
+            else
+            {
+                Log.e("error", "Initialisation Failed!");
             }
         });
     }
@@ -61,9 +57,9 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
     @Override
     public void onScreenTap()
     {
-        long observation = onBarcodeCodeRequest();
+        Objects.Observation observation = onBarcodeCodeRequest();
 
-        tts.speak(objectCodeToString(observation), TextToSpeech.QUEUE_ADD, null, "");
+        tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
 
         if(observation == target)
         {
