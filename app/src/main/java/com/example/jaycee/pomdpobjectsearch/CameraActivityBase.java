@@ -54,7 +54,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
     private boolean requestARCoreInstall = true;
 
-    protected long currentTimestamp, startTimestamp;
+    private long currentTimestamp, startTimestamp;
+    protected long frameTimestamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -274,8 +275,11 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         try
         {
             Frame newFrame = session.update();
-            currentTimestamp = newFrame.getTimestamp();
-/*            if(startTimestamp == 0)
+
+            frameTimestamp = newFrame.getTimestamp();
+            currentTimestamp = System.currentTimeMillis();
+
+            if(startTimestamp == 0)
             {
                 startTimestamp = currentTimestamp;
             }
@@ -283,7 +287,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             if(currentTimestamp - startTimestamp > 180000)
             {
                 finish();
-            }*/
+            }
 
             devicePose = newFrame.getCamera().getPose();
 

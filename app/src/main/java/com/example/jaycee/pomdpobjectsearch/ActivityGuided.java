@@ -45,7 +45,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         {
             metrics.updateWaypointPosition(guidanceManager.getWaypointPose());
             metrics.updateDevicePose(devicePose);
-            metrics.updateTimestamp(currentTimestamp);
+            metrics.updateTimestamp(frameTimestamp);
 
         }
         if(guidanceManager != null)
