@@ -1,21 +1,19 @@
-package com.example.jaycee.pomdpobjectsearch.pomdptools;
+package com.example.jaycee.pomdpobjectsearch.guidancetools.mdp;
 
 import com.example.jaycee.pomdpobjectsearch.Objects;
 
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.ANGLE_INTERVAL;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.GRID_SIZE_PAN;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.GRID_SIZE_TILT;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.ANGLE_INTERVAL;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.GRID_SIZE_PAN;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.GRID_SIZE_TILT;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.MAX_STEPS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.NUM_OBJECTS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_OBS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_STATE_VISITED;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_STEPS;
 
 class State
 {
     private static final String TAG = State.class.getSimpleName();
-
-    private static final int NUM_OBJECTS = 9;
-    private static final int MAX_STEPS = 12;
-
-    private static final int S_OBS = 0;
-    private static final int S_STEPS = 1;
-    private static final int S_STATE_VISITED = 2;
 
     private int state;
 

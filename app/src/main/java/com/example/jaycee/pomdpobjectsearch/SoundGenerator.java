@@ -1,13 +1,11 @@
 package com.example.jaycee.pomdpobjectsearch;
 
 import com.example.jaycee.pomdpobjectsearch.helpers.ClassHelpers;
-import com.example.jaycee.pomdpobjectsearch.mdptools.GuidanceInterface;
-import com.example.jaycee.pomdpobjectsearch.rendering.SurfaceRenderer;
+import com.example.jaycee.pomdpobjectsearch.guidancetools.GuidanceInterface;
 import com.google.ar.core.Pose;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.util.Log;
 
 public class SoundGenerator implements Runnable

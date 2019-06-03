@@ -1,19 +1,18 @@
-package com.example.jaycee.pomdpobjectsearch.mdptools;
+package com.example.jaycee.pomdpobjectsearch.guidancetools.pomdp;
 
 import android.util.Log;
 
-import com.example.jaycee.pomdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.ANGLE_INTERVAL;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.A_DOWN;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.A_LEFT;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.A_RIGHT;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.A_UP;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.GRID_SIZE_PAN;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.GRID_SIZE_TILT;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.ANGLE_INTERVAL;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.A_DOWN;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.A_LEFT;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.A_RIGHT;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.A_UP;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.GRID_SIZE_PAN;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.GRID_SIZE_TILT;
 
 class Waypoint
 {

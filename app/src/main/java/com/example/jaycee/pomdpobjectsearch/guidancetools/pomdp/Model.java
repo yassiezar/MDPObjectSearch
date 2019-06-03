@@ -1,7 +1,6 @@
-package com.example.jaycee.pomdpobjectsearch.pomdptools;
+package com.example.jaycee.pomdpobjectsearch.guidancetools.pomdp;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.jaycee.pomdpobjectsearch.Objects;
 
@@ -13,11 +12,11 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 import static com.example.jaycee.pomdpobjectsearch.Objects.Observation.O_NOTHING;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.MAX_STEPS;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.NUM_OBJECTS;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.S_OBS;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.S_STATE_VISITED;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.S_STEPS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.MAX_STEPS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.NUM_OBJECTS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_OBS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_STATE_VISITED;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_STEPS;
 
 public class Model
 {

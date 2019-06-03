@@ -31,15 +31,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
 
-    private static final int O_NOTHING = 0;
-    private static final int T_COMPUTER_MONITOR = 1;
-    private static final int T_COMPUTER_MOUSE = 3;
-    private static final int T_COMPUTER_KEYBOARD = 2;
-    private static final int T_DESK = 4;
-    private static final int T_MUG = 6;
-    private static final int T_OFFICE_SUPPLIES = 7;
-    private static final int T_WINDOW = 8;
-
     private CameraSurface surfaceView;
     private DrawerLayout drawerLayout;
     private Toast toast;
@@ -120,7 +111,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
                 case R.id.item_object_whiteboard:
                     target = Objects.Observation.T_WHITEBOARD;
                     break;
-                default: target = null;
+                default: target = Objects.Observation.O_NOTHING;
             }
 
             startTimestamp = 0;
@@ -334,48 +325,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     {
         session.setCameraTextureName(textureId);
     }
-
-/*    public String objectCodeToString(long observation)
-    {
-        final String val;
-        if(observation == 1)
-        {
-            val = "Monitor";
-        }
-        else if(observation == 2)
-        {
-            val = "Keyboard";
-        }
-        else if(observation == 3)
-        {
-            val = "Mouse";
-        }
-        else if(observation == 4)
-        {
-            val = "Desk";
-        }
-        else if(observation == 5)
-        {
-            val = "Laptop";
-        }
-        else if(observation == 6)
-        {
-            val = "Mug";
-        }
-        else if(observation == 7)
-        {
-            val = "Office supplies";
-        }
-        else if(observation == 8)
-        {
-            val = "Window";
-        }
-        else
-        {
-            val = "Unknown";
-        }
-        return val;
-    }*/
 
     public void setDrawWaypoint(boolean drawWaypoint)
     {

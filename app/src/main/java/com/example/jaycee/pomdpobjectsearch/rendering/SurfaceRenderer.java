@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import com.example.jaycee.pomdpobjectsearch.RenderListener;
-import com.example.jaycee.pomdpobjectsearch.mdptools.GuidanceInterface;
+import com.example.jaycee.pomdpobjectsearch.guidancetools.GuidanceInterface;
 import com.google.ar.core.Camera;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;

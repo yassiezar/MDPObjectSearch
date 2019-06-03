@@ -1,4 +1,4 @@
-package com.example.jaycee.pomdpobjectsearch.mdptools;
+package com.example.jaycee.pomdpobjectsearch.guidancetools.mdp;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,15 +14,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_COMPUTER_KEYBOARD;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_COMPUTER_MONITOR;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_COMPUTER_MOUSE;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_DESK;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_LAPTOP;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_MUG;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_OFFICE_SUPPLIES;
-import static com.example.jaycee.pomdpobjectsearch.mdptools.Params.O_WINDOW;
 
 class Policy
 {

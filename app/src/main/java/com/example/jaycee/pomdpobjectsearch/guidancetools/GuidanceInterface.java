@@ -1,4 +1,4 @@
-package com.example.jaycee.pomdpobjectsearch.mdptools;
+package com.example.jaycee.pomdpobjectsearch.guidancetools;
 
 import com.example.jaycee.pomdpobjectsearch.Objects;
 import com.google.ar.core.Pose;

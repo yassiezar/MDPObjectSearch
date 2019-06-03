@@ -1,8 +1,8 @@
-package com.example.jaycee.pomdpobjectsearch.pomdptools;
+package com.example.jaycee.pomdpobjectsearch.guidancetools.pomdp;
 
 import java.util.Collections;
 
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.NUM_STATES;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.NUM_STATES;
 
 public class Belief
 {

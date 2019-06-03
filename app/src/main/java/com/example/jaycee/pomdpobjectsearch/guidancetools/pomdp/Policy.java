@@ -1,4 +1,4 @@
-package com.example.jaycee.pomdpobjectsearch.pomdptools;
+package com.example.jaycee.pomdpobjectsearch.guidancetools.pomdp;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,10 +13,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Scanner;
 
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.MAX_STEPS;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.NUM_STATES;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.S_OBS;
-import static com.example.jaycee.pomdpobjectsearch.pomdptools.Params.S_STEPS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.MAX_STEPS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.NUM_STATES;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_OBS;
+import static com.example.jaycee.pomdpobjectsearch.guidancetools.Params.S_STEPS;
 
 public class Policy
 {
