@@ -26,6 +26,8 @@ public class GuidanceManager
 
     public GuidanceManager(Session session, Pose pose, Context context, Objects.Observation target)
     {
+        this.waypoint = new Waypoint(session, pose);
+
         this.state = new State();
         this.policy = new Policy(context);
         this.policy.setTarget(target);

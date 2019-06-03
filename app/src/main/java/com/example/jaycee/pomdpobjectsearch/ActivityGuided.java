@@ -3,7 +3,7 @@ package com.example.jaycee.pomdpobjectsearch;
 import android.util.Log;
 
 import com.example.jaycee.pomdpobjectsearch.guidancetools.GuidanceInterface;
-import com.example.jaycee.pomdpobjectsearch.guidancetools.mdp.GuidanceManager;
+import com.example.jaycee.pomdpobjectsearch.guidancetools.pomdp.GuidanceManager;
 import com.google.ar.core.Pose;
 
 public class ActivityGuided extends CameraActivityBase implements GuidanceInterface
