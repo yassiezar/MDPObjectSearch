@@ -64,7 +64,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         metrics.updateTarget(target);
         metrics.run();
 
-        soundGenerator = new SoundGenerator(this);//, surfaceView.getRenderer());
+        soundGenerator = new SoundGenerator(this);
         soundGenerator.setTarget(target);
         soundGenerator.run();
 

@@ -36,19 +36,15 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
     private int scannerWidth, scannerHeight;
     private int scannerX, scannerY;
 
-/*    private long timestamp;*/
-
     private final float[] anchorMatrix = new float[16];
 
     private boolean drawWaypoint = false;
     private boolean viewportChanged = false;
-    private boolean rendererReady = false;
 
     public SurfaceRenderer(Context context)
     {
         this.context = context;
 
-        this.guidanceInterface = (GuidanceInterface)context;
         this.renderListener = (RenderListener)context;
 
         this.scannerWidth = 525;
@@ -95,11 +91,6 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         this.width = width;
         this.height = height;
         GLES20.glViewport(0, 0, width, height);
-
-        // Create AR debug object
-
-        // If surface changed, renderer is not ready
-        rendererReady = false;
     }
 
     @Override
@@ -107,12 +98,6 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
     {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-/*        Session session = renderListener.onFrameAvailable();*/
-/*        if(session == null)
-        {
-            Log.w(TAG, "No session available for draw.");
-            return;
-        }*/
         if(viewportChanged)
         {
             renderListener.onViewportChange(width, height);
@@ -122,10 +107,8 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         renderListener.onDrawRequest(backgroundRenderer.getTextureId());
         try
         {
-            //Frame frame = session.update();
             Frame frame = renderListener.onFrameRequest();
             Camera camera = frame.getCamera();
-/*            timestamp = frame.getTimestamp();*/
 
             backgroundRenderer.draw(frame);
 
@@ -146,30 +129,11 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
             // Update the debug object
             if(camera.getTrackingState() == TrackingState.TRACKING)
             {
-/*                if(drawObjects)
-                {
-                    // Get pointing vector
-                    ClassHelpers.mVector currentPointingVector = new ClassHelpers.mVector(devicePose.getTranslation());
-                    ClassHelpers.mQuaternion currentPhoneRotation = new ClassHelpers.mQuaternion(devicePose.getRotationQuaternion());
-                    currentPointingVector.rotateByQuaternion(currentPhoneRotation);
-                    currentPointingVector.y *= -1;
-                    currentPointingVector.x *= -1;
-
-                    // Construct arrow pose
-                    currentPointingVector.denormalise();
-                    Pose indicatorPose = new Pose(currentPointingVector.asFloat(), devicePose.getRotationQuaternion());
-
-                    indicatorPose.toMatrix(anchorMatrix, 0);
-                    objectRenderer.updateModelMatrix(anchorMatrix, scaleFactor);
-                    objectRenderer.draw(viewMatrix, projectionMatrix, colourCorrectionRgba);
-                }*/
-
                 if(drawWaypoint)
                 {
                     Pose waypointPose = guidanceInterface.onDrawWaypoint();
                     if(waypointPose != null)
                     {
-/*                        Log.d(TAG, waypointPose.toString());*/
                         // Draw the waypoints as an Andyman
                         waypointPose.toMatrix(anchorMatrix, 0);
                         waypointRenderer.updateModelMatrix(anchorMatrix, scaleFactor);
@@ -181,14 +145,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
             {
                 Log.v(TAG, "Camera not tracking or target not set. ");
             }
-
-            // Indicate renderer is ready after first frame is drawn
-            rendererReady = true;
         }
-/*        catch(CameraNotAvailableException e)
-        {
-            Log.e(TAG, "Camera not available: " + e);
-        }*/
         catch(Throwable t)
         {
             Log.e(TAG, "Exception on the GL Thread: " + t);
@@ -208,12 +165,9 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         }
     }
 
-//    public boolean isRendererReady() { return this.rendererReady; }
-    public void setDrawWaypoint(boolean drawWaypoint) { this.drawWaypoint = drawWaypoint; }
-
-    // public Pose getDevicePose() { return this.devicePose; }
-/*    public long getTimestamp() { return this.timestamp; }*/
-
-/*    public int getWidth() { return this.width; }
-    public int getHeight() { return this.height; }*/
+    public void setDrawWaypoint(boolean drawWaypoint)
+    {
+        this.guidanceInterface = (GuidanceInterface)context;
+        this.drawWaypoint = drawWaypoint;
+    }
 }
