@@ -47,26 +47,11 @@ public class SoundGenerator implements Runnable
     @Override
     public void run()
     {
-/*        if(!targetSet || targetFound)
-        {
-            if(!stop) handler.postDelayed(this, 40);
-            return;
-        }
-
-        if(!renderer.isRendererReady())
-        {
-            if(!stop) handler.postDelayed(this, 40);
-            return;
-        }*/
-
-//        setObservation(barcodeListener.onBarcodeScan());
         long observation = barcodeListener.onBarcodeCodeRequest();
 
         if(observation == target)
         {
             Log.i(TAG, "Target found");
-/*            targetFound = true;
-            targetSet = false;*/
             guidanceInterface.onGuidanceEnd();
 
             return;
@@ -74,12 +59,7 @@ public class SoundGenerator implements Runnable
 
         if(!stop)
         {
-            if(guidanceInterface.onGuidanceLoop())
-            {
-                guidanceInterface.onGuidanceEnd();
-                return;
-            }
-            // long newCameraObservation = observation;
+            guidanceInterface.onGuidanceLoop();
 
             if(guidanceInterface.onWaypointReached() || (observation != prevCameraObservation && observation != O_NOTHING))
             {

@@ -13,11 +13,6 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     private SoundGenerator soundGenerator;
     private GuidanceManager guidanceManager;
 
-    public void targetSelected(int target)
-    {
-        onGuidanceStart(target);
-    }
-
     @Override
     protected void onPause()
     {
@@ -39,7 +34,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
 
     // Triggers pose update, returns timer status
     @Override
-    public boolean onGuidanceLoop()
+    public void onGuidanceLoop()
     {
         if(metrics != null)
         {
@@ -50,10 +45,8 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         }
         if(guidanceManager != null)
         {
-            return guidanceManager.updateDevicePose(devicePose);
+            guidanceManager.updateDevicePose(devicePose);
         }
-
-        return false;
     }
 
     @Override
@@ -140,5 +133,10 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         }
 
         return null;
+    }
+
+    public void targetSelected(int target)
+    {
+        onGuidanceStart(target);
     }
 }
