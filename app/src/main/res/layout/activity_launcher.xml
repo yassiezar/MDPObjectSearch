@@ -12,11 +12,22 @@
         android:layout_height="wrap_content"
         android:id="@+id/button_unguided"
         android:text="Unguided"
-        android:layout_weight="1"/>
+        android:layout_weight="2"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button_guided"
         android:text="Guided"
-        android:layout_weight="1"/>
+        android:layout_weight="2"/>
+    <Switch
+        android:id="@+id/quality_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:switchMinWidth="56dp"
+        android:text="Quality"
+        android:checked="true"
+        android:textOff="Clean"
+        android:textOn="Noisy"/>
 </LinearLayout>

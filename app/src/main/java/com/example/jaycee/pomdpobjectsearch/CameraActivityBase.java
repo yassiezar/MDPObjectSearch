@@ -1,6 +1,7 @@
 package com.example.jaycee.pomdpobjectsearch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
@@ -44,6 +45,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private BarcodeScanner barcodeScanner;
 
     private boolean requestARCoreInstall = true;
+    private boolean highQualityScanner = false;
 
     private long currentTimestamp, startTimestamp;
     protected long frameTimestamp;
@@ -52,8 +54,10 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_camera);
+
+        Intent intent = getIntent();
+        highQualityScanner = intent.getBooleanExtra("ADD_NOISE", false);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
