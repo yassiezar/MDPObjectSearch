@@ -30,9 +30,9 @@ public class GuidanceManager
 
         this.state = new State();
         this.policy = new Policy(context);
-        this.policy.setTarget(target);
         this.model = new Model(context);
         this.belief = new Belief(model);
+        this.policy.setTarget(target);
     }
 
     public void end()

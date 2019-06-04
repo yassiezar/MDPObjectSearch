@@ -2,6 +2,7 @@ package com.example.jaycee.pomdpobjectsearch;
 
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -25,6 +26,7 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
         super.onResume();
 
         getCameraSurface().setScreenReadRequest(this);
+        getCameraSurface().enableScreenTap(true);
 
         tts = new TextToSpeech(ActivityUnguided.this, status ->
         {

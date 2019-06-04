@@ -24,6 +24,8 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
 
     private ScreenReadRequest screenReadRequest;
 
+    private boolean screenTapEnabled = false;
+
     public CameraSurface(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -63,6 +65,26 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        final int action = event.getAction();
+
+        if(!screenTapEnabled)
+        {
+            return false;
+        }
+
+        switch(action)
+        {
+            case (MotionEvent.ACTION_DOWN):
+            {
+                performClick();
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
     public boolean performClick()
     {
         super.performClick();
@@ -80,4 +102,5 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
     {
         return renderer;
     }
+    public void enableScreenTap(boolean screenTapEnabled) { this.screenTapEnabled = screenTapEnabled; }
 }
