@@ -26,8 +26,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:switchMinWidth="56dp"
-        android:text="Quality"
+        android:text="High Quality"
         android:checked="true"
-        android:textOff="Clean"
-        android:textOn="Noisy"/>
+        android:textOff="Low"
+        android:textOn="High"/>
 </LinearLayout>

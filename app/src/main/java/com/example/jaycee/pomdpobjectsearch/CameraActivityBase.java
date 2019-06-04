@@ -265,7 +265,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     @Override
     public void onBarcodeScannerStart()
     {
-        barcodeScanner = new BarcodeScanner(this, 525, 525, surfaceView.getRenderer());
+        barcodeScanner = new BarcodeScanner(this, 525, 525, highQualityScanner, surfaceView.getRenderer());
         barcodeScanner.run();
     }
 

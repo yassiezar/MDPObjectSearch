@@ -29,11 +29,11 @@ public class ActivityLauncher extends AppCompatActivity
         {
             if(isChecked)
             {
-                highQuality = false;
+                highQuality = true;
             }
             else
             {
-                highQuality = true;
+                highQuality = false;
             }
         });
 
