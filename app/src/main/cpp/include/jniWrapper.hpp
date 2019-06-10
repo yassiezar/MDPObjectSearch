@@ -4,6 +4,7 @@
 #include <jni.h>
 #include <android/log.h>
 #include <SoundGenerator/SoundGenerator.hpp>
+#include <MarkerDetector/MarkerDetector.hpp>
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,5 +19,6 @@ JNIEXPORT void JNICALL_Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_playS
 #endif
 
 static SoundGenerator::SoundGenerator soundGenerator;
+static MarkerDetector::MarkerDetector markerDetector;
 
 #endif
