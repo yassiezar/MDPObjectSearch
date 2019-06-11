@@ -1,3 +1,8 @@
+//#include <whycon/imageproc/CCircleDetect.hpp>
+
+
+#define MAX_PATTERNS 16
+
 namespace MarkerDetector
 {
     class MarkerDetector
@@ -9,5 +14,6 @@ namespace MarkerDetector
         bool kill();
 
     private:
+
     };
 }

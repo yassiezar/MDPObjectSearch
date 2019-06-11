@@ -11,7 +11,6 @@ add_library(SoundGenerator
             src/main/cpp/src/SoundGenerator/SoundGenerator.cpp)
 
 target_include_directories(SoundGenerator PRIVATE ${PROJECT_SOURCE_DIR}/src/main/cpp/include/)
-target_include_directories(SoundGenerator PRIVATE /home/jaycee/src/github.com/openal-soft/include/)
 
 target_link_libraries(SoundGenerator
                       openal
@@ -22,13 +21,13 @@ add_library(MarkerDetector
             src/main/cpp/src/MarkerDetector/MarkerDetector.cpp)
 
 target_include_directories(MarkerDetector PRIVATE src/main/cpp/include/)
+target_include_directories(MarkerDetector PRIVATE src/main/cpp/include/)
 
 add_library(JNI
             SHARED
             src/main/cpp/src/jniWrapper.cpp)
 
 target_include_directories(JNI PRIVATE src/main/cpp/include/)
-target_include_directories(JNI PRIVATE /home/jaycee/src/github.com/openal-soft/include/)
 
 target_link_libraries(JNI
                     SoundGenerator

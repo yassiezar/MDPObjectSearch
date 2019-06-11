@@ -19,6 +19,6 @@ JNIEXPORT void JNICALL_Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_playS
 #endif
 
 static SoundGenerator::SoundGenerator soundGenerator;
-static MarkerDetector::MarkerDetector markerDetector;
+// static MarkerDetector::MarkerDetector markerDetector;
 
 #endif
