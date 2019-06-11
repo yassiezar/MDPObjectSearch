@@ -18,19 +18,19 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
-        <com.example.jaycee.pomdpobjectsearch.CameraSurface
+        <com.example.jaycee.mdpobjectsearch.CameraSurface
             android:id="@+id/surfaceview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@id/toolbar"
             android:contentDescription="Drawing debug object" >
-        </com.example.jaycee.pomdpobjectsearch.CameraSurface>
-        <com.example.jaycee.pomdpobjectsearch.CentreView
+        </com.example.jaycee.mdpobjectsearch.CameraSurface>
+        <com.example.jaycee.mdpobjectsearch.CentreView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:id="@+id/centre_view">
-        </com.example.jaycee.pomdpobjectsearch.CentreView>
+        </com.example.jaycee.mdpobjectsearch.CentreView>
     </RelativeLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view_objects"
