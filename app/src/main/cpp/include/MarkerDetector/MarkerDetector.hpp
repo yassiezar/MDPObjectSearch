@@ -2,6 +2,8 @@
 #include <whycon/imageproc/CTransformation.h>
 #include <whycon/common/CRawImage.h>
 
+#include <cstring>
+
 #define MAX_IDS 16
 
 namespace MarkerDetector
@@ -14,8 +16,14 @@ namespace MarkerDetector
         bool init();
         bool kill();
 
+        void processImage(unsigned char* data);
+
     private:
         CCircleDetect* patternDetectors[MAX_IDS];
+        SSegment currentSegmentArray[MAX_IDS];
+        SSegment lastSegmentArray[MAX_IDS];
+        STrackedObject objectArray[MAX_IDS];
+
         CTransformation* trans;
         CRawImage* image;
 
