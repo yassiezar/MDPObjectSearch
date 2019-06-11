@@ -41,6 +41,8 @@ public class BarcodeScanner implements Runnable
 
         this.scannerHeight = scannerHeight;
         this.scannerWidth = scannerWidth;
+
+        JNIBridge.initDetector();
     }
 
     @Override
@@ -50,6 +52,7 @@ public class BarcodeScanner implements Runnable
         code = O_NOTHING;
 
         rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
+        JNIBridge.processImage(renderer.getCurrentFrameBuffer());
 
         int scaledWidth, scaledHeight;
         Frame bitmapFrame;
@@ -85,6 +88,7 @@ public class BarcodeScanner implements Runnable
     {
         this.stop = true;
         handler = null;
+        JNIBridge.killDetector();
     }
 
     public int getCode() { return this.code; }
