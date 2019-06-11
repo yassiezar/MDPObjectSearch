@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.10.2)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 add_library(openal SHARED IMPORTED )
 set_target_properties(openal PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libopenal.so )
+
+add_library(whycon SHARED IMPORTED )
+set_target_properties(whycon PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libwhycon.so )
 
 add_library(SoundGenerator
             SHARED
@@ -21,7 +24,9 @@ add_library(MarkerDetector
             src/main/cpp/src/MarkerDetector/MarkerDetector.cpp)
 
 target_include_directories(MarkerDetector PRIVATE src/main/cpp/include/)
-target_include_directories(MarkerDetector PRIVATE src/main/cpp/include/)
+
+target_link_libraries(MarkerDetector
+                        whycon)
 
 add_library(JNI
             SHARED

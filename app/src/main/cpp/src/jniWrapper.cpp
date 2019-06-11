@@ -7,8 +7,8 @@ extern "C" {
 JNIEXPORT bool JNICALL
 Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_initSound(JNIEnv* env, jobject obj)
 {
-    soundGenerator.init();
-    soundGenerator.startSound();
+    soundGenerator->init();
+    soundGenerator->startSound();
 
     return true;
 }
@@ -16,8 +16,8 @@ Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_initSound(JNIEnv* env, jobje
 JNIEXPORT bool JNICALL
 Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_killSound(JNIEnv* env, jobject obj)
 {
-    soundGenerator.endSound();
-    soundGenerator.kill();
+    soundGenerator->endSound();
+    soundGenerator->kill();
 
     return true;
 }
@@ -25,7 +25,7 @@ Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_killSound(JNIEnv* env, jobje
 JNIEXPORT void JNICALL
 Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_playSound(JNIEnv* env, jobject obj, jfloatArray src, jfloatArray list, jfloat gain, jfloat pitch)
 {
-    soundGenerator.play(env, src, list, gain, pitch);
+    soundGenerator->play(env, src, list, gain, pitch);
 }
 
 #ifdef __cplusplus
