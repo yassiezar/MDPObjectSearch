@@ -17,16 +17,20 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.ar.core.ArCoreApk;
+import com.google.ar.core.CameraIntrinsics;
 import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
+import com.google.ar.core.exceptions.NotYetAvailableException;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
+
+import static com.google.ar.core.ImageMetadata.LENS_RADIAL_DISTORTION;
 
 public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeListener, RenderListener
 {
@@ -263,9 +267,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     }
 
     @Override
-    public void onBarcodeScannerStart()
+    public void onBarcodeScannerStart(CameraIntrinsics intrinsics)
     {
-        barcodeScanner = new BarcodeScanner(this, 525, 525, highQualityScanner, surfaceView.getRenderer());
+        // TODO: Replace distortion matrix with real one
+        float[] distortionMatrix = new float[] {1.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+
+        barcodeScanner = new BarcodeScanner(525, 525, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
         barcodeScanner.run();
     }
 
@@ -300,6 +307,11 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             }
 
             devicePose = newFrame.getCamera().getPose();
+
+            if(barcodeScanner == null)
+            {
+                onBarcodeScannerStart(newFrame.getCamera().getImageIntrinsics());
+            }
 
             return newFrame;
         }

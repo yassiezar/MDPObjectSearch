@@ -5,6 +5,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
+import com.example.jaycee.mdpobjectsearch.BarcodeListener;
+import com.example.jaycee.mdpobjectsearch.BarcodeScanner;
 import com.example.jaycee.mdpobjectsearch.RenderListener;
 import com.example.jaycee.mdpobjectsearch.ScannerWindow;
 import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
@@ -32,6 +34,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
 
     private GuidanceInterface guidanceInterface;
     private RenderListener renderListener;
+    private BarcodeListener barcodeListener;
 
     private int width, height;
 
@@ -48,6 +51,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         this.context = context;
 
         this.renderListener = (RenderListener)context;
+        this.barcodeListener = (BarcodeListener)context;
 
         this.scannerWidth = 525;
         this.scannerHeight = 525;

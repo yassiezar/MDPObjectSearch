@@ -32,11 +32,23 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_playSound(JNIEnv* env, jobject
 }
 
 JNIEXPORT bool JNICALL
-Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobject obj, jint width, jint height)
+Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobject obj, jint width, jint height, jfloatArray _focalLength, jfloatArray _principlePoint, jfloatArray _distorionMatrix)
 {
     markerDetector = new MarkerDetector::MarkerDetector(width, height);
 
-    return markerDetector->init();
+    jboolean isCopy;
+
+    float* focalLength = env->GetFloatArrayElements(_focalLength, &isCopy);
+    float* principlePoint = env->GetFloatArrayElements(_principlePoint, &isCopy);
+    float* distortionMatrix = env->GetFloatArrayElements(_distorionMatrix, &isCopy);
+
+    bool success = markerDetector->init(focalLength, principlePoint, distortionMatrix);
+
+    env->ReleaseFloatArrayElements(_focalLength, focalLength, isCopy);
+    env->ReleaseFloatArrayElements(_principlePoint, principlePoint, isCopy);
+    env->ReleaseFloatArrayElements(_distorionMatrix, distortionMatrix, isCopy);
+
+    return success;
 }
 
 JNIEXPORT bool JNICALL

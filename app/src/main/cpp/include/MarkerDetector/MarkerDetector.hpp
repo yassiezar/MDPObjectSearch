@@ -16,7 +16,7 @@ namespace MarkerDetector
     public:
         MarkerDetector(int, int);
 
-        bool init();
+        bool init(float *focalLen, float *principalPoint, float *distortionMatrix);
         bool kill();
 
         void processImage(unsigned char* data);

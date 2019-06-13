@@ -53,7 +53,6 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height)
     {
         super.surfaceChanged(surfaceHolder, format, width, height);
-        barcodeListener.onBarcodeScannerStart();
     }
 
     @Override

@@ -7,12 +7,14 @@ namespace MarkerDetector
     {
     }
 
-    bool MarkerDetector::init()
+    bool MarkerDetector::init(float *focalLen, float *principalPoint, float *distortionMatrix)
     {
         image = new CRawImage(imageWidth, imageHeight);
 
         trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
         trans->transformType = TRANSFORM_NONE;
+        float zeroErr[2] = {0.F, 0.F};
+        trans->setCameraParams(focalLen, principalPoint, distortionMatrix, zeroErr, zeroErr);
 
         for(int i = 0; i < MAX_IDS; i ++)
         {

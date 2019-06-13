@@ -18,31 +18,26 @@ public class BarcodeScanner implements Runnable
 
     private static final int O_NOTHING = 0;
 
-    private Handler handler = new Handler();
-
-    private BarcodeDetector detector;
-    private Bitmap rawBitmap;
+    // private Handler handler = new Handler();
 
     private SurfaceRenderer renderer;
 
     private boolean stop = false;
-    private boolean highQualityScanner;
 
     private int code = O_NOTHING;
     private int scannerHeight, scannerWidth;
 
-    public BarcodeScanner(Context context, int scannerWidth, int scannerHeight, boolean highQualityScanner, SurfaceRenderer renderer)
+    public BarcodeScanner(int scannerWidth, int scannerHeight, SurfaceRenderer renderer, float[] focalLength, float[] principlePoint, float[] distortionMatrix)
     {
         this.renderer = renderer;
-        this.highQualityScanner = highQualityScanner;
 
-        this.detector = new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.QR_CODE).build();
-        this.rawBitmap = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
+        // this.detector = new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.QR_CODE).build();
+        // this.rawBitmap = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
 
         this.scannerHeight = scannerHeight;
         this.scannerWidth = scannerWidth;
 
-        JNIBridge.initDetector(scannerWidth, scannerHeight);
+        JNIBridge.initDetector(scannerWidth, scannerHeight, focalLength, principlePoint, distortionMatrix);
     }
 
     @Override
@@ -99,8 +94,17 @@ public class BarcodeScanner implements Runnable
     public void stop()
     {
         this.stop = true;
-        handler = null;
-        JNIBridge.killDetector();
+        // handler = null;
+
+        renderer.getScanner().getLock().lock();
+        try
+        {
+            JNIBridge.killDetector();
+        }
+        finally
+        {
+            renderer.getScanner().getLock().unlock();
+        }
     }
 
     public int getCode() { return this.code; }
