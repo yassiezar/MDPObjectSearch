@@ -52,7 +52,7 @@ public class BarcodeScanner implements Runnable
         code = O_NOTHING;
 
         // rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
-        // JNIBridge.processImage(renderer.getCurrentFrameBuffer());
+        JNIBridge.processImage(renderer.getCurrentFrameBuffer());
 
 /*        int scaledWidth, scaledHeight;
         Frame bitmapFrame;

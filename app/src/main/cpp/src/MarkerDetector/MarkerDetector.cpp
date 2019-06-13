@@ -40,7 +40,7 @@ namespace MarkerDetector
     void MarkerDetector::processImage(unsigned char *data)
     {
         // Copy in new image data
-        memcpy(image->data, data, sizeof(image->data));
+        image->data = data;
 
         // Track markers found in previous search
         for(int i = 0; i < MAX_IDS; i ++)
@@ -59,6 +59,7 @@ namespace MarkerDetector
             {
                 lastSegmentArray[i].valid = false;
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
             }
             if(!currentSegmentArray[i].valid) break;
         }
