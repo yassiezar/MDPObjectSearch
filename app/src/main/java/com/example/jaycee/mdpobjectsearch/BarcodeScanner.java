@@ -52,7 +52,19 @@ public class BarcodeScanner implements Runnable
         code = O_NOTHING;
 
         // rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
-        JNIBridge.processImage(renderer.getCurrentFrameBuffer());
+        if(!renderer.getScanner().isProcessed())
+        {
+            renderer.getScanner().getLock().lock();
+            try
+            {
+                JNIBridge.processImage(renderer.getScanner().getBuffer());
+                renderer.getScanner().setProcessed(true);
+            }
+            finally
+            {
+                renderer.getScanner().getLock().unlock();
+            }
+        }
 
 /*        int scaledWidth, scaledHeight;
         Frame bitmapFrame;
@@ -81,7 +93,7 @@ public class BarcodeScanner implements Runnable
             }
         }*/
 
-        if(!stop) handler.postDelayed(this, 40);
+        // if(!stop) handler.postDelayed(this, 40);
     }
 
     public void stop()

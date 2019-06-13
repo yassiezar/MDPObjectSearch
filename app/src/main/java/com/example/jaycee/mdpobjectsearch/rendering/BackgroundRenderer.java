@@ -5,6 +5,7 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import com.example.jaycee.mdpobjectsearch.ScannerWindow;
 import com.google.ar.core.Frame;
 
 import java.io.IOException;
@@ -24,6 +25,8 @@ public class BackgroundRenderer
     private static final int TEXCOORDS_PER_VERTEX = 2;
     private static final int FLOAT_SIZE = 4;
     private static final int INT_SIZE = 4;
+
+    private ScannerWindow scanner;
 
     private FloatBuffer quadVertices;
     private FloatBuffer quadTexCoord;
@@ -45,6 +48,8 @@ public class BackgroundRenderer
         this.scannerHeight = scannerHeight;
         this.scannerX = scannerX;
         this.scannerY = scannerY;
+
+        this.scanner = new ScannerWindow(scannerWidth, scannerHeight);
     }
 
     public int getTextureId() { return this.textureId; }
@@ -105,7 +110,7 @@ public class BackgroundRenderer
 
         /* TODO: Make size automatic */
         // currentFrameBuffer = IntBuffer.allocate(480*480);
-        currentFrameBuffer = ByteBuffer.allocateDirect(scannerWidth*scannerHeight*INT_SIZE);
+        // currentFrameBuffer = ByteBuffer.allocateDirect(scannerWidth*scannerHeight*INT_SIZE);
     }
 
     public void draw(Frame frame)
@@ -141,12 +146,24 @@ public class BackgroundRenderer
         ShaderUtils.checkGLError(TAG, "Draw");
 
         /* TODO: Make size automatic */
-        GLES20.glReadPixels(scannerX, scannerY, scannerWidth, scannerHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, currentFrameBuffer);
+        boolean lockAcquired = scanner.getLock().tryLock();
+        if(lockAcquired)
+        {
+            try
+            {
+                GLES20.glReadPixels(scannerX, scannerY, scannerWidth, scannerHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, scanner.getBuffer());
+                scanner.setProcessed(false);
+            }
+            finally
+            {
+                scanner.getLock().unlock();
+            }
+        }
     }
 
-    public ByteBuffer getCurrentFrameBuffer()
+    public ScannerWindow getScanner()
     {
-        return currentFrameBuffer;
+        return scanner;
     }
 
     private static final float[] QUAD_COORDS =

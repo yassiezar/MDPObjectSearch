@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import com.example.jaycee.mdpobjectsearch.RenderListener;
+import com.example.jaycee.mdpobjectsearch.ScannerWindow;
 import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
 import com.google.ar.core.Camera;
 import com.google.ar.core.Frame;
@@ -153,17 +154,9 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         }
     }
 
-    public ByteBuffer getCurrentFrameBuffer()
+    public ScannerWindow getScanner()
     {
-        try
-        {
-            return backgroundRenderer.getCurrentFrameBuffer().duplicate();
-        }
-        catch(NullPointerException e)
-        {
-            Log.e(TAG, "Frame buffer not yet initialised: " + e);
-            return ByteBuffer.allocate(scannerWidth*scannerHeight*4);
-        }
+        return backgroundRenderer.getScanner();
     }
 
     public void setDrawWaypoint(boolean drawWaypoint)
