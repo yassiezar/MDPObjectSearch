@@ -23,12 +23,13 @@ public class BackgroundRenderer
     private static final int COORDS_PER_VERTEX = 3;
     private static final int TEXCOORDS_PER_VERTEX = 2;
     private static final int FLOAT_SIZE = 4;
+    private static final int INT_SIZE = 4;
 
     private FloatBuffer quadVertices;
     private FloatBuffer quadTexCoord;
     private FloatBuffer quadTexCoordTransformed;
 
-    private IntBuffer currentFrameBuffer;
+    private ByteBuffer currentFrameBuffer;
 
     private int quadProgram;
     private int quadPositionParam;
@@ -104,7 +105,7 @@ public class BackgroundRenderer
 
         /* TODO: Make size automatic */
         // currentFrameBuffer = IntBuffer.allocate(480*480);
-        currentFrameBuffer = IntBuffer.allocate(scannerWidth*scannerHeight);
+        currentFrameBuffer = ByteBuffer.allocateDirect(scannerWidth*scannerHeight*INT_SIZE);
     }
 
     public void draw(Frame frame)
@@ -143,7 +144,7 @@ public class BackgroundRenderer
         GLES20.glReadPixels(scannerX, scannerY, scannerWidth, scannerHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, currentFrameBuffer);
     }
 
-    public IntBuffer getCurrentFrameBuffer()
+    public ByteBuffer getCurrentFrameBuffer()
     {
         return currentFrameBuffer;
     }

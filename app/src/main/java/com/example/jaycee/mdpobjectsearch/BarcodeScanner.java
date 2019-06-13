@@ -42,7 +42,7 @@ public class BarcodeScanner implements Runnable
         this.scannerHeight = scannerHeight;
         this.scannerWidth = scannerWidth;
 
-        JNIBridge.initDetector();
+        JNIBridge.initDetector(scannerWidth, scannerHeight);
     }
 
     @Override
@@ -51,10 +51,10 @@ public class BarcodeScanner implements Runnable
         Log.v(TAG, "Running barcode scanner");
         code = O_NOTHING;
 
-        rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
-        JNIBridge.processImage(renderer.getCurrentFrameBuffer());
+        // rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
+        // JNIBridge.processImage(renderer.getCurrentFrameBuffer());
 
-        int scaledWidth, scaledHeight;
+/*        int scaledWidth, scaledHeight;
         Frame bitmapFrame;
         if(highQualityScanner)
         {
@@ -79,7 +79,7 @@ public class BarcodeScanner implements Runnable
                 Log.i(TAG, String.format("Barcode content: %s", barcodes.get(key).rawValue));
                 this.code = Integer.parseInt(barcodes.get(key).rawValue);
             }
-        }
+        }*/
 
         if(!stop) handler.postDelayed(this, 40);
     }

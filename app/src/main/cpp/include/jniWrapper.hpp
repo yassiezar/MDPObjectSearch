@@ -10,19 +10,19 @@
 extern "C" {
 #endif
 
-JNIEXPORT bool JNICALL Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_initSound(JNIEnv*, jobject);
-JNIEXPORT bool JNICALL Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_killSound(JNIEnv*, jobject);
-JNIEXPORT void JNICALL_Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_playSound(JNIEnv*, jobject, jfloatArray, jfloatArray, jfloat, jfloat);
+JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initSound(JNIEnv*, jobject);
+JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killSound(JNIEnv*, jobject);
+JNIEXPORT void JNICALL_Java_com_example_jaycee_mdpobjectsearch_JNIBridge_playSound(JNIEnv*, jobject, jfloatArray, jfloatArray, jfloat, jfloat);
 
-JNIEXPORT bool JNICALL Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_initDetector(JNIEnv*, jobject);
-JNIEXPORT bool JNICALL Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_killDetector(JNIEnv*, jobject);
-JNIEXPORT void JNICALL_Java_com_example_jaycee_pomdpobjectsearch_JNIBridge_processImage(JNIEnv*, jobject, jintArray);
+JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv*, jobject, jint width, jint height);
+JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv*, jobject);
+JNIEXPORT void JNICALL_Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv*, jobject, jintArray);
 
 #ifdef __cplusplus
 }
 #endif
 
-static SoundGenerator::SoundGenerator *soundGenerator;
-static MarkerDetector::MarkerDetector *markerDetector;
+SoundGenerator::SoundGenerator *soundGenerator;
+MarkerDetector::MarkerDetector *markerDetector;
 
 #endif

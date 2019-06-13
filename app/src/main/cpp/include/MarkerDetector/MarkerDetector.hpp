@@ -4,7 +4,10 @@
 
 #include <cstring>
 
+#include <android/log.h>
+
 #define MAX_IDS 16
+#define MARKERLOG "MarkerDetector"
 
 namespace MarkerDetector
 {
@@ -24,11 +27,11 @@ namespace MarkerDetector
         SSegment lastSegmentArray[MAX_IDS];
         STrackedObject objectArray[MAX_IDS];
 
-        CTransformation* trans;
+        // CTransformation* trans;
         CRawImage* image;
 
         int imageWidth, imageHeight;
 
-        const float circleDiameter = 0.122;                 // Adjust the outer marker width [m]
+        const float circleDiameter = 0.122f;                 // Adjust the outer marker width [m]
     };
 }

@@ -26,6 +26,7 @@ add_library(MarkerDetector
 target_include_directories(MarkerDetector PRIVATE src/main/cpp/include/)
 
 target_link_libraries(MarkerDetector
+                        log
                         whycon)
 
 add_library(JNI

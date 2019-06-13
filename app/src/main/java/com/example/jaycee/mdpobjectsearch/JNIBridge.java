@@ -1,5 +1,6 @@
 package com.example.jaycee.mdpobjectsearch;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 public class JNIBridge
@@ -13,7 +14,7 @@ public class JNIBridge
     public static native boolean killSound();
     public static native void playSound(float[] src, float[] list, float gain, float pitch);
 
-    public static native boolean initDetector();
+    public static native boolean initDetector(int width, int height);
     public static native boolean killDetector();
-    public static native void processImage(IntBuffer data);
+    public static native void processImage(ByteBuffer data);
 }

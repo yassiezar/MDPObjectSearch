@@ -13,6 +13,7 @@ import com.google.ar.core.Pose;
 import com.google.ar.core.TrackingState;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -152,7 +153,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         }
     }
 
-    public IntBuffer getCurrentFrameBuffer()
+    public ByteBuffer getCurrentFrameBuffer()
     {
         try
         {
@@ -161,7 +162,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         catch(NullPointerException e)
         {
             Log.e(TAG, "Frame buffer not yet initialised: " + e);
-            return IntBuffer.allocate(scannerWidth*scannerHeight);
+            return ByteBuffer.allocate(scannerWidth*scannerHeight*4);
         }
     }
 

@@ -2,19 +2,24 @@
 
 namespace MarkerDetector
 {
-    MarkerDetector::MarkerDetector(int imageWidth, int imageHeight) : imageWidth(imageWidth), imageHeight(imageHeight) { }
+    MarkerDetector::MarkerDetector(int imageWidth, int imageHeight) :
+            imageWidth(imageWidth), imageHeight(imageHeight)
+    {
+    }
 
     bool MarkerDetector::init()
     {
-        trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
-        trans->transformType = TRANSFORM_NONE;
-
         image = new CRawImage(imageWidth, imageHeight);
+
+        // trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
+        // trans->transformType = TRANSFORM_NONE;
 
         for(int i = 0; i < MAX_IDS; i ++)
         {
             patternDetectors[i] = new CCircleDetect(imageWidth, imageHeight, i);
         }
+
+        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Initialised detectors.");
 
         return 0;
     }
@@ -22,7 +27,7 @@ namespace MarkerDetector
     bool MarkerDetector::kill()
     {
         delete image;
-        delete trans;
+        // delete trans;
 
         for(int i = 0; i < MAX_IDS; i ++)
         {
@@ -65,7 +70,7 @@ namespace MarkerDetector
             {
                 if(currentSegmentArray[i].valid)
                 {
-                    objectArray[i] = trans->transform(currentSegmentArray[i], false);
+                    // objectArray[i] = trans->transform(currentSegmentArray[i], false);
                 }
             }
         }
