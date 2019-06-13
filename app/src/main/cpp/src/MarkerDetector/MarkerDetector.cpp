@@ -36,6 +36,8 @@ namespace MarkerDetector
             delete patternDetectors[i];
         }
 
+        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Killed detectors.");
+
         return 0;
     }
 
@@ -73,7 +75,7 @@ namespace MarkerDetector
             {
                 if(currentSegmentArray[i].valid)
                 {
-                    // objectArray[i] = trans->transform(currentSegmentArray[i], false);
+                    objectArray[i] = trans->transform(currentSegmentArray[i], false);
                 }
             }
         }

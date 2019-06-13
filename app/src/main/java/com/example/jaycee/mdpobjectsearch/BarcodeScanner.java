@@ -43,21 +43,24 @@ public class BarcodeScanner implements Runnable
     @Override
     public void run()
     {
-        Log.v(TAG, "Running barcode scanner");
-        code = O_NOTHING;
-
-        // rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
-        if(!renderer.getScanner().isProcessed())
+        if(!stop)
         {
-            renderer.getScanner().getLock().lock();
-            try
+            Log.v(TAG, "Running barcode scanner");
+            code = O_NOTHING;
+
+            // rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
+            if(!renderer.getScanner().isProcessed())
             {
-                JNIBridge.processImage(renderer.getScanner().getBuffer());
-                renderer.getScanner().setProcessed(true);
-            }
-            finally
-            {
-                renderer.getScanner().getLock().unlock();
+                renderer.getScanner().getLock().lock();
+                try
+                {
+                    JNIBridge.processImage(renderer.getScanner().getBuffer());
+                    renderer.getScanner().setProcessed(true);
+                }
+                finally
+                {
+                    renderer.getScanner().getLock().unlock();
+                }
             }
         }
 

@@ -210,7 +210,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     @Override
     protected void onPause()
     {
-        onBarcodeScannerStop();
+//        onBarcodeScannerStop();
 
         if(vibrator != null)
         {
@@ -222,6 +222,17 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         {
             surfaceView.onPause();
             session.pause();
+        }
+
+        if(!JNIBridge.killSound())
+        {
+            Log.e(TAG, "OpenAL exit error");
+        }
+
+        if(barcodeScanner != null)
+        {
+            barcodeScanner.stop();
+            barcodeScanner = null;
         }
 
         super.onPause();
