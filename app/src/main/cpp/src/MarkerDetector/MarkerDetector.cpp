@@ -11,8 +11,8 @@ namespace MarkerDetector
     {
         image = new CRawImage(imageWidth, imageHeight);
 
-        // trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
-        // trans->transformType = TRANSFORM_NONE;
+        trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
+        trans->transformType = TRANSFORM_NONE;
 
         for(int i = 0; i < MAX_IDS; i ++)
         {
@@ -27,7 +27,7 @@ namespace MarkerDetector
     bool MarkerDetector::kill()
     {
         delete image;
-        // delete trans;
+        delete trans;
 
         for(int i = 0; i < MAX_IDS; i ++)
         {

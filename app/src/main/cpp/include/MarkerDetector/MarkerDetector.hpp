@@ -27,7 +27,7 @@ namespace MarkerDetector
         SSegment lastSegmentArray[MAX_IDS];
         STrackedObject objectArray[MAX_IDS];
 
-        // CTransformation* trans;
+        CTransformation* trans;
         CRawImage* image;
 
         int imageWidth, imageHeight;
