@@ -20,7 +20,7 @@ public class BarcodeScanner implements Runnable
     private static final int O_NOTHING = 0;
 
     // private Handler handler = new Handler();
-    Bitmap rawBitmap;
+    // Bitmap rawBitmap;
 
     private SurfaceRenderer renderer;
 
@@ -34,7 +34,7 @@ public class BarcodeScanner implements Runnable
         this.renderer = renderer;
 
         // this.detector = new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.QR_CODE).build();
-        this.rawBitmap = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
+//        this.rawBitmap = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
 
         this.scannerHeight = scannerHeight;
         this.scannerWidth = scannerWidth;

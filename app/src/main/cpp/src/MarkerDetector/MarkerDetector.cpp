@@ -10,10 +10,11 @@ namespace MarkerDetector
     bool MarkerDetector::init(float *focalLen, float *principalPoint, float *distortionMatrix)
     {
         image = new CRawImage(imageWidth, imageHeight);
+        image->ownData = false;
 
+        float zeroErr[2] = {0.F, 0.F};
         trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
         trans->transformType = TRANSFORM_NONE;
-        float zeroErr[2] = {0.F, 0.F};
         trans->setCameraParams(focalLen, principalPoint, distortionMatrix, zeroErr, zeroErr);
 
         for(int i = 0; i < MAX_IDS; i ++)
@@ -54,21 +55,21 @@ namespace MarkerDetector
             {
                 lastSegmentArray[i] = currentSegmentArray[i];
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
-                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "previous track: Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
             }
         }
 
         // Find untracked markers
-/*        for(int i = 0; i < MAX_IDS; i++)
+        for(int i = 0; i < MAX_IDS; i++)
         {
             if(!currentSegmentArray[i].valid)
             {
                 lastSegmentArray[i].valid = false;
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
-                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
             }
             if(!currentSegmentArray[i].valid) break;
-        }*/
+        }
 
         // Perform coordinate transformation
 /*        for(int i = 0; i < MAX_IDS; i++)
