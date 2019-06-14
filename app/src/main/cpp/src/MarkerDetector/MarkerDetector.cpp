@@ -45,6 +45,7 @@ namespace MarkerDetector
     {
         // Copy in new image data
         image->data = data;
+        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here");
 
         // Track markers found in previous search
         for(int i = 0; i < MAX_IDS; i ++)
@@ -53,11 +54,12 @@ namespace MarkerDetector
             {
                 lastSegmentArray[i] = currentSegmentArray[i];
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
             }
         }
 
         // Find untracked markers
-        for(int i = 0; i < MAX_IDS; i++)
+/*        for(int i = 0; i < MAX_IDS; i++)
         {
             if(!currentSegmentArray[i].valid)
             {
@@ -66,10 +68,10 @@ namespace MarkerDetector
                 __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
             }
             if(!currentSegmentArray[i].valid) break;
-        }
+        }*/
 
         // Perform coordinate transformation
-        for(int i = 0; i < MAX_IDS; i++)
+/*        for(int i = 0; i < MAX_IDS; i++)
         {
             if(currentSegmentArray[i].valid)
             {
@@ -78,6 +80,6 @@ namespace MarkerDetector
                     objectArray[i] = trans->transform(currentSegmentArray[i], false);
                 }
             }
-        }
+        }*/
     }
 }

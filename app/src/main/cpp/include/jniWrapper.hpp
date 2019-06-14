@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL_Java_com_example_jaycee_mdpobjectsearch_JNIBridge_playSou
 
 JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobject obj, jint width, jint height, jfloatArray _focalLength, jfloatArray _principlePoint, jfloatArray _distorionMatrix);
 JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv*, jobject);
-JNIEXPORT void JNICALL_Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv*, jobject, jintArray);
+JNIEXPORT void JNICALL_Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv*, jobject, jobject);
 
 #ifdef __cplusplus
 }

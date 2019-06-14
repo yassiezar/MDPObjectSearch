@@ -3,6 +3,7 @@ package com.example.jaycee.mdpobjectsearch;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -19,6 +20,7 @@ public class BarcodeScanner implements Runnable
     private static final int O_NOTHING = 0;
 
     // private Handler handler = new Handler();
+    Bitmap rawBitmap;
 
     private SurfaceRenderer renderer;
 
@@ -32,7 +34,7 @@ public class BarcodeScanner implements Runnable
         this.renderer = renderer;
 
         // this.detector = new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.QR_CODE).build();
-        // this.rawBitmap = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
+        this.rawBitmap = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
 
         this.scannerHeight = scannerHeight;
         this.scannerWidth = scannerWidth;
@@ -43,25 +45,26 @@ public class BarcodeScanner implements Runnable
     @Override
     public void run()
     {
+        Log.v(TAG, "Running scanner");
         if(!stop)
         {
-            Log.v(TAG, "Running barcode scanner");
             code = O_NOTHING;
 
-            // rawBitmap.copyPixelsFromBuffer(renderer.getCurrentFrameBuffer());
-            if(!renderer.getScanner().isProcessed())
+            rawBitmap.copyPixelsFromBuffer(renderer.getScanner().getBuffer().asIntBuffer());
+            Log.v(TAG, "Requesting lock");
+            renderer.getScanner().getLock().lock();
+            try
             {
-                renderer.getScanner().getLock().lock();
-                try
-                {
-                    JNIBridge.processImage(renderer.getScanner().getBuffer());
-                    renderer.getScanner().setProcessed(true);
-                }
-                finally
-                {
-                    renderer.getScanner().getLock().unlock();
-                }
+                Log.v(TAG, "Got lock");
+                JNIBridge.processImage(renderer.getScanner().getBuffer());
+                renderer.getScanner().setProcessed(true);
             }
+            finally
+            {
+                renderer.getScanner().getLock().unlock();
+            }
+            // run();
+            // handler.postDelayed(this, 50);
         }
 
 /*        int scaledWidth, scaledHeight;
@@ -97,6 +100,7 @@ public class BarcodeScanner implements Runnable
     public void stop()
     {
         this.stop = true;
+        // handler.removeCallbacks(this);
         // handler = null;
 
         renderer.getScanner().getLock().lock();

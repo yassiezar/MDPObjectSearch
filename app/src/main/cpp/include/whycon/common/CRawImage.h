@@ -29,7 +29,6 @@ public:
 
   double getOverallBrightness(bool upperHalf);
   
-	  
   int width;
   int height;
   int palette;

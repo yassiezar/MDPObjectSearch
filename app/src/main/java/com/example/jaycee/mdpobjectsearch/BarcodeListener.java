@@ -4,7 +4,7 @@ import com.google.ar.core.CameraIntrinsics;
 
 public interface BarcodeListener
 {
-    void onBarcodeScannerStart(CameraIntrinsics intrinsics);
+    void onBarcodeScannerStart();
     void onBarcodeScannerStop();
     Objects.Observation onBarcodeCodeRequest();
 }

@@ -43,6 +43,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private Vibrator vibrator;
 
     private Session session;
+    private CameraIntrinsics intrinsics;
     protected Pose devicePose;
 
     protected Metrics metrics;
@@ -253,6 +254,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     @Override
     public Objects.Observation onBarcodeCodeRequest()
     {
+        barcodeScanner.run();
+
         Objects.Observation scannedObject = Objects.Observation.O_NOTHING;
         if(barcodeScanner != null)
         {
@@ -278,13 +281,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     }
 
     @Override
-    public void onBarcodeScannerStart(CameraIntrinsics intrinsics)
+    public void onBarcodeScannerStart()
     {
         // TODO: Replace distortion matrix with real one
         float[] distortionMatrix = new float[] {1.f, 0.f, 0.f, 0.f, 0.f, 0.f};
 
         barcodeScanner = new BarcodeScanner(525, 525, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
-        barcodeScanner.run();
     }
 
     @Override
@@ -304,6 +306,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         {
             Frame newFrame = session.update();
 
+            intrinsics = newFrame.getCamera().getImageIntrinsics();
+
             frameTimestamp = newFrame.getTimestamp();
             currentTimestamp = System.currentTimeMillis();
 
@@ -321,7 +325,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
             if(barcodeScanner == null)
             {
-                onBarcodeScannerStart(newFrame.getCamera().getImageIntrinsics());
+                onBarcodeScannerStart();
             }
 
             return newFrame;

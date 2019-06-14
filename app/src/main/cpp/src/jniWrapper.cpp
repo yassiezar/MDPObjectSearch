@@ -63,16 +63,26 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobj
 JNIEXPORT void JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject data)
 {
-    jbyte* rawBytes = (jbyte*)env->GetDirectBufferAddress(data);
+    __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processing image");
+    jboolean isCopy;
+    void* rawBytes = env->GetDirectBufferAddress(data);
+/*    jbyte* rawBytes = env->GetByteArrayElements(data, &isCopy);
+    jsize numBytes = env->GetArrayLength(data);*/
+
     if(rawBytes == NULL)
     {
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Could not lock on ByteBuffer");
         return;
     }
     // jint* imageData = env->GetIntArrayElements(data, &isCopy);
-    markerDetector->processImage((unsigned char*)rawBytes);
+    unsigned char* imageData = reinterpret_cast<unsigned char*>(rawBytes);
+    markerDetector->processImage(imageData);
 
-    // env->ReleaseIntArrayElements(data, imageData, JNI_ABORT);
+    // free(imageData);
+    // free(rawBytes);
+
+//    env->ReleaseByteArrayElements(data, rawBytes, JNI_ABORT);
+    __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processed image");
 }
 
 #ifdef __cplusplus

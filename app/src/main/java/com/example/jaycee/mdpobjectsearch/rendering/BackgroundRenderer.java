@@ -107,10 +107,6 @@ public class BackgroundRenderer
         quadTexCoordParam = GLES20.glGetAttribLocation(quadProgram, "a_TexCoord");
 
         ShaderUtils.checkGLError(TAG, "Program parameters.");
-
-        /* TODO: Make size automatic */
-        // currentFrameBuffer = IntBuffer.allocate(480*480);
-        // currentFrameBuffer = ByteBuffer.allocateDirect(scannerWidth*scannerHeight*INT_SIZE);
     }
 
     public void draw(Frame frame)
@@ -145,12 +141,12 @@ public class BackgroundRenderer
 
         ShaderUtils.checkGLError(TAG, "Draw");
 
-        /* TODO: Make size automatic */
         boolean lockAcquired = scanner.getLock().tryLock();
-        if(lockAcquired)
+        if(lockAcquired && !scanner.getLock().hasQueuedThreads())
         {
             try
             {
+                Log.v(TAG, "Saving camera image to buffer");
                 GLES20.glReadPixels(scannerX, scannerY, scannerWidth, scannerHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, scanner.getBuffer());
                 scanner.setProcessed(false);
             }

@@ -6,7 +6,7 @@
 
 #include <android/log.h>
 
-#define MAX_IDS 16
+#define MAX_IDS 1
 #define MARKERLOG "MarkerDetector"
 
 namespace MarkerDetector
