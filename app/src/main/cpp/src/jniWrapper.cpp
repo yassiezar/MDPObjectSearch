@@ -61,7 +61,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobj
 }
 
 JNIEXPORT void JNICALL
-Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject data)
+Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject bitmap, jobject data)
 {
     __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processing image");
 //    jboolean isCopy;
@@ -80,6 +80,39 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
 
     // free(imageData);
     // free(rawBytes);
+
+    void* bitmapData = reinterpret_cast<void*>(imageData);
+    AndroidBitmapInfo info = {0};
+    int r = AndroidBitmap_getInfo(env, bitmap, &info);
+    if (r != 0)
+    {
+        // … "AndroidBitmap_getInfo() failed ! error=%d", r
+        return;
+    }
+    int width = info.width;
+    int height = info.height;
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888 && info.format != ANDROID_BITMAP_FORMAT_A_8)
+    {
+        // "Bitmap format is not RGBA_8888 or A_8"
+        return;
+    }
+    int bytesPerPixel = info.format == ANDROID_BITMAP_FORMAT_RGBA_8888 ? 4 : 1;
+    void* pixels = NULL;
+    r = AndroidBitmap_lockPixels(env, bitmap, &pixels);
+    if (r != 0)
+    {
+        // ..."AndroidBitmap_lockPixels() failed ! error=%d", r
+        return;
+    }
+    if (525 == width && 525 == height && bytesPerPixel == 4)
+    {
+        memcpy(pixels, imageData, width * height * bytesPerPixel);
+/*    } else if (bytesPerPixel == 4 && bpp == 1) {
+        grayscaleToRGBA(pixels, &info, data, w, h);
+    } else {
+     *   assertion(bytesPerPixel == 4 && bpp == 1, "only grayscale -> RGBA is supported bytesPerPixel=%d bpp=%d", bytesPerPixel, bpp);*/
+    }
+    AndroidBitmap_unlockPixels(env, bitmap);
 
 //    env->ReleaseByteArrayElements(data, rawBytes, JNI_ABORT);
     __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processed image");

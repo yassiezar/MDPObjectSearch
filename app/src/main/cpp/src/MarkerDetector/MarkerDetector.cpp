@@ -11,6 +11,7 @@ namespace MarkerDetector
     {
         image = new CRawImage(imageWidth, imageHeight);
         image->ownData = false;
+        image->bpp = 4;
 
         float zeroErr[2] = {0.F, 0.F};
         trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
@@ -20,6 +21,7 @@ namespace MarkerDetector
         for(int i = 0; i < MAX_IDS; i ++)
         {
             patternDetectors[i] = new CCircleDetect(imageWidth, imageHeight, i);
+            patternDetectors[i]->draw = true;
         }
 
         __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Initialised detectors.");
