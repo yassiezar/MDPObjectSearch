@@ -13,7 +13,7 @@ extern "C" {
 
 JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initSound(JNIEnv*, jobject);
 JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killSound(JNIEnv*, jobject);
-JNIEXPORT void JNICALL_Java_com_example_jaycee_mdpobjectsearch_JNIBridge_playSound(JNIEnv*, jobject, jfloatArray, jfloatArray, jfloat, jfloat);
+JNIEXPORT void JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_playSound(JNIEnv*, jobject, jfloatArray, jfloatArray, jfloat, jfloat);
 
 JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobject obj, jint width, jint height, jfloatArray _focalLength, jfloatArray _principlePoint, jfloatArray _distorionMatrix);
 JNIEXPORT bool JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv*, jobject);
