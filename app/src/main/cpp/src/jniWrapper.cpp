@@ -64,7 +64,7 @@ JNIEXPORT void JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject data)
 {
     __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processing image");
-    jboolean isCopy;
+//    jboolean isCopy;
     void* rawBytes = env->GetDirectBufferAddress(data);
 /*    jbyte* rawBytes = env->GetByteArrayElements(data, &isCopy);
     jsize numBytes = env->GetArrayLength(data);*/
@@ -83,6 +83,47 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
 
 //    env->ReleaseByteArrayElements(data, rawBytes, JNI_ABORT);
     __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processed image");
+}
+
+JNIEXPORT bool JNICALL
+Java_com_example_jaycee_mdpobjectsearch_JNIBridge_getBitmap(JNIEnv* env, jobject obj, jobject bitmap, jobject data, int _width, int _height, int bpp)
+{
+    void* rawBytes = env->GetDirectBufferAddress(data);
+
+    AndroidBitmapInfo info = {0};
+    int r = AndroidBitmap_getInfo(env, bitmap, &info);
+    if (r != 0)
+    {
+        // … "AndroidBitmap_getInfo() failed ! error=%d", r
+        return false;
+    }
+    int width = info.width;
+    int height = info.height;
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888 && info.format != ANDROID_BITMAP_FORMAT_A_8)
+    {
+        // "Bitmap format is not RGBA_8888 or A_8"
+        return false;
+    }
+    int bytesPerPixel = info.format == ANDROID_BITMAP_FORMAT_RGBA_8888 ? 4 : 1;
+    void* pixels = NULL;
+    r = AndroidBitmap_lockPixels(env, bitmap, &pixels);
+    if (r != 0)
+    {
+        // ..."AndroidBitmap_lockPixels() failed ! error=%d", r
+        return false;
+    }
+    if (_width == width && _height == height && bytesPerPixel == bpp)
+    {
+        memcpy(pixels, rawBytes, width * height * bytesPerPixel);
+/*    } else if (bytesPerPixel == 4 && bpp == 1) {
+        grayscaleToRGBA(pixels, &info, data, w, h);
+    } else {
+     *   assertion(bytesPerPixel == 4 && bpp == 1, "only grayscale -> RGBA is supported bytesPerPixel=%d bpp=%d", bytesPerPixel, bpp);*/
+    }
+    AndroidBitmap_unlockPixels(env, bitmap);
+//    env->ReleaseByteArrayElements(data, rawBytes, 0);
+
+    return 0;
 }
 
 #ifdef __cplusplus

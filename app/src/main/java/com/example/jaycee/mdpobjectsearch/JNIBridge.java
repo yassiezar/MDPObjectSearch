@@ -1,5 +1,7 @@
 package com.example.jaycee.mdpobjectsearch;
 
+import android.graphics.Bitmap;
+
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -17,4 +19,5 @@ public class JNIBridge
     public static native boolean initDetector(int width, int height, float[] focalLength, float[] principlePoint, float[] distorionMatrix);
     public static native boolean killDetector();
     public static native void processImage(ByteBuffer data);
+    public static native boolean getBitmap(Bitmap bitmap, ByteBuffer data, int width, int height, int bpp);
 }

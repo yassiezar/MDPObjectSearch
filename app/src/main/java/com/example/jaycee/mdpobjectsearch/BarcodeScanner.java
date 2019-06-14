@@ -50,13 +50,15 @@ public class BarcodeScanner implements Runnable
         {
             code = O_NOTHING;
 
-            rawBitmap.copyPixelsFromBuffer(renderer.getScanner().getBuffer().asIntBuffer());
             Log.v(TAG, "Requesting lock");
             renderer.getScanner().getLock().lock();
             try
             {
+                rawBitmap.copyPixelsFromBuffer(renderer.getScanner().getBuffer().asIntBuffer());
+                Bitmap test = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
+                JNIBridge.getBitmap(test, renderer.getScanner().getBuffer(), scannerWidth, scannerHeight, 4);
                 Log.v(TAG, "Got lock");
-                JNIBridge.processImage(renderer.getScanner().getBuffer());
+//                JNIBridge.processImage(renderer.getScanner().getBuffer());
                 renderer.getScanner().setProcessed(true);
             }
             finally
