@@ -32,7 +32,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_playSound(JNIEnv* env, jobject
 }
 
 JNIEXPORT bool JNICALL
-Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobject obj, jint width, jint height, jfloatArray _focalLength, jfloatArray _principlePoint, jfloatArray _distorionMatrix)
+Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobject obj, jint width, jint height, jfloatArray _focalLength, jfloatArray _principlePoint, jfloatArray _distortionMatrix)
 {
     markerDetector = new MarkerDetector::MarkerDetector(width, height);
 
@@ -40,13 +40,13 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobj
 
     float* focalLength = env->GetFloatArrayElements(_focalLength, &isCopy);
     float* principlePoint = env->GetFloatArrayElements(_principlePoint, &isCopy);
-    float* distortionMatrix = env->GetFloatArrayElements(_distorionMatrix, &isCopy);
+    float* distortionMatrix = env->GetFloatArrayElements(_distortionMatrix, &isCopy);
 
     bool success = markerDetector->init(focalLength, principlePoint, distortionMatrix);
 
     env->ReleaseFloatArrayElements(_focalLength, focalLength, isCopy);
     env->ReleaseFloatArrayElements(_principlePoint, principlePoint, isCopy);
-    env->ReleaseFloatArrayElements(_distorionMatrix, distortionMatrix, isCopy);
+    env->ReleaseFloatArrayElements(_distortionMatrix, distortionMatrix, isCopy);
 
     return success;
 }
