@@ -53,10 +53,10 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         this.renderListener = (RenderListener)context;
         this.barcodeListener = (BarcodeListener)context;
 
-        this.scannerWidth = 525;
-        this.scannerHeight = 525;
-        this.scannerX = 450;
-        this.scannerY = 1017;
+        this.scannerWidth = 1440;//525;
+        this.scannerHeight = 2280;//525;
+        this.scannerX = 0;//450;
+        this.scannerY = 0;//1017;
 
         init();
     }

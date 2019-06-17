@@ -56,7 +56,7 @@ public class BarcodeScanner implements Runnable
             renderer.getScanner().getLock().lock();
             try
             {
-//                rawBitmap.copyPixelsFromBuffer(renderer.getScanner().getBuffer().asIntBuffer());
+                // test.copyPixelsFromBuffer(renderer.getScanner().getBuffer().asIntBuffer());
 //                JNIBridge.getBitmap(test, renderer.getScanner().getBuffer(), scannerWidth, scannerHeight, 4);
                 Log.v(TAG, "Got lock");
                 JNIBridge.processImage(test, renderer.getScanner().getBuffer());

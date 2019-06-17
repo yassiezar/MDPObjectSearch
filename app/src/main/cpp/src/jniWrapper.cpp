@@ -104,7 +104,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
         // ..."AndroidBitmap_lockPixels() failed ! error=%d", r
         return;
     }
-    if (525 == width && 525 == height && bytesPerPixel == 4)
+    if (1440 == width && 2280 == height && bytesPerPixel == 4)
     {
         memcpy(pixels, imageData, width * height * bytesPerPixel);
 /*    } else if (bytesPerPixel == 4 && bpp == 1) {
