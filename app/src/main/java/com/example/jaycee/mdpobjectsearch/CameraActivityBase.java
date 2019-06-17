@@ -2,8 +2,11 @@ package com.example.jaycee.mdpobjectsearch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +33,12 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import static com.google.ar.core.ImageMetadata.LENS_RADIAL_DISTORTION;
 
 public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeListener, RenderListener
@@ -54,6 +63,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
     private long currentTimestamp, startTimestamp;
     protected long frameTimestamp;
+    private long barcodePreviewCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -296,6 +306,30 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         {
             barcodeScanner.stop();
             barcodeScanner = null;
+        }
+    }
+
+    @Override
+    public void onPreviewRequest()
+    {
+        try
+        {
+            String path = Environment.getExternalStorageDirectory().toString();
+            OutputStream fOut = null;
+            File file = new File(path, "whyconpreview"+barcodePreviewCounter+".jpg"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+            barcodePreviewCounter++;
+            fOut = new FileOutputStream(file);
+
+            Bitmap pictureBitmap = barcodeScanner.getBarcodeDetectionPreview(); // obtaining the Bitmap
+            pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
+
+            MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
+        }
+        catch(IOException e)
+        {
+            Log.e(TAG, "IO Error: " + e);
         }
     }
 

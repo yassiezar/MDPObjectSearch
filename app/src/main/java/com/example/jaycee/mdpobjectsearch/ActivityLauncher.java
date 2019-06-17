@@ -40,9 +40,9 @@ public class ActivityLauncher extends AppCompatActivity
         findViewById(R.id.button_guided).setOnClickListener(view ->
         {
             activityToLaunch = ACTIVITY_GUIDED;
-            if(!PermissionHelper.hasCameraPermission(ActivityLauncher.this))
+            if(!PermissionHelper.hasPermissions(ActivityLauncher.this))
             {
-                PermissionHelper.requestCameraPermission(ActivityLauncher.this);
+                PermissionHelper.requestPermissions(ActivityLauncher.this);
                 return;
             }
             Intent intent = new Intent(ActivityLauncher.this, ActivityGuided.class);
@@ -52,9 +52,9 @@ public class ActivityLauncher extends AppCompatActivity
         findViewById(R.id.button_unguided).setOnClickListener(view ->
         {
             activityToLaunch = ACTIVITY_UNGUIDED;
-            if(!PermissionHelper.hasCameraPermission(ActivityLauncher.this))
+            if(!PermissionHelper.hasPermissions(ActivityLauncher.this))
             {
-                PermissionHelper.requestCameraPermission(ActivityLauncher.this);
+                PermissionHelper.requestPermissions(ActivityLauncher.this);
                 return;
             }
             Intent intent = new Intent(ActivityLauncher.this, ActivityUnguided.class);
@@ -74,7 +74,7 @@ public class ActivityLauncher extends AppCompatActivity
             }
             else
             {
-                PermissionHelper.requestCameraPermission(this);
+                PermissionHelper.requestPermissions(this);
             }
         }
     }

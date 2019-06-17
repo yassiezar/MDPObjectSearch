@@ -20,7 +20,7 @@ public class BarcodeScanner implements Runnable
     private static final int O_NOTHING = 0;
 
     // private Handler handler = new Handler();
-    // Bitmap rawBitmap;
+    Bitmap test;
 
     private SurfaceRenderer renderer;
 
@@ -32,6 +32,8 @@ public class BarcodeScanner implements Runnable
     public BarcodeScanner(int scannerWidth, int scannerHeight, SurfaceRenderer renderer, float[] focalLength, float[] principlePoint, float[] distortionMatrix)
     {
         this.renderer = renderer;
+
+        this.test = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
 
         // this.detector = new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.QR_CODE).build();
 //        this.rawBitmap = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
@@ -55,7 +57,6 @@ public class BarcodeScanner implements Runnable
             try
             {
 //                rawBitmap.copyPixelsFromBuffer(renderer.getScanner().getBuffer().asIntBuffer());
-                Bitmap test = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
 //                JNIBridge.getBitmap(test, renderer.getScanner().getBuffer(), scannerWidth, scannerHeight, 4);
                 Log.v(TAG, "Got lock");
                 JNIBridge.processImage(test, renderer.getScanner().getBuffer());
@@ -117,4 +118,9 @@ public class BarcodeScanner implements Runnable
     }
 
     public int getCode() { return this.code; }
+
+    public Bitmap getBarcodeDetectionPreview()
+    {
+        return this.test;
+    }
 }
