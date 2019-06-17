@@ -48,7 +48,6 @@ namespace MarkerDetector
     {
         // Copy in new image data
         image->data = data;
-        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here");
 
         // Track markers found in previous search
         for(int i = 0; i < MAX_IDS; i ++)
@@ -69,20 +68,20 @@ namespace MarkerDetector
                 lastSegmentArray[i].valid = false;
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
                 __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Valid: %d", currentSegmentArray[i].valid);
             }
             if(!currentSegmentArray[i].valid) break;
         }
 
+        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here");
         // Perform coordinate transformation
-/*        for(int i = 0; i < MAX_IDS; i++)
+        for(int i = 0; i < MAX_IDS; i++)
         {
             if(currentSegmentArray[i].valid)
             {
-                if(currentSegmentArray[i].valid)
-                {
-                    objectArray[i] = trans->transform(currentSegmentArray[i], false);
-                }
+                //objectArray[i] = trans->transform(currentSegmentArray[i], false);
+                // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
             }
-        }*/
+        }
     }
 }
