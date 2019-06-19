@@ -20,6 +20,8 @@ namespace MarkerDetector
         bool kill();
 
         void processImage(unsigned char* data);
+        const int getImageWidth() { return imageWidth; }
+        const int getImageHeight() { return imageHeight; }
 
     private:
         CCircleDetect* patternDetectors[MAX_IDS];
