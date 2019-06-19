@@ -15,7 +15,7 @@ public class BarcodeScanner implements Runnable
 
     private SurfaceRenderer renderer;
 
-    private boolean stop = false;
+    private boolean running = false;
 
     private int code = O_NOTHING;
 
@@ -31,30 +31,26 @@ public class BarcodeScanner implements Runnable
     @Override
     public void run()
     {
+        running = true;
         Log.v(TAG, "Running scanner");
-        if(!stop)
-        {
-            code = O_NOTHING;
+        code = O_NOTHING;
 
-            Log.v(TAG, "Requesting lock");
-            renderer.getScanner().getLock().lock();
-            try
-            {
-                Log.v(TAG, "Got lock");
-                JNIBridge.processImage(test, renderer.getScanner().getBuffer());
-                renderer.getScanner().setProcessed(true);
-            }
-            finally
-            {
-                renderer.getScanner().getLock().unlock();
-            }
+        Log.v(TAG, "Requesting lock");
+        renderer.getScanner().getLock().lock();
+        try
+        {
+            Log.v(TAG, "Got lock");
+            JNIBridge.processImage(test, renderer.getScanner().getBuffer());
         }
+        finally
+        {
+            renderer.getScanner().getLock().unlock();
+        }
+        running = false;
     }
 
     public void stop()
     {
-        this.stop = true;
-
         renderer.getScanner().getLock().lock();
         try
         {
@@ -67,6 +63,7 @@ public class BarcodeScanner implements Runnable
     }
 
     public int getCode() { return this.code; }
+    public boolean isRunning() { return running; }
 
     public Bitmap getBarcodeDetectionPreview()
     {

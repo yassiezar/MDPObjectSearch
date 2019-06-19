@@ -2,9 +2,12 @@ package com.example.jaycee.mdpobjectsearch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
@@ -45,6 +48,9 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private DrawerLayout drawerLayout;
     private Toast toast;
 
+    private HandlerThread scannerHandlerThread;
+    private Handler scannerHandler;
+
     private Vibrator vibrator;
 
     private Session session;
@@ -66,6 +72,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Intent intent = getIntent();
         highQualityScanner = intent.getBooleanExtra("ADD_NOISE", false);
@@ -212,13 +219,15 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         {
             Log.e(TAG, "OpenAL init error");
         }
+
+        scannerHandlerThread = new HandlerThread("BarcodeScanner thread");
+        scannerHandlerThread.start();
+        scannerHandler = new Handler(scannerHandlerThread.getLooper());
     }
 
     @Override
     protected void onPause()
     {
-//        onBarcodeScannerStop();
-
         if(vibrator != null)
         {
             vibrator.cancel();
@@ -242,6 +251,22 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             barcodeScanner = null;
         }
 
+        if(scannerHandler != null)
+        {
+            scannerHandlerThread.quitSafely();
+            try
+            {
+                Log.v(TAG, "Stopping scanner thread");
+                scannerHandlerThread.join();
+                scannerHandlerThread = null;
+                scannerHandler = null;
+            }
+            catch (InterruptedException e)
+            {
+                Log.e(TAG, "Error closing scanner thread: " + e);
+            }
+        }
+
         super.onPause();
     }
 
@@ -260,7 +285,10 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     @Override
     public Objects.Observation onBarcodeCodeRequest()
     {
-        barcodeScanner.run();
+        if(scannerHandler != null && !barcodeScanner.isRunning())
+        {
+            scannerHandler.post(barcodeScanner);
+        }
 
         Objects.Observation scannedObject = Objects.Observation.O_NOTHING;
         if(barcodeScanner != null)
@@ -293,8 +321,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         float[] distortionMatrix = new float[] {1.f, 0.00486219f, -0.44772422f, -0.01138138f, 0.0291972f, 0.70109351f};
 
         Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(intrinsics.getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
-        barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
-        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
+        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
+        barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
     }
 
     @Override

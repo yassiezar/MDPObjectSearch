@@ -148,7 +148,6 @@ public class BackgroundRenderer
             {
                 Log.v(TAG, "Saving camera image to buffer");
                 GLES20.glReadPixels(scannerX, scannerY, scannerWidth, scannerHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, scanner.getBuffer());
-                scanner.setProcessed(false);
             }
             finally
             {

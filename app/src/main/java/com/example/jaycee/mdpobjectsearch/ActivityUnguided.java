@@ -68,7 +68,7 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
     public void onScreenTap()
     {
         Objects.Observation observation = onBarcodeCodeRequest();
-        onPreviewRequest();
+        // onPreviewRequest();
 
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
 
