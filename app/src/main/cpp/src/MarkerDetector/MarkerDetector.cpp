@@ -4,8 +4,7 @@ namespace MarkerDetector
 {
     MarkerDetector::MarkerDetector(int imageWidth, int imageHeight) :
             imageWidth(imageWidth), imageHeight(imageHeight)
-    {
-    }
+    { }
 
     bool MarkerDetector::init(float *focalLen, float *principalPoint, float *distortionMatrix)
     {
@@ -28,6 +27,11 @@ namespace MarkerDetector
         __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Initialised detectors.");
 
         return 0;
+    }
+
+    MarkerDetector::~MarkerDetector()
+    {
+        kill();
     }
 
     bool MarkerDetector::kill()

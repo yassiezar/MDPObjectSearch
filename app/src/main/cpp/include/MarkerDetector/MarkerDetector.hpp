@@ -15,6 +15,7 @@ namespace MarkerDetector
     {
     public:
         MarkerDetector(int, int);
+        ~MarkerDetector();
 
         bool init(float *focalLen, float *principalPoint, float *distortionMatrix);
         bool kill();
