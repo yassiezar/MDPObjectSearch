@@ -14,9 +14,10 @@ namespace MarkerDetector
         image->bpp = 4;
 
         float zeroErr[2] = {0.F, 0.F};
+        float zeroDistErr[6] = {0.F, 0.F, 0.F, 0.F, 0.F, 0.F};
         trans = new CTransformation(imageWidth, imageHeight, circleDiameter, true);
         trans->transformType = TRANSFORM_NONE;
-        trans->setCameraParams(focalLen, principalPoint, distortionMatrix, zeroErr, zeroErr);
+        trans->setCameraParams(focalLen, principalPoint, distortionMatrix, zeroErr, zeroDistErr);
 
         for(int i = 0; i < MAX_IDS; i ++)
         {
@@ -73,14 +74,13 @@ namespace MarkerDetector
             if(!currentSegmentArray[i].valid) break;
         }
 
-        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here");
         // Perform coordinate transformation
         for(int i = 0; i < MAX_IDS; i++)
         {
             if(currentSegmentArray[i].valid)
             {
-                //objectArray[i] = trans->transform(currentSegmentArray[i], false);
-                // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
+                objectArray[i] = trans->transform(currentSegmentArray[i], false);
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
             }
         }
     }

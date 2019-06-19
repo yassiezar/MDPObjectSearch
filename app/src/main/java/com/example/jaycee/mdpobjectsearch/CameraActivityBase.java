@@ -38,6 +38,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.google.ar.core.ImageMetadata.LENS_RADIAL_DISTORTION;
 
@@ -296,8 +298,9 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         // TODO: Replace distortion matrix with real one
         float[] distortionMatrix = new float[] {1.f, 0.00486219f, -0.44772422f, -0.01138138f, 0.0291972f, 0.70109351f};
 
+        Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(intrinsics.getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
         barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
-        // barcodeScanner = new BarcodeScanner(525, 525, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
+        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
     }
 
     @Override

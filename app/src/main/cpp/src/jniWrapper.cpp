@@ -63,7 +63,6 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobj
 JNIEXPORT void JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject bitmap, jobject data)
 {
-    __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processing image");
 //    jboolean isCopy;
     void* rawBytes = env->GetDirectBufferAddress(data);
 /*    jbyte* rawBytes = env->GetByteArrayElements(data, &isCopy);
@@ -115,7 +114,6 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     AndroidBitmap_unlockPixels(env, bitmap);
 
 //    env->ReleaseByteArrayElements(data, rawBytes, JNI_ABORT);
-    __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Processed image");
 }
 
 JNIEXPORT bool JNICALL
