@@ -35,6 +35,6 @@ namespace MarkerDetector
 
         int imageWidth, imageHeight;
 
-        const float circleDiameter = 0.122f;                 // Adjust the outer marker width [m]
+        const float circleDiameter = 0.115f;                 // Adjust the outer marker width [m]
     };
 }

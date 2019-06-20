@@ -59,6 +59,7 @@ namespace MarkerDetector
         {
             if(currentSegmentArray[i].valid)
             {
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Updating tracked markers");
                 lastSegmentArray[i] = currentSegmentArray[i];
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
                 // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "previous track: Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
@@ -70,6 +71,7 @@ namespace MarkerDetector
         {
             if(!currentSegmentArray[i].valid)
             {
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Searching for untracked markers");
                 lastSegmentArray[i].valid = false;
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
                 // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
@@ -83,7 +85,8 @@ namespace MarkerDetector
         {
             if(currentSegmentArray[i].valid)
             {
-                objectArray[i] = trans->transform(currentSegmentArray[i], false);
+                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Transforming tracked markers");
+                objectArray[i] = trans->transform(currentSegmentArray[i], true);
                 __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
             }
         }

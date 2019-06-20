@@ -59,7 +59,6 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
     public void surfaceDestroyed(SurfaceHolder surfaceHolder)
     {
         super.surfaceDestroyed(surfaceHolder);
-        barcodeListener.onBarcodeScannerStop();
     }
 
     @Override

@@ -245,12 +245,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             Log.e(TAG, "OpenAL exit error");
         }
 
-        if(barcodeScanner != null)
-        {
-            barcodeScanner.stop();
-            barcodeScanner = null;
-        }
-
         if(scannerHandler != null)
         {
             scannerHandlerThread.quitSafely();
@@ -265,6 +259,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             {
                 Log.e(TAG, "Error closing scanner thread: " + e);
             }
+        }
+
+        if(barcodeScanner != null)
+        {
+            barcodeScanner.stop();
+            barcodeScanner = null;
         }
 
         super.onPause();
@@ -321,18 +321,18 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         float[] distortionMatrix = new float[] {1.f, 0.00486219f, -0.44772422f, -0.01138138f, 0.0291972f, 0.70109351f};
 
         Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(intrinsics.getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
-        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
-        barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
+        barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
+        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
     }
 
     @Override
     public void onBarcodeScannerStop()
     {
-        if(barcodeScanner != null)
+/*        if(barcodeScanner != null)
         {
             barcodeScanner.stop();
             barcodeScanner = null;
-        }
+        }*/
     }
 
     @Override
