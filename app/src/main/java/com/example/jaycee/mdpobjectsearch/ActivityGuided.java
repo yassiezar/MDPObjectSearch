@@ -1,5 +1,7 @@
 package com.example.jaycee.mdpobjectsearch;
 
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
@@ -13,20 +15,43 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     private SoundGenerator soundGenerator;
     private GuidanceManager guidanceManager;
 
+    private HandlerThread soundHandlerThread;
+    private Handler soundHandler;
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        soundHandlerThread = new HandlerThread("SoundGenerator thread");
+        soundHandlerThread.start();
+        soundHandler = new Handler(soundHandlerThread.getLooper());
+    }
+
     @Override
     protected void onPause()
     {
         onGuidanceEnd();
 
-        if(soundGenerator != null)
-        {
-            soundGenerator.stop();
-            soundGenerator = null;
-        }
-
         if(!JNIBridge.killSound())
         {
             Log.e(TAG, "OpenAL kill error");
+        }
+
+        if(soundHandler != null)
+        {
+            soundHandlerThread.quitSafely();
+            try
+            {
+                Log.v(TAG, "Stopping scanner thread");
+                soundHandlerThread.join();
+                soundHandlerThread = null;
+                soundHandler = null;
+            }
+            catch (InterruptedException e)
+            {
+                Log.e(TAG, "Error closing scanner thread: " + e);
+            }
         }
 
         super.onPause();
@@ -59,7 +84,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
 
         soundGenerator = new SoundGenerator(this);
         soundGenerator.setTarget(target);
-        soundGenerator.run();
+        soundHandler.postDelayed(soundGenerator, 40);
 
         setDrawWaypoint(true);
     }

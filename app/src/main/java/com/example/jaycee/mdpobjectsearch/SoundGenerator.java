@@ -17,10 +17,6 @@ public class SoundGenerator implements Runnable
     private Objects.Observation prevCameraObservation = Objects.Observation.O_NOTHING;
     private Objects.Observation target = Objects.Observation.O_NOTHING;
 
-    private Handler handler = new Handler();
-
-    private boolean stop = false;
-
     private BarcodeListener barcodeListener;
     private GuidanceInterface guidanceInterface;
 
@@ -28,13 +24,6 @@ public class SoundGenerator implements Runnable
     {
         this.barcodeListener = (BarcodeListener)context;
         this.guidanceInterface = (GuidanceInterface)context;
-    }
-
-    void stop()
-    {
-        this.stop = true;
-        handler.removeCallbacks(this);
-        handler = null;
     }
 
     @Override
@@ -50,65 +39,60 @@ public class SoundGenerator implements Runnable
             return;
         }
 
-        if(!stop)
+        guidanceInterface.onGuidanceLoop();
+
+        if(guidanceInterface.onWaypointReached() || (observation != prevCameraObservation && observation != Objects.Observation.O_NOTHING))
         {
-            guidanceInterface.onGuidanceLoop();
-
-            if(guidanceInterface.onWaypointReached() || (observation != prevCameraObservation && observation != Objects.Observation.O_NOTHING))
-            {
-                prevCameraObservation = observation;
-                guidanceInterface.onGuidanceRequested(observation);
-                Log.i(TAG, "Setting new waypoint");
-            }
-
-            float pitch;
-            // From config file; HI setting
-            int pitchHighLim = 12;
-            int pitchLowLim = 6;
-
-            // Compensate for the Tango's default position being 90deg upright
-            float[] deviceOrientation = guidanceInterface.onCameraVectorRequested();
-            float deviceTilt = deviceOrientation[1];
-            Pose waypointPose = guidanceInterface.onWaypointPoseRequested();
-            ClassHelpers.mVector waypointVector = new ClassHelpers.mVector(waypointPose.getTranslation());
-            float waypointTilt = waypointVector.getEuler()[1];
-
-            float tilt = waypointTilt - deviceTilt;
-
-            if(tilt >= Math.PI / 2)
-            {
-                pitch = (float)(Math.pow(2, 64));
-            }
-
-            else if(tilt <= -Math.PI / 2)
-            {
-                pitch = (float)(Math.pow(2, pitchHighLim));
-            }
-
-            else
-            {
-                double gradientAngle = Math.toDegrees(Math.atan((pitchHighLim - pitchLowLim) / Math.PI));
-
-                float grad = (float)(Math.tan(Math.toRadians(gradientAngle)));
-                float intercept = (float)(pitchHighLim - Math.PI / 2 * grad);
-
-                pitch = (float)(Math.pow(2, grad * -tilt + intercept));
-            }
-
-            float gain;
-            if(Math.abs(tilt) > 0.175)      // 0.175rad = ~10deg
-            {
-                gain = 1.f;
-            }
-            else
-            {
-                gain = (float)(0.5/0.175*Math.abs(tilt) + 0.5);
-            }
-
-            JNIBridge.playSound(waypointPose.getTranslation(), deviceOrientation, gain, pitch);
-
-            if(!stop) handler.postDelayed(this, 40);
+            prevCameraObservation = observation;
+            guidanceInterface.onGuidanceRequested(observation);
+            Log.i(TAG, "Setting new waypoint");
         }
+
+        float pitch;
+        // From config file; HI setting
+        int pitchHighLim = 12;
+        int pitchLowLim = 6;
+
+        // Compensate for the Tango's default position being 90deg upright
+        float[] deviceOrientation = guidanceInterface.onCameraVectorRequested();
+        float deviceTilt = deviceOrientation[1];
+        Pose waypointPose = guidanceInterface.onWaypointPoseRequested();
+        ClassHelpers.mVector waypointVector = new ClassHelpers.mVector(waypointPose.getTranslation());
+        float waypointTilt = waypointVector.getEuler()[1];
+
+        float tilt = waypointTilt - deviceTilt;
+
+        if(tilt >= Math.PI / 2)
+        {
+            pitch = (float)(Math.pow(2, 64));
+        }
+
+        else if(tilt <= -Math.PI / 2)
+        {
+            pitch = (float)(Math.pow(2, pitchHighLim));
+        }
+
+        else
+        {
+            double gradientAngle = Math.toDegrees(Math.atan((pitchHighLim - pitchLowLim) / Math.PI));
+
+            float grad = (float)(Math.tan(Math.toRadians(gradientAngle)));
+            float intercept = (float)(pitchHighLim - Math.PI / 2 * grad);
+
+            pitch = (float)(Math.pow(2, grad * -tilt + intercept));
+        }
+
+        float gain;
+        if(Math.abs(tilt) > 0.175)      // 0.175rad = ~10deg
+        {
+            gain = 1.f;
+        }
+        else
+        {
+            gain = (float)(0.5/0.175*Math.abs(tilt) + 0.5);
+        }
+
+        JNIBridge.playSound(waypointPose.getTranslation(), deviceOrientation, gain, pitch);
     }
 
     public void setTarget(Objects.Observation target)
