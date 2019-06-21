@@ -5,12 +5,8 @@ import com.google.ar.core.Pose;
 
 public interface GuidanceInterface
 {
-    void onGuidanceStart(Objects.Observation target);
-    void onGuidanceEnd();
-    void onGuidanceRequested(Objects.Observation observation);
-    void onGuidanceLoop();
-    boolean onWaypointReached();
-    Pose onDrawWaypoint();
+    void onTargetFound();
+    Pose onDevicePoseRequested();
     Pose onWaypointPoseRequested();
-    float[] onCameraVectorRequested();
+    Objects.Observation onObservationRequest();
 }

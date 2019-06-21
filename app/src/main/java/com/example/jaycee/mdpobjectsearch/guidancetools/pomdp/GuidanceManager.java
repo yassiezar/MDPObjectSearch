@@ -2,19 +2,26 @@ package com.example.jaycee.mdpobjectsearch.guidancetools.pomdp;
 
 import android.content.Context;
 
+import com.example.jaycee.mdpobjectsearch.CameraActivityBase;
 import com.example.jaycee.mdpobjectsearch.Objects;
+import com.example.jaycee.mdpobjectsearch.SoundGenerator;
+import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
 import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 
+import java.io.Serializable;
+
 import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.HORIZON_DISTANCE;
 import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.S_STEPS;
 
-public class GuidanceManager
+public class GuidanceManager implements Runnable
 {
     private static final String TAG = GuidanceManager.class.getSimpleName();
 
     private Waypoint waypoint;
+    private Session session;
+
     private State state;
     private Belief belief;
     private Policy policy;
@@ -22,17 +29,26 @@ public class GuidanceManager
 
     private Pose devicePose;
 
-    private int id = -1;
+    private GuidanceInterface guidanceInterface;
+
+    private SoundGenerator soundGenerator;
+
+    private Objects.Observation observation = Objects.Observation.O_NOTHING;
 
     public GuidanceManager(Session session, Pose pose, Context context, Objects.Observation target)
     {
+        this.guidanceInterface = (GuidanceInterface)context;
+
         this.waypoint = new Waypoint(session, pose);
+        this.session = session;
 
         this.state = new State();
         this.policy = new Policy(context);
         this.model = new Model(context);
         this.belief = new Belief(model);
         this.policy.setTarget(target);
+
+        this.soundGenerator = new SoundGenerator();
     }
 
     public void end()
@@ -43,11 +59,6 @@ public class GuidanceManager
         policy = null;
         belief = null;
         model = null;
-    }
-
-    public void updateDevicePose(Pose pose)
-    {
-        devicePose = pose;
     }
 
     public boolean waypointReached()
@@ -63,16 +74,16 @@ public class GuidanceManager
         return Math.abs(Math.sin(cameraTilt) - y) < 0.1 && Math.abs(Math.cos(-cameraPan+Math.PI/2) + x) < 0.1;
     }
 
-    public void provideGuidance(Session session, Objects.Observation observation)
+    public void provideGuidance(Objects.Observation observation)
     {
         Policy.ActionId actionId;
-        if(id == -1 || state.getEncodedState()[S_STEPS] > HORIZON_DISTANCE)
+        if(observation.getCode() == -1 || state.getEncodedState()[S_STEPS] > HORIZON_DISTANCE)
         {
             actionId = policy.getAction(belief.getBelief(), HORIZON_DISTANCE);
         }
         else
         {
-            actionId = policy.getAction(id, state);
+            actionId = policy.getAction(observation.getCode(), state);
         }
         int action = actionId.action;
         belief.updateBeliefState(action, observation.getCode());
@@ -93,4 +104,20 @@ public class GuidanceManager
     }
 
     public Pose getWaypointPose() { return waypoint.getWaypointPose(); }
+
+    @Override
+    public void run()
+    {
+        devicePose = guidanceInterface.onDevicePoseRequested();
+
+        Objects.Observation newObservation = guidanceInterface.onObservationRequest();
+
+        if(waypointReached() || (newObservation != observation && newObservation != Objects.Observation.O_NOTHING))
+        {
+            observation = newObservation;
+            provideGuidance(newObservation);
+        }
+
+        soundGenerator.playSound(waypoint.getWaypointPose(), getCameraVector());
+    }
 }

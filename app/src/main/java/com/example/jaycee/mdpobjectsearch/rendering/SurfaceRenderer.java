@@ -5,8 +5,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
-import com.example.jaycee.mdpobjectsearch.BarcodeListener;
-import com.example.jaycee.mdpobjectsearch.BarcodeScanner;
 import com.example.jaycee.mdpobjectsearch.RenderListener;
 import com.example.jaycee.mdpobjectsearch.ScannerWindow;
 import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
@@ -16,8 +14,6 @@ import com.google.ar.core.Pose;
 import com.google.ar.core.TrackingState;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -34,36 +30,25 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
 
     private GuidanceInterface guidanceInterface;
     private RenderListener renderListener;
-    private BarcodeListener barcodeListener;
 
-    private int width, height;
-
-    private int scannerWidth, scannerHeight;
-    private int scannerX, scannerY;
+     private ScannerWindow scanner;
 
     private final float[] anchorMatrix = new float[16];
 
     private boolean drawWaypoint = false;
-    private boolean viewportChanged = false;
 
     public SurfaceRenderer(Context context)
     {
         this.context = context;
 
         this.renderListener = (RenderListener)context;
-        this.barcodeListener = (BarcodeListener)context;
-
-        this.scannerWidth = 1440;//525;
-        this.scannerHeight = 2280;//525;
-        this.scannerX = 0;//450;
-        this.scannerY = 0;//1017;
 
         init();
     }
 
     public void init()
     {
-        backgroundRenderer = new BackgroundRenderer(scannerX, scannerY, scannerWidth, scannerHeight);
+        backgroundRenderer = new BackgroundRenderer();
         objectRenderer = new ObjectRenderer();
         waypointRenderer = new ObjectRenderer();
     }
@@ -93,9 +78,12 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
     public void onSurfaceChanged(GL10 gl10, int width, int height)
     {
         Log.i(TAG, "Surface changed");
-        viewportChanged = true;
-        this.width = width;
-        this.height = height;
+        renderListener.onViewportChange(width, height);
+        if(scanner == null)
+        {
+            this.scanner = new ScannerWindow(width, height);
+            backgroundRenderer.setScannerWindow(scanner);
+        }
         GLES20.glViewport(0, 0, width, height);
     }
 
@@ -103,12 +91,6 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
     public void onDrawFrame(GL10 gl10)
     {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-        if(viewportChanged)
-        {
-            renderListener.onViewportChange(width, height);
-            viewportChanged = false;
-        }
 
         renderListener.onDrawRequest(backgroundRenderer.getTextureId());
         try
@@ -137,7 +119,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
             {
                 if(drawWaypoint)
                 {
-                    Pose waypointPose = guidanceInterface.onDrawWaypoint();
+                    Pose waypointPose = guidanceInterface.onWaypointPoseRequested();
                     if(waypointPose != null)
                     {
                         // Draw the waypoints as an Andyman
@@ -160,7 +142,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
 
     public ScannerWindow getScanner()
     {
-        return backgroundRenderer.getScanner();
+        return scanner;
     }
 
     public void setDrawWaypoint(boolean drawWaypoint)

@@ -3,7 +3,6 @@ package com.example.jaycee.mdpobjectsearch;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -19,7 +18,6 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
     private static final String TAG = CameraSurface.class.getSimpleName();
 
     private SurfaceRenderer renderer;
-    private BarcodeListener barcodeListener;
 
     private ScreenReadRequest screenReadRequest;
 
@@ -28,8 +26,6 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
     public CameraSurface(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-
-        this.barcodeListener = (BarcodeListener)context;
 
         renderer = new SurfaceRenderer(context);
 

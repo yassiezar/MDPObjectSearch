@@ -60,7 +60,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobj
     return kill;
 }
 
-JNIEXPORT void JNICALL
+JNIEXPORT int JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject bitmap, jobject data)
 {
     void* rawBytes = env->GetDirectBufferAddress(data);
@@ -68,24 +68,24 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     if(rawBytes == NULL)
     {
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Could not lock on ByteBuffer");
-        return;
+        return -1;
     }
     unsigned char* imageData = reinterpret_cast<unsigned char*>(rawBytes);
-    markerDetector->processImage(imageData);
+    int code = markerDetector->processImage(imageData);
 
     AndroidBitmapInfo info = {0};
     int r = AndroidBitmap_getInfo(env, bitmap, &info);
     if (r != 0)
     {
         // "AndroidBitmap_getInfo() failed ! error=%d", r
-        return;
+        return -1;
     }
     int width = info.width;
     int height = info.height;
     if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888 && info.format != ANDROID_BITMAP_FORMAT_A_8)
     {
         // "Bitmap format is not RGBA_8888 or A_8"
-        return;
+        return -1;
     }
     int bytesPerPixel = info.format == ANDROID_BITMAP_FORMAT_RGBA_8888 ? 4 : 1;
     void* pixels = NULL;
@@ -93,7 +93,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     if (r != 0)
     {
         // "AndroidBitmap_lockPixels() failed ! error=%d", r
-        return;
+        return -1;
     }
     if (markerDetector->getImageWidth() == width && markerDetector->getImageHeight() == height && bytesPerPixel == 4)
     {
@@ -104,6 +104,8 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "only grayscale -> RGBA is supported bytesPerPixel=%d", bytesPerPixel);
     }
     AndroidBitmap_unlockPixels(env, bitmap);
+
+    return code;
 }
 
 #ifdef __cplusplus

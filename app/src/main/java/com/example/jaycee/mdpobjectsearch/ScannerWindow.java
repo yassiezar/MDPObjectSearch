@@ -26,4 +26,8 @@ public class ScannerWindow
     public ReentrantLock getLock() { return lock; }
 
     public ByteBuffer getBuffer() { return this.imageBuffer; }
+
+    public int getScannerWidth() { return width; }
+    public int getScannerHeight() { return height; }
+
 }

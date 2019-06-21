@@ -8,55 +8,23 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-public class SoundGenerator implements Runnable
+public class SoundGenerator
 {
     private static final String TAG = SoundGenerator.class.getSimpleName();
 
-    private static final int O_NOTHING = 0;
-
-    private Objects.Observation prevCameraObservation = Objects.Observation.O_NOTHING;
-    private Objects.Observation target = Objects.Observation.O_NOTHING;
-
-    private BarcodeListener barcodeListener;
-    private GuidanceInterface guidanceInterface;
-
-    SoundGenerator(Context context)
+    public SoundGenerator()
     {
-        this.barcodeListener = (BarcodeListener)context;
-        this.guidanceInterface = (GuidanceInterface)context;
     }
 
-    @Override
-    public void run()
+    public void playSound(Pose waypointPose, float[] cameraVector)
     {
-        Objects.Observation observation = barcodeListener.onBarcodeCodeRequest();
-
-        if(observation == target)
-        {
-            Log.i(TAG, "Target found");
-            guidanceInterface.onGuidanceEnd();
-
-            return;
-        }
-
-        guidanceInterface.onGuidanceLoop();
-
-        if(guidanceInterface.onWaypointReached() || (observation != prevCameraObservation && observation != Objects.Observation.O_NOTHING))
-        {
-            prevCameraObservation = observation;
-            guidanceInterface.onGuidanceRequested(observation);
-            Log.i(TAG, "Setting new waypoint");
-        }
-
         float pitch;
         // From config file; HI setting
         int pitchHighLim = 12;
         int pitchLowLim = 6;
 
         // Compensate for the Tango's default position being 90deg upright
-        float[] deviceOrientation = guidanceInterface.onCameraVectorRequested();
-        float deviceTilt = deviceOrientation[1];
-        Pose waypointPose = guidanceInterface.onWaypointPoseRequested();
+        float deviceTilt = cameraVector[1];
         ClassHelpers.mVector waypointVector = new ClassHelpers.mVector(waypointPose.getTranslation());
         float waypointTilt = waypointVector.getEuler()[1];
 
@@ -92,13 +60,6 @@ public class SoundGenerator implements Runnable
             gain = (float)(0.5/0.175*Math.abs(tilt) + 0.5);
         }
 
-        JNIBridge.playSound(waypointPose.getTranslation(), deviceOrientation, gain, pitch);
+        JNIBridge.playSound(waypointPose.getTranslation(), cameraVector, gain, pitch);
     }
-
-    public void setTarget(Objects.Observation target)
-    {
-        this.target = target;
-        prevCameraObservation = Objects.Observation.O_NOTHING;
-    }
-
 }

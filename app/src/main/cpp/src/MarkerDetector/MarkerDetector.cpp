@@ -18,15 +18,18 @@ namespace MarkerDetector
         trans->transformType = TRANSFORM_NONE;
         trans->setCameraParams(focalLen, principalPoint, distortionMatrix, zeroErr, zeroDistErr);
 
+        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here1.");
         for(int i = 0; i < MAX_IDS; i ++)
         {
+            __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here2.");
             patternDetectors[i] = new CCircleDetect(imageWidth, imageHeight, i);
+            __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here3.");
             patternDetectors[i]->draw = true;
         }
 
         __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Initialised detectors.");
 
-        return 0;
+        return true;
     }
 
     MarkerDetector::~MarkerDetector()
@@ -49,7 +52,7 @@ namespace MarkerDetector
         return 0;
     }
 
-    void MarkerDetector::processImage(unsigned char *data)
+    int MarkerDetector::processImage(unsigned char *data)
     {
         // Copy in new image data
         image->data = data;
@@ -90,5 +93,7 @@ namespace MarkerDetector
                 __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
             }
         }
+
+        return objectArray[0].ID;
     }
 }

@@ -1,17 +1,12 @@
 package com.example.jaycee.mdpobjectsearch;
 
-import android.graphics.Bitmap;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import com.google.ar.core.CameraIntrinsics;
+
 import java.util.Locale;
 
 public class ActivityUnguided extends CameraActivityBase implements CameraSurface.ScreenReadRequest
@@ -21,6 +16,9 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
     private TextToSpeech tts;
 
     private Objects.Observation target;
+
+    private HandlerThread scannerHandlerThread;
+    private Handler scannerHandler;
 
     @Override
     public void targetSelected(Objects.Observation target)
@@ -67,9 +65,24 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
     @Override
     public void onScreenTap()
     {
-        Objects.Observation observation = onBarcodeCodeRequest();
-        // onPreviewRequest();
+        scannerHandler.post(barcodeScanner);
+    }
 
+    @Override
+    public void onBarcodeScannerStart(CameraIntrinsics intrinsics)
+    {
+        scannerHandlerThread = new HandlerThread("BarcodeScanner thread");
+        scannerHandlerThread.start();
+        scannerHandler = new Handler(scannerHandlerThread.getLooper());
+
+//        Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(getIntrinsics().getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
+        barcodeScanner = new BarcodeScanner(this, getCameraSurface().getRenderer(), intrinsics, imageWidth, imageHeight);
+        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
+    }
+
+    @Override
+    public void onScanComplete(Objects.Observation observation)
+    {
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
 
         if(observation == target)
@@ -77,5 +90,4 @@ public class ActivityUnguided extends CameraActivityBase implements CameraSurfac
             getVibrator().vibrate(350);
         }
     }
-
 }

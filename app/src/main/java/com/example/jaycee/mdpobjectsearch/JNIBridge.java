@@ -16,8 +16,8 @@ public class JNIBridge
     public static native boolean killSound();
     public static native void playSound(float[] src, float[] list, float gain, float pitch);
 
-    public static native boolean initDetector(int width, int height, float[] focalLength, float[] principlePoint, float[] distorionMatrix);
+    public static native boolean initDetector(int width, int height, float[] focalLength, float[] principlePoint, float[] distortionMatrix);
     public static native boolean killDetector();
-    public static native void processImage(Bitmap bitmap, ByteBuffer data);
+    public static native int processImage(Bitmap bitmap, ByteBuffer data);
     public static native boolean getBitmap(Bitmap bitmap, ByteBuffer data, int width, int height, int bpp);
 }

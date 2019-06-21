@@ -20,7 +20,7 @@ namespace MarkerDetector
         bool init(float *focalLen, float *principalPoint, float *distortionMatrix);
         bool kill();
 
-        void processImage(unsigned char* data);
+        int processImage(unsigned char* data);
         const int getImageWidth() { return imageWidth; }
         const int getImageHeight() { return imageHeight; }
 

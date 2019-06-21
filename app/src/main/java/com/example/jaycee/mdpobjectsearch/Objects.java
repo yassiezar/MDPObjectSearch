@@ -4,6 +4,7 @@ public class Objects
 {
     public enum Observation
     {
+        UNDEFINED(-1, "", "UNDEFINED"),
         O_NOTHING (0, "", "Nothing"),
         T_COMPUTER_MONITOR (1, "monitor_0.5.txt", "Monitor"),
         T_COMPUTER_KEYBOARD (2, "keyboard_0.5.txt", "Keyboard"),
@@ -19,8 +20,7 @@ public class Objects
         T_PLANT (12, "plant_0.5.txt", "Plant"),
         T_TELEPHONE (13, "telephone_0.5.txt", "Telephone"),
         T_WHITEBOARD (14, "whiteboard_0.5.txt", "Whiteboard"),
-        T_DOOR (15, "door_0.5.txt", "Door"),
-        T_TIGER (16, "tiger.txt", "Tiger");
+        T_DOOR (15, "door_0.5.txt", "Door");
 
         private final int obsCode;
         private final String fileName;
@@ -57,7 +57,7 @@ public class Objects
             case 13: return Objects.Observation.T_TELEPHONE;
             case 14: return Objects.Observation.T_WHITEBOARD;
             case 15: return Objects.Observation.T_DOOR;
-            default: return Objects.Observation.O_NOTHING;
+            default: return Objects.Observation.UNDEFINED;
         }
     }
 }

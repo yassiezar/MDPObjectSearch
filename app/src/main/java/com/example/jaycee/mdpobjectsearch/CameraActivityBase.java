@@ -40,7 +40,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeListener, RenderListener
+public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeScanner.BarcodeListener, RenderListener
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
 
@@ -48,17 +48,16 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private DrawerLayout drawerLayout;
     private Toast toast;
 
-    private HandlerThread scannerHandlerThread;
-    private Handler scannerHandler;
+    private HandlerThread backgroundHandlerThread;
+    private Handler backgroundHandler;
 
     private Vibrator vibrator;
 
     private Session session;
-    private CameraIntrinsics intrinsics;
     protected Pose devicePose;
 
     protected Metrics metrics;
-    private BarcodeScanner barcodeScanner;
+    protected BarcodeScanner barcodeScanner;
 
     private boolean requestARCoreInstall = true;
     private boolean highQualityScanner = false;
@@ -66,6 +65,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private long currentTimestamp, startTimestamp;
     protected long frameTimestamp;
     private long barcodePreviewCounter = 0;
+
+    protected int imageWidth, imageHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -215,14 +216,14 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
         surfaceView.onResume();
 
-        if(!JNIBridge.initSound())
+/*        if(!JNIBridge.initSound())
         {
             Log.e(TAG, "OpenAL init error");
-        }
+        }*/
 
-        scannerHandlerThread = new HandlerThread("BarcodeScanner thread");
-        scannerHandlerThread.start();
-        scannerHandler = new Handler(scannerHandlerThread.getLooper());
+        backgroundHandlerThread = new HandlerThread("BackgroundThread");
+        backgroundHandlerThread.start();
+        backgroundHandler = new Handler(backgroundHandlerThread.getLooper());
     }
 
     @Override
@@ -240,12 +241,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             session.pause();
         }
 
-        if(!JNIBridge.killSound())
+/*        if(!JNIBridge.killSound())
         {
             Log.e(TAG, "OpenAL exit error");
-        }
+        }*/
 
-        if(scannerHandler != null)
+/*        if(scannerHandler != null)
         {
             scannerHandlerThread.quitSafely();
             try
@@ -259,12 +260,28 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             {
                 Log.e(TAG, "Error closing scanner thread: " + e);
             }
-        }
+        }*/
 
         if(barcodeScanner != null)
         {
             barcodeScanner.stop();
             barcodeScanner = null;
+        }
+
+        if(backgroundHandler != null)
+        {
+            backgroundHandlerThread.quitSafely();
+            try
+            {
+                Log.v(TAG, "Stopping scanner thread");
+                backgroundHandlerThread.join();
+                backgroundHandlerThread = null;
+                backgroundHandler = null;
+            }
+            catch (InterruptedException e)
+            {
+                Log.e(TAG, "Error closing scanner thread: " + e);
+            }
         }
 
         super.onPause();
@@ -282,7 +299,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+/*    @Override
     public Objects.Observation onBarcodeCodeRequest()
     {
         if(scannerHandler != null && !barcodeScanner.isRunning())
@@ -312,18 +329,22 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         }
 
         return scannedObject;
-    }
+    }*/
 
-    @Override
+/*    @Override
     public void onBarcodeScannerStart()
     {
+        scannerHandlerThread = new HandlerThread("BarcodeScanner thread");
+        scannerHandlerThread.start();
+        scannerHandler = new Handler(scannerHandlerThread.getLooper());
+
         // TODO: Replace distortion matrix with real one
         float[] distortionMatrix = new float[] {1.f, 0.00486219f, -0.44772422f, -0.01138138f, 0.0291972f, 0.70109351f};
 
         Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(intrinsics.getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
         barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
         // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
-    }
+    }*/
 
     @Override
     public void onBarcodeScannerStop()
@@ -335,7 +356,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         }*/
     }
 
-    @Override
+/*    @Override
     public void onPreviewRequest()
     {
         try
@@ -357,7 +378,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         {
             Log.e(TAG, "IO Error: " + e);
         }
-    }
+    }*/
 
     @Override
     public Frame onFrameRequest()
@@ -365,8 +386,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         try
         {
             Frame newFrame = session.update();
-
-            intrinsics = newFrame.getCamera().getImageIntrinsics();
 
             frameTimestamp = newFrame.getTimestamp();
             currentTimestamp = System.currentTimeMillis();
@@ -385,7 +404,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
             if(barcodeScanner == null)
             {
-                onBarcodeScannerStart();
+                onBarcodeScannerStart(newFrame.getCamera().getImageIntrinsics());
             }
 
             return newFrame;
@@ -403,6 +422,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         try
         {
             int displayRotation = getSystemService(WindowManager.class).getDefaultDisplay().getRotation();
+            this.imageHeight = height;
+            this.imageWidth = width;
             session.setDisplayGeometry(displayRotation, width, height);
         }
         catch(NullPointerException e)

@@ -1,9 +1,14 @@
 package com.example.jaycee.mdpobjectsearch;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Camera;
 import android.util.Log;
 
 import com.example.jaycee.mdpobjectsearch.rendering.SurfaceRenderer;
+import com.google.ar.core.CameraIntrinsics;
+
+import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
 
 public class BarcodeScanner implements Runnable
 {
@@ -14,18 +19,34 @@ public class BarcodeScanner implements Runnable
     private Bitmap test;
 
     private SurfaceRenderer renderer;
+    private BarcodeListener barcodeListener;
 
     private boolean running = false;
 
-    private int code = O_NOTHING;
+    private Objects.Observation observation = Objects.Observation.O_NOTHING;
 
-    public BarcodeScanner(int scannerWidth, int scannerHeight, SurfaceRenderer renderer, float[] focalLength, float[] principlePoint, float[] distortionMatrix)
+    public interface BarcodeListener
+    {
+        void onBarcodeScannerStart(CameraIntrinsics intrinsics);
+        void onBarcodeScannerStop();
+        void onScanComplete(Objects.Observation observation);
+    }
+
+    public BarcodeScanner(Context context, SurfaceRenderer renderer, CameraIntrinsics intrinsics, int scannerWidth, int scannerHeight)
     {
         this.renderer = renderer;
+        this.barcodeListener = (BarcodeListener)context;
 
         this.test = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
 
-        JNIBridge.initDetector(scannerWidth, scannerHeight, focalLength, principlePoint, distortionMatrix);
+        float[] focalLength = intrinsics.getFocalLength().clone();
+        float[] principlePoint = intrinsics.getPrincipalPoint().clone();
+        float[] distortionMatrix = new float[] {1.f, 0.00486219f, -0.44772422f, -0.01138138f, 0.0291972f, 0.70109351f};
+
+        if(!JNIBridge.initDetector(scannerWidth, scannerHeight, focalLength, principlePoint, distortionMatrix))
+        {
+            Log.e(TAG, "Error starting scanner: ");
+        }
     }
 
     @Override
@@ -33,20 +54,22 @@ public class BarcodeScanner implements Runnable
     {
         running = true;
         Log.v(TAG, "Running scanner");
-        code = O_NOTHING;
+        observation = Objects.Observation.O_NOTHING;
 
         Log.v(TAG, "Requesting lock");
         renderer.getScanner().getLock().lock();
         try
         {
             Log.v(TAG, "Got lock");
-            JNIBridge.processImage(test, renderer.getScanner().getBuffer());
+            int id = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
+            observation = getObservation(id);
         }
         finally
         {
             renderer.getScanner().getLock().unlock();
         }
         running = false;
+        barcodeListener.onScanComplete(observation);
     }
 
     public void stop()
@@ -62,7 +85,7 @@ public class BarcodeScanner implements Runnable
         }
     }
 
-    public int getCode() { return this.code; }
+    public Objects.Observation getCurrentObservation() { return this.observation; }
     public boolean isRunning() { return running; }
 
     public Bitmap getBarcodeDetectionPreview()

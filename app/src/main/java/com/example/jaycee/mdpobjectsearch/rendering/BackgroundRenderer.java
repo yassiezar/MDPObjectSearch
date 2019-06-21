@@ -32,24 +32,13 @@ public class BackgroundRenderer
     private FloatBuffer quadTexCoord;
     private FloatBuffer quadTexCoordTransformed;
 
-    private ByteBuffer currentFrameBuffer;
-
     private int quadProgram;
     private int quadPositionParam;
     private int quadTexCoordParam;
     private int textureId = -1;
 
-    private int scannerWidth, scannerHeight;
-    private int scannerX, scannerY;
-
-    public BackgroundRenderer(int scannerX, int scannerY, int scannerWidth, int scannerHeight)
+    public BackgroundRenderer()
     {
-        this.scannerWidth = scannerWidth;
-        this.scannerHeight = scannerHeight;
-        this.scannerX = scannerX;
-        this.scannerY = scannerY;
-
-        this.scanner = new ScannerWindow(scannerWidth, scannerHeight);
     }
 
     public int getTextureId() { return this.textureId; }
@@ -141,24 +130,27 @@ public class BackgroundRenderer
 
         ShaderUtils.checkGLError(TAG, "Draw");
 
-        boolean lockAcquired = scanner.getLock().tryLock();
-        if(lockAcquired && !scanner.getLock().hasQueuedThreads())
+        if(scanner != null)
         {
-            try
+            boolean lockAcquired = scanner.getLock().tryLock();
+            if(lockAcquired && !scanner.getLock().hasQueuedThreads())
             {
-                Log.v(TAG, "Saving camera image to buffer");
-                GLES20.glReadPixels(scannerX, scannerY, scannerWidth, scannerHeight, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, scanner.getBuffer());
-            }
-            finally
-            {
-                scanner.getLock().unlock();
+                try
+                {
+                    Log.v(TAG, "Saving camera image to buffer");
+                    GLES20.glReadPixels(0, 0, scanner.getScannerWidth(), scanner.getScannerHeight(), GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, scanner.getBuffer());
+                }
+                finally
+                {
+                    scanner.getLock().unlock();
+                }
             }
         }
     }
 
-    public ScannerWindow getScanner()
+    public void setScannerWindow(ScannerWindow scanner)
     {
-        return scanner;
+        this.scanner = scanner;
     }
 
     private static final float[] QUAD_COORDS =
