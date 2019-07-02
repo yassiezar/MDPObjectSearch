@@ -2,7 +2,6 @@ package com.example.jaycee.mdpobjectsearch;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Camera;
 import android.util.Log;
 
 import com.example.jaycee.mdpobjectsearch.rendering.SurfaceRenderer;
@@ -14,16 +13,12 @@ public class BarcodeScanner implements Runnable
 {
     private static final String TAG = BarcodeScanner.class.getSimpleName();
 
-    private static final int O_NOTHING = 0;
-
     private Bitmap test;
 
     private SurfaceRenderer renderer;
     private BarcodeListener barcodeListener;
 
     private boolean running = false;
-
-    private Objects.Observation observation = Objects.Observation.O_NOTHING;
 
     public interface BarcodeListener
     {
@@ -54,7 +49,7 @@ public class BarcodeScanner implements Runnable
     {
         running = true;
         Log.v(TAG, "Running scanner");
-        observation = Objects.Observation.O_NOTHING;
+        Objects.Observation observation = Objects.Observation.O_NOTHING;
 
         Log.v(TAG, "Requesting lock");
         renderer.getScanner().getLock().lock();
@@ -63,6 +58,10 @@ public class BarcodeScanner implements Runnable
             Log.v(TAG, "Got lock");
             int id = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
             observation = getObservation(id);
+        }
+        catch(Exception e)
+        {
+            Log.e(TAG, "Scanning error: " + e);
         }
         finally
         {
@@ -85,7 +84,6 @@ public class BarcodeScanner implements Runnable
         }
     }
 
-    public Objects.Observation getCurrentObservation() { return this.observation; }
     public boolean isRunning() { return running; }
 
     public Bitmap getBarcodeDetectionPreview()

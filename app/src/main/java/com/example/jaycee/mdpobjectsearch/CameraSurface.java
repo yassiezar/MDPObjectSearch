@@ -10,18 +10,9 @@ import com.example.jaycee.mdpobjectsearch.rendering.SurfaceRenderer;
 
 public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callback
 {
-    public interface ScreenReadRequest
-    {
-        void onScreenTap();
-    }
-
     private static final String TAG = CameraSurface.class.getSimpleName();
 
     private SurfaceRenderer renderer;
-
-    private ScreenReadRequest screenReadRequest;
-
-    private boolean screenTapEnabled = false;
 
     public CameraSurface(Context context, AttributeSet attrs)
     {
@@ -57,43 +48,8 @@ public class CameraSurface extends GLSurfaceView implements SurfaceHolder.Callba
         super.surfaceDestroyed(surfaceHolder);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        final int action = event.getAction();
-
-        if(!screenTapEnabled)
-        {
-            return false;
-        }
-
-        switch(action)
-        {
-            case (MotionEvent.ACTION_DOWN):
-            {
-                performClick();
-            }
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean performClick()
-    {
-        super.performClick();
-        screenReadRequest.onScreenTap();
-
-        return true;
-    }
-
-    public void setScreenReadRequest(ScreenReadRequest screenReadRequest)
-    {
-        this.screenReadRequest = screenReadRequest;
-    }
-
     public SurfaceRenderer getRenderer()
     {
         return renderer;
     }
-    public void enableScreenTap(boolean screenTapEnabled) { this.screenTapEnabled = screenTapEnabled; }
 }

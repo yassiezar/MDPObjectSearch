@@ -34,37 +34,29 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-
 public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeScanner.BarcodeListener, RenderListener
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
 
     private CameraSurface surfaceView;
     private DrawerLayout drawerLayout;
-    private Toast toast;
 
-    private HandlerThread backgroundHandlerThread;
-    private Handler backgroundHandler;
+    private HandlerThread backgroundHandlerThread, scannerHandlerThread;
+    private Handler backgroundHandler, scannerHandler;
 
     private Vibrator vibrator;
 
     private Session session;
     protected Pose devicePose;
 
-    protected Metrics metrics;
-    protected BarcodeScanner barcodeScanner;
+    private Metrics metrics;
+    private BarcodeScanner barcodeScanner;
 
     private boolean requestARCoreInstall = true;
     private boolean highQualityScanner = false;
 
     private long currentTimestamp, startTimestamp;
     protected long frameTimestamp;
-    private long barcodePreviewCounter = 0;
 
     protected int imageWidth, imageHeight;
 
@@ -216,11 +208,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
         surfaceView.onResume();
 
-/*        if(!JNIBridge.initSound())
-        {
-            Log.e(TAG, "OpenAL init error");
-        }*/
-
         backgroundHandlerThread = new HandlerThread("BackgroundThread");
         backgroundHandlerThread.start();
         backgroundHandler = new Handler(backgroundHandlerThread.getLooper());
@@ -241,31 +228,11 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             session.pause();
         }
 
-/*        if(!JNIBridge.killSound())
-        {
-            Log.e(TAG, "OpenAL exit error");
-        }*/
-
-/*        if(scannerHandler != null)
-        {
-            scannerHandlerThread.quitSafely();
-            try
-            {
-                Log.v(TAG, "Stopping scanner thread");
-                scannerHandlerThread.join();
-                scannerHandlerThread = null;
-                scannerHandler = null;
-            }
-            catch (InterruptedException e)
-            {
-                Log.e(TAG, "Error closing scanner thread: " + e);
-            }
-        }*/
-
         if(barcodeScanner != null)
         {
             barcodeScanner.stop();
             barcodeScanner = null;
+            onBarcodeScannerStop();
         }
 
         if(backgroundHandler != null)
@@ -349,11 +316,33 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     @Override
     public void onBarcodeScannerStop()
     {
-/*        if(barcodeScanner != null)
+        if(scannerHandler != null)
         {
-            barcodeScanner.stop();
-            barcodeScanner = null;
-        }*/
+            scannerHandlerThread.quitSafely();
+            try
+            {
+                Log.v(TAG, "Stopping scanner thread");
+                scannerHandlerThread.join();
+                scannerHandlerThread = null;
+                scannerHandler = null;
+            }
+            catch (InterruptedException e)
+            {
+                Log.e(TAG, "Error closing scanner thread: " + e);
+            }
+        }
+    }
+
+    @Override
+    public void onBarcodeScannerStart(CameraIntrinsics intrinsics)
+    {
+        scannerHandlerThread = new HandlerThread("BarcodeScanner thread");
+        scannerHandlerThread.start();
+        scannerHandler = new Handler(scannerHandlerThread.getLooper());
+
+//        Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(getIntrinsics().getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
+        barcodeScanner = new BarcodeScanner(this, getCameraSurface().getRenderer(), intrinsics, imageWidth, imageHeight);
+        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
     }
 
 /*    @Override
@@ -407,6 +396,11 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
                 onBarcodeScannerStart(newFrame.getCamera().getImageIntrinsics());
             }
 
+            if(!barcodeScanner.isRunning())
+            {
+                scannerHandler.post(barcodeScanner);
+            }
+
             return newFrame;
         }
         catch (CameraNotAvailableException e)
@@ -443,9 +437,25 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         surfaceView.getRenderer().setDrawWaypoint(drawWaypoint);
     }
 
+    public void targetSelected(Objects.Observation target)
+    {
+        metrics = new Metrics();
+        metrics.updateTarget(target);
+        metrics.run();
+    }
+
+    public void onTargetFound()
+    {
+        getVibrator().vibrate(350);
+
+        if(metrics != null)
+        {
+            metrics.stop();
+            metrics = null;
+        }
+    }
+
     protected Session getSession() { return this.session; }
     protected CameraSurface getCameraSurface() { return this.surfaceView; }
     protected Vibrator getVibrator() { return this.vibrator; }
-
-    public abstract void targetSelected(Objects.Observation target);
 }
