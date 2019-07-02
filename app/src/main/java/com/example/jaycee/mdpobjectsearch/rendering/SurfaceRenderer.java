@@ -25,7 +25,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
     private Context context;
 
     private BackgroundRenderer backgroundRenderer;
-    private ObjectRenderer objectRenderer;
+//    private ObjectRenderer objectRenderer;
     private ObjectRenderer waypointRenderer;
 
     private GuidanceInterface guidanceInterface;
@@ -49,7 +49,7 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
     public void init()
     {
         backgroundRenderer = new BackgroundRenderer();
-        objectRenderer = new ObjectRenderer();
+//        objectRenderer = new ObjectRenderer();
         waypointRenderer = new ObjectRenderer();
     }
 
@@ -62,10 +62,10 @@ public class SurfaceRenderer implements GLSurfaceView.Renderer
         try
         {
             backgroundRenderer.createOnGlThread(context);
-            objectRenderer.createOnGlThread(context, "models/arrow/Arrow.obj", "models/arrow/Arrow_S.tga");
+//            objectRenderer.createOnGlThread(context, "models/arrow/Arrow.obj", "models/arrow/Arrow_S.tga");
             waypointRenderer.createOnGlThread(context, "models/andy.obj", "models/andy.png");
 
-            objectRenderer.setMaterialProperties(0.f, 2.f, 0.5f, 6.f);
+//            objectRenderer.setMaterialProperties(0.f, 2.f, 0.5f, 6.f);
             waypointRenderer.setMaterialProperties(0.f, 2.f, 0.5f, 6.f);
         }
         catch(IOException e)
