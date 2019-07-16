@@ -16,9 +16,6 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
 
     private Objects.Observation targetObservation, observation;
 
-    private HandlerThread guidanceHandlerThread;
-    private Handler guidanceHandler;
-
     @Override
     protected void onResume()
     {
@@ -44,11 +41,8 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
 
         targetObservation = target;
 
-        guidanceHandlerThread = new HandlerThread("GuidanceThread");
-        guidanceHandlerThread.start();
-        guidanceHandler = new Handler(guidanceHandlerThread.getLooper());
         guidanceManager = new GuidanceManager(getSession(), devicePose, ActivityGuided.this, target);
-        guidanceHandler.postDelayed(guidanceManager, 40);
+        guidanceManager.start();
 
         setDrawWaypoint(true);
     }
@@ -62,19 +56,6 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
 
     private void endGuidance()
     {
-        if(guidanceHandler != null)
-        {
-            guidanceHandlerThread.quitSafely();
-            try
-            {
-                guidanceHandlerThread.join();
-            }
-            catch (InterruptedException e)
-            {
-                Log.e(TAG, "Guidance Thread end error: " + e);
-            }
-        }
-
         if(guidanceManager != null)
         {
             guidanceManager.end();
@@ -107,6 +88,10 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     @Override
     public Objects.Observation onObservationRequest()
     {
+        if(this.observation == null)
+        {
+            return Objects.Observation.O_NOTHING;
+        }
         return this.observation;
     }
 

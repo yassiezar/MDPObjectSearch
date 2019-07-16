@@ -1,6 +1,9 @@
 package com.example.jaycee.mdpobjectsearch.guidancetools.pomdp;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Log;
 
 import com.example.jaycee.mdpobjectsearch.CameraActivityBase;
 import com.example.jaycee.mdpobjectsearch.Objects;
@@ -21,6 +24,9 @@ public class GuidanceManager implements Runnable
 
     private Waypoint waypoint;
     private Session session;
+
+    private HandlerThread guidanceHandlerThread;
+    private Handler guidanceHandler;
 
     private State state;
     private Belief belief;
@@ -44,15 +50,32 @@ public class GuidanceManager implements Runnable
 
         this.state = new State();
         this.policy = new Policy(context);
-        this.model = new Model(context);
+        this.model = new Model(context, target);
         this.belief = new Belief(model);
         this.policy.setTarget(target);
 
         this.soundGenerator = new SoundGenerator();
+
+        guidanceHandlerThread = new HandlerThread("GuidanceThread");
+        guidanceHandlerThread.start();
+        guidanceHandler = new Handler(guidanceHandlerThread.getLooper());
     }
 
     public void end()
     {
+        if(guidanceHandler != null)
+        {
+            guidanceHandlerThread.quitSafely();
+            try
+            {
+                guidanceHandlerThread.join();
+            }
+            catch (InterruptedException e)
+            {
+                Log.e(TAG, "Guidance Thread end error: " + e);
+            }
+        }
+
         waypoint.clear();
         waypoint = null;
         state = null;
@@ -108,6 +131,7 @@ public class GuidanceManager implements Runnable
     @Override
     public void run()
     {
+        Log.d(TAG, "Guidance running");
         devicePose = guidanceInterface.onDevicePoseRequested();
 
         Objects.Observation newObservation = guidanceInterface.onObservationRequest();
@@ -119,5 +143,11 @@ public class GuidanceManager implements Runnable
         }
 
         soundGenerator.playSound(waypoint.getWaypointPose(), getCameraVector());
+        guidanceHandler.postDelayed(this, 40);
+    }
+
+    public void start()
+    {
+        guidanceHandler.post(this);
     }
 }

@@ -31,9 +31,10 @@ public class Model
     private String[] objects;
     private String[] actions;
 
-    public Model(Context context)
+    public Model(Context context, Objects.Observation target)
     {
         transitions = new HashMap<>();
+        this.target = target;
 
         objects = new String[] {"Nothing", "Computer monitor", "Computer keyboard", "Computer mouse",
                                 "Desk", "Laptop", "Mug", "Window", "Lamp", "Backpack",
@@ -73,11 +74,6 @@ public class Model
         {
             e.printStackTrace();
         }
-    }
-
-    public void setTarget(Objects.Observation target)
-    {
-        this.target = target;
     }
 
     public int[] getEncodedState(int state)
