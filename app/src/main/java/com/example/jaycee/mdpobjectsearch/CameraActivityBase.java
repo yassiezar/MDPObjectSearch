@@ -49,12 +49,14 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
     private Session session;
     protected Pose devicePose;
+    private CameraIntrinsics intrinsics;
 
     private Metrics metrics;
     protected BarcodeScanner barcodeScanner;
 
     private boolean requestARCoreInstall = true;
     private boolean highQualityScanner = false;
+    private boolean targetSet = false;
 
     private long currentTimestamp, startTimestamp;
     protected long frameTimestamp;
@@ -347,7 +349,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     }
 
     @Override
-    public void onScanRequest(CameraIntrinsics intrinsics) {}
+    public void onScanRequest() {}
 
     @Override
     public void onScanComplete(Objects.Observation obs)
@@ -398,7 +400,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             }
 
             devicePose = newFrame.getCamera().getPose();
-            onScanRequest(newFrame.getCamera().getImageIntrinsics());
+            intrinsics = newFrame.getCamera().getImageIntrinsics();
+
+            if(targetSet)
+            {
+                onScanRequest();
+            }
 
             return newFrame;
         }
@@ -441,11 +448,15 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         metrics = new Metrics();
         metrics.updateTarget(target);
         metrics.run();
+
+        targetSet = true;
+        onBarcodeScannerStart(intrinsics);
     }
 
     public void onTargetFound()
     {
         getVibrator().vibrate(350);
+        targetSet = false;
 
         if(metrics != null)
         {

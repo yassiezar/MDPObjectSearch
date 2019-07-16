@@ -24,7 +24,7 @@ public class BarcodeScanner implements Runnable
     {
         void onBarcodeScannerStart(CameraIntrinsics intrinsics);
         void onBarcodeScannerStop();
-        void onScanRequest(CameraIntrinsics intrinsics);
+        void onScanRequest();
         void onScanComplete(Objects.Observation observation);
     }
 

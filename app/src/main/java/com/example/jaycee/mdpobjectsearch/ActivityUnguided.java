@@ -62,15 +62,10 @@ public class ActivityUnguided extends CameraActivityBase
     }
 
     @Override
-    public void onScanRequest(CameraIntrinsics intrinsics)
+    public void onScanRequest()
     {
-        super.onScanRequest(intrinsics);
-        if(barcodeScanner == null)
-        {
-            onBarcodeScannerStart(intrinsics);
-        }
-
-        if(!barcodeScanner.isRunning() && System.currentTimeMillis() - initTime > SPEECH_FREQUENCY)
+        super.onScanRequest();
+        if(barcodeScanner != null && !barcodeScanner.isRunning() && System.currentTimeMillis() - initTime > SPEECH_FREQUENCY)
         {
             scannerHandler.post(barcodeScanner);
             initTime = System.currentTimeMillis();
