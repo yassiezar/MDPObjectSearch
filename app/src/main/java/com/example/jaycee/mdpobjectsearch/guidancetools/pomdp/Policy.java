@@ -40,7 +40,8 @@ public class Policy
         Scanner reader = null;
         try
         {
-            String fileName = "POMDPPolicies/" + target.getFileName();
+            /* TODO: add option to select scanner quality */
+            String fileName = "POMDPPolicies/100/" + target.getFileName();
             reader = new Scanner(new InputStreamReader(context.getAssets().open(fileName)));
             reader.useDelimiter("\\n");
 

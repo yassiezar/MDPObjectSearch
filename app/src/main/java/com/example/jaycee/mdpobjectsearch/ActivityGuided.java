@@ -46,7 +46,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
 
         guidanceHandlerThread = new HandlerThread("GuidanceThread");
         guidanceHandlerThread.start();
-        guidanceHandler = new Handler(guidanceHandler.getLooper());
+        guidanceHandler = new Handler(guidanceHandlerThread.getLooper());
         guidanceManager = new GuidanceManager(getSession(), devicePose, ActivityGuided.this, target);
         guidanceHandler.postDelayed(guidanceManager, 40);
 
@@ -91,6 +91,16 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         if(observation == targetObservation)
         {
             onTargetFound();
+        }
+    }
+
+    @Override
+    public void onScanRequest()
+    {
+        super.onScanRequest();
+        if(barcodeScanner != null && !barcodeScanner.isRunning())
+        {
+            scannerHandler.post(barcodeScanner);
         }
     }
 
