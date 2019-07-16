@@ -8,6 +8,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class SoundGenerator
 {
     private static final String TAG = SoundGenerator.class.getSimpleName();
@@ -24,18 +27,30 @@ public class SoundGenerator
         int pitchLowLim = 6;
 
         // Compensate for the Tango's default position being 90deg upright
-        float deviceTilt = cameraVector[1];
+        float deviceTilt = cameraVector[2];
         ClassHelpers.mVector waypointVector = new ClassHelpers.mVector(waypointPose.getTranslation());
         float waypointTilt = waypointVector.getEuler()[1];
 
-        float tilt = waypointTilt - deviceTilt;
+        if (waypointTilt > Math.PI/2)
+        {
+            waypointTilt -= (float) Math.PI;
+        }
+        else if (waypointTilt < Math.PI/2)
+        {
+            waypointTilt += (float) Math.PI;
+        }
+//        Log.d(TAG, String.format("%f %s", waypointTilt, Arrays.toString(cameraVector)));
+//        Log.d(TAG, String.format("%f %s", waypointTilt, deviceTilt));
 
-        if(tilt >= Math.PI / 2)
+        float elevation = -(deviceTilt - waypointTilt);
+        Log.d(TAG, String.format("%f", elevation));
+
+        if(elevation >= Math.PI / 2)
         {
             pitch = (float)(Math.pow(2, 64));
         }
 
-        else if(tilt <= -Math.PI / 2)
+        else if(elevation <= -Math.PI / 2)
         {
             pitch = (float)(Math.pow(2, pitchHighLim));
         }
@@ -47,19 +62,22 @@ public class SoundGenerator
             float grad = (float)(Math.tan(Math.toRadians(gradientAngle)));
             float intercept = (float)(pitchHighLim - Math.PI / 2 * grad);
 
-            pitch = (float)(Math.pow(2, grad * -tilt + intercept));
+            pitch = (float)(Math.pow(2, grad * -elevation + intercept));
         }
 
         float gain;
-        if(Math.abs(tilt) > 0.175)      // 0.175rad = ~10deg
+/*        if(Math.abs(tilt) > 0.175)      // 0.175rad = ~10deg
         {
             gain = 1.f;
         }
         else
         {
             gain = (float)(0.5/0.175*Math.abs(tilt) + 0.5);
-        }
+        }*/
+        gain = 1.f;
 
+//        Log.d(TAG, String.format("waypoint %f %f %f", waypointPose.getTranslation()[0], waypointPose.getTranslation()[1], waypointPose.getTranslation()[2]));
+//        Log.d(TAG, String.format("Cam %f %f %f", cameraVector[0], cameraVector[1], cameraVector[2]));
         JNIBridge.playSound(waypointPose.getTranslation(), cameraVector, gain, pitch);
     }
 }
