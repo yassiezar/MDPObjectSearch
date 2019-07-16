@@ -24,6 +24,7 @@ public class BarcodeScanner implements Runnable
     {
         void onBarcodeScannerStart(CameraIntrinsics intrinsics);
         void onBarcodeScannerStop();
+        void onScanRequest(CameraIntrinsics intrinsics);
         void onScanComplete(Objects.Observation observation);
     }
 
@@ -48,15 +49,13 @@ public class BarcodeScanner implements Runnable
     public void run()
     {
         running = true;
-        Log.v(TAG, "Running scanner");
         Objects.Observation observation = Objects.Observation.O_NOTHING;
 
-        Log.v(TAG, "Requesting lock");
         renderer.getScanner().getLock().lock();
         try
         {
-            Log.v(TAG, "Got lock");
             int id = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
+            Log.d(TAG, String.format("Barcode ID: %d", id));
             observation = getObservation(id);
         }
         catch(Exception e)

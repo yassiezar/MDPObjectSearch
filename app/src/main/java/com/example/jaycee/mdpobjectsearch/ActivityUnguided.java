@@ -1,9 +1,8 @@
 package com.example.jaycee.mdpobjectsearch;
 
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+
 
 import com.google.ar.core.CameraIntrinsics;
 
@@ -12,10 +11,13 @@ import java.util.Locale;
 public class ActivityUnguided extends CameraActivityBase
 {
     private static final String TAG = ActivityUnguided.class.getSimpleName();
+    private static final int SPEECH_FREQUENCY = 1000;       // 1s between utterances
 
     private TextToSpeech tts;
 
     private Objects.Observation target;
+
+    private long initTime = System.currentTimeMillis();
 
     @Override
     public void targetSelected(Objects.Observation target)
@@ -42,7 +44,7 @@ public class ActivityUnguided extends CameraActivityBase
             }
             else
             {
-                Log.e("error", "Initialisation Failed!");
+                Log.e("error", "TTS initialisation Failed!");
             }
         });
     }
@@ -50,19 +52,36 @@ public class ActivityUnguided extends CameraActivityBase
     @Override
     protected void onPause()
     {
+        super.onPause();
         if(tts != null)
         {
+            tts.stop();
             tts.shutdown();
+            tts = null;
+        }
+    }
+
+    @Override
+    public void onScanRequest(CameraIntrinsics intrinsics)
+    {
+        super.onScanRequest(intrinsics);
+        if(barcodeScanner == null)
+        {
+            onBarcodeScannerStart(intrinsics);
         }
 
-        super.onPause();
+        if(!barcodeScanner.isRunning() && System.currentTimeMillis() - initTime > SPEECH_FREQUENCY)
+        {
+            scannerHandler.post(barcodeScanner);
+            initTime = System.currentTimeMillis();
+        }
     }
 
     @Override
     public void onScanComplete(Objects.Observation observation)
     {
+        super.onScanComplete(observation);
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
-
         if(observation == target)
         {
             onTargetFound();

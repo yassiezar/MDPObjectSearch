@@ -18,12 +18,9 @@ namespace MarkerDetector
         trans->transformType = TRANSFORM_NONE;
         trans->setCameraParams(focalLen, principalPoint, distortionMatrix, zeroErr, zeroDistErr);
 
-        __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here1.");
         for(int i = 0; i < MAX_IDS; i ++)
         {
-            __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here2.");
             patternDetectors[i] = new CCircleDetect(imageWidth, imageHeight, i);
-            __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Here3.");
             patternDetectors[i]->draw = true;
         }
 
@@ -62,7 +59,7 @@ namespace MarkerDetector
         {
             if(currentSegmentArray[i].valid)
             {
-                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Updating tracked markers");
+                // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Updating tracked markers");
                 lastSegmentArray[i] = currentSegmentArray[i];
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
                 // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "previous track: Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
@@ -74,7 +71,7 @@ namespace MarkerDetector
         {
             if(!currentSegmentArray[i].valid)
             {
-                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Searching for untracked markers");
+                // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Searching for untracked markers");
                 lastSegmentArray[i].valid = false;
                 currentSegmentArray[i] = patternDetectors[i]->findSegment(image, lastSegmentArray[i]);
                 // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f", currentSegmentArray[i].ID, currentSegmentArray[i].x, currentSegmentArray[i].y);
@@ -88,12 +85,21 @@ namespace MarkerDetector
         {
             if(currentSegmentArray[i].valid)
             {
-                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Transforming tracked markers");
+                // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Transforming tracked markers");
                 objectArray[i] = trans->transform(currentSegmentArray[i], true);
                 __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
             }
+            else
+            {
+                 objectArray[i].ID = NOTHING;
+            }
         }
 
+/*        if(currentSegmentArray[0].valid)
+        {
+        }*/
+        // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[0].ID, objectArray[0].x, objectArray[0].y, objectArray[0].z, objectArray[0].d, objectArray[0].roll, objectArray[0].pitch, objectArray[0].yaw);
         return objectArray[0].ID;
+        //return NOTHING;
     }
 }

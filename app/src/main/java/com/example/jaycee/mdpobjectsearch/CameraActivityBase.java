@@ -42,7 +42,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private DrawerLayout drawerLayout;
 
     private HandlerThread backgroundHandlerThread, scannerHandlerThread;
-    private Handler backgroundHandler, scannerHandler;
+    private Handler backgroundHandler;
+    protected Handler scannerHandler;
 
     private Vibrator vibrator;
 
@@ -50,7 +51,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected Pose devicePose;
 
     private Metrics metrics;
-    private BarcodeScanner barcodeScanner;
+    protected BarcodeScanner barcodeScanner;
 
     private boolean requestARCoreInstall = true;
     private boolean highQualityScanner = false;
@@ -345,6 +346,13 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
     }
 
+    @Override
+    public void onScanRequest(CameraIntrinsics intrinsics) {}
+
+    @Override
+    public void onScanComplete(Objects.Observation obs)
+    {}
+
 /*    @Override
     public void onPreviewRequest()
     {
@@ -390,16 +398,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             }
 
             devicePose = newFrame.getCamera().getPose();
-
-            if(barcodeScanner == null)
-            {
-                onBarcodeScannerStart(newFrame.getCamera().getImageIntrinsics());
-            }
-
-            if(!barcodeScanner.isRunning())
-            {
-                scannerHandler.post(barcodeScanner);
-            }
+            onScanRequest(newFrame.getCamera().getImageIntrinsics());
 
             return newFrame;
         }

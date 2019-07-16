@@ -8,6 +8,7 @@
 
 #define MAX_IDS 1
 #define MARKERLOG "MarkerDetector"
+#define NOTHING 0
 
 namespace MarkerDetector
 {
