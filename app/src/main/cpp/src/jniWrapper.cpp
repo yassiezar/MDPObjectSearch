@@ -74,7 +74,6 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     auto imageData = reinterpret_cast<unsigned char*>(rawBytes);
     STrackedObject barcode = markerDetector->processImage(imageData);
 
-    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "find class");
     jclass localBarcodeInformation = env->FindClass("com/example/jaycee/mdpobjectsearch/BarcodeScanner$BarcodeInformation");
     if(localBarcodeInformation == nullptr)
     {
@@ -82,9 +81,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
         return nullptr;
     }
 
-    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "create global ref");
     globalBarcodeInformation = reinterpret_cast<jclass>(env->NewGlobalRef(localBarcodeInformation));
-    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "find constructor");
     jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/BarcodeScanner;IFFF)V");
 
     if(constructorBarcodeInformation == nullptr)
@@ -92,9 +89,6 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Error finding constructor");
         return nullptr;
     }
-
-    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "create object");
-    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "created object");
 
 /*    AndroidBitmapInfo info = {0};
     int r = AndroidBitmap_getInfo(env, bitmap, &info);

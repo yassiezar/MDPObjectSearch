@@ -57,7 +57,7 @@ public class BarcodeScanner implements Runnable
         try
         {
             BarcodeInformation info = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
-//            Log.d(TAG, String.format("Barcode ID: %d angles: %s", info.getId(), Arrays.toString(info.getAngles())));
+            Log.i(TAG, String.format("Barcode ID: %d angles: %s quaternion: %s", info.getId(), Arrays.toString(info.getAngles()), Arrays.toString(info.getRotationQuaternion())));
             observation = getObservation(info.getId());
         }
         catch(Exception e)
@@ -95,13 +95,17 @@ public class BarcodeScanner implements Runnable
     public class BarcodeInformation
     {
         private float[] angles = new float[3];
+        private float roll, pitch, yaw;
         private int id;
 
         public BarcodeInformation(int id, float roll, float pitch , float yaw)
         {
             this.id = id;
-            this.angles[0] = roll;
-            this.angles[1] = pitch;
+            this.roll = roll;//+(float)Math.PI/4;
+            this.pitch = pitch-(float)Math.PI/3;
+            this.yaw = yaw;
+            this.angles[0] = roll;//+(float)Math.PI/4;
+            this.angles[1] = pitch-(float)Math.PI/3;
             this.angles[2] = yaw;
         }
 
@@ -110,5 +114,47 @@ public class BarcodeScanner implements Runnable
             return id;
         }
         public float[] getAngles() { return angles; }
+
+        public float[] getRotationQuaternion()
+        {
+            // x y z w
+            float[] quat = new float[4];
+
+            /* From phone perspective
+             * 1. yaw around y
+             * 2. pitch around x
+             * 3. roll around z
+             */
+
+            /* From barcode perspective
+             * 1. roll around y
+             * 2. pitch around x
+             * 3. yaw around z
+             */
+
+/*            quat[0] = (float)(Math.sin(yaw/2)*Math.cos(roll/2)*Math.cos(pitch/2) - Math.cos(yaw/2)*Math.sin(roll/2)*Math.sin(pitch/2));
+            quat[1] = (float)(Math.cos(yaw/2)*Math.sin(roll/2)*Math.cos(pitch/2) + Math.sin(yaw/2)*Math.cos(roll/2)*Math.sin(pitch/2));
+            quat[2] = (float)(Math.cos(yaw/2)*Math.cos(roll/2)*Math.sin(pitch/2) - Math.sin(yaw/2)*Math.sin(roll/2)*Math.cos(pitch/2));
+            quat[3] = (float)(Math.cos(yaw/2)*Math.cos(roll/2)*Math.cos(pitch/2) + Math.sin(yaw/2)*Math.sin(roll/2)*Math.sin(pitch/2));*/
+            quat[0] = (float)(Math.sin(roll/2)*Math.cos(pitch/2)*Math.cos(yaw/2) - Math.cos(roll/2)*Math.sin(pitch/2)*Math.sin(yaw/2));
+            quat[1] = (float)(Math.cos(roll/2)*Math.sin(pitch/2)*Math.cos(yaw/2) + Math.sin(roll/2)*Math.cos(pitch/2)*Math.sin(yaw/2));
+            quat[2] = (float)(Math.cos(roll/2)*Math.cos(pitch/2)*Math.sin(yaw/2) - Math.sin(roll/2)*Math.sin(pitch/2)*Math.cos(yaw/2));
+            quat[3] = (float)(Math.cos(roll/2)*Math.cos(pitch/2)*Math.cos(yaw/2) + Math.sin(roll/2)*Math.sin(pitch/2)*Math.sin(yaw/2));
+
+
+            // Normalise
+            float z = 0;
+            for(float i : quat)
+            {
+                z += (i*i);
+            }
+            z = (float)Math.sqrt(z);
+            for(int i = 0; i < quat.length; i++)
+            {
+                quat[i] /= z;
+            }
+
+            return quat;
+        }
     }
 }
