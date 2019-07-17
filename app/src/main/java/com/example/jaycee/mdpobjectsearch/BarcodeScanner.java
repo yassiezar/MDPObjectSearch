@@ -7,6 +7,8 @@ import android.util.Log;
 import com.example.jaycee.mdpobjectsearch.rendering.SurfaceRenderer;
 import com.google.ar.core.CameraIntrinsics;
 
+import java.util.Arrays;
+
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
 
 public class BarcodeScanner implements Runnable
@@ -54,9 +56,9 @@ public class BarcodeScanner implements Runnable
         renderer.getScanner().getLock().lock();
         try
         {
-            int id = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
-            Log.d(TAG, String.format("Barcode ID: %d", id));
-            observation = getObservation(id);
+            BarcodeInformation info = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
+//            Log.d(TAG, String.format("Barcode ID: %d angles: %s", info.getId(), Arrays.toString(info.getAngles())));
+            observation = getObservation(info.getId());
         }
         catch(Exception e)
         {
@@ -88,5 +90,25 @@ public class BarcodeScanner implements Runnable
     public Bitmap getBarcodeDetectionPreview()
     {
         return this.test;
+    }
+
+    public class BarcodeInformation
+    {
+        private float[] angles = new float[3];
+        private int id;
+
+        public BarcodeInformation(int id, float roll, float pitch , float yaw)
+        {
+            this.id = id;
+            this.angles[0] = roll;
+            this.angles[1] = pitch;
+            this.angles[2] = yaw;
+        }
+
+        public int getId()
+        {
+            return id;
+        }
+        public float[] getAngles() { return angles; }
     }
 }

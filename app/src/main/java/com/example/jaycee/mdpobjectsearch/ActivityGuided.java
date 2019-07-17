@@ -1,9 +1,5 @@
 package com.example.jaycee.mdpobjectsearch;
 
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.util.Log;
-
 import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
 import com.example.jaycee.mdpobjectsearch.guidancetools.pomdp.GuidanceManager;
 import com.google.ar.core.Pose;

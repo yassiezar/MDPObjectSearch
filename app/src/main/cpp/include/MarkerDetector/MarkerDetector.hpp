@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include <android/log.h>
+#include <jni.h>
 
 #define MAX_IDS 1
 #define MARKERLOG "MarkerDetector"
@@ -21,7 +22,7 @@ namespace MarkerDetector
         bool init(float *focalLen, float *principalPoint, float *distortionMatrix);
         bool kill();
 
-        int processImage(unsigned char* data);
+        STrackedObject processImage(unsigned char* data);
         const int getImageWidth() { return imageWidth; }
         const int getImageHeight() { return imageHeight; }
 

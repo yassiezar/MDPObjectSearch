@@ -60,40 +60,63 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobj
     return kill;
 }
 
-JNIEXPORT int JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject bitmap, jobject data)
 {
+    env->DeleteGlobalRef(globalBarcodeInformation);
     void* rawBytes = env->GetDirectBufferAddress(data);
 
-    if(rawBytes == NULL)
+    if(rawBytes == nullptr)
     {
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Could not lock on ByteBuffer");
-        return -1;
+        return nullptr;
     }
-    unsigned char* imageData = reinterpret_cast<unsigned char*>(rawBytes);
-    int code = markerDetector->processImage(imageData);
+    auto imageData = reinterpret_cast<unsigned char*>(rawBytes);
+    STrackedObject barcode = markerDetector->processImage(imageData);
 
-    AndroidBitmapInfo info = {0};
+    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "find class");
+    jclass localBarcodeInformation = env->FindClass("com/example/jaycee/mdpobjectsearch/BarcodeScanner$BarcodeInformation");
+    if(localBarcodeInformation == nullptr)
+    {
+        __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Error creating BarcodeInformation class");
+        return nullptr;
+    }
+
+    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "create global ref");
+    globalBarcodeInformation = reinterpret_cast<jclass>(env->NewGlobalRef(localBarcodeInformation));
+    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "find constructor");
+    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/BarcodeScanner;IFFF)V");
+
+    if(constructorBarcodeInformation == nullptr)
+    {
+        __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Error finding constructor");
+        return nullptr;
+    }
+
+    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "create object");
+    __android_log_print(ANDROID_LOG_DEBUG, MARKERLOG, "created object");
+
+/*    AndroidBitmapInfo info = {0};
     int r = AndroidBitmap_getInfo(env, bitmap, &info);
     if (r != 0)
     {
         // "AndroidBitmap_getInfo() failed ! error=%d", r
-        return -1;
+        return nullptr;
     }
     int width = info.width;
     int height = info.height;
     if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888 && info.format != ANDROID_BITMAP_FORMAT_A_8)
     {
         // "Bitmap format is not RGBA_8888 or A_8"
-        return -1;
+        return nullptr;
     }
     int bytesPerPixel = info.format == ANDROID_BITMAP_FORMAT_RGBA_8888 ? 4 : 1;
-    void* pixels = NULL;
+    void* pixels = nullptr;
     r = AndroidBitmap_lockPixels(env, bitmap, &pixels);
     if (r != 0)
     {
         // "AndroidBitmap_lockPixels() failed ! error=%d", r
-        return -1;
+        return nullptr;
     }
     if (markerDetector->getImageWidth() == width && markerDetector->getImageHeight() == height && bytesPerPixel == 4)
     {
@@ -103,9 +126,9 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     {
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "only grayscale -> RGBA is supported bytesPerPixel=%d", bytesPerPixel);
     }
-    AndroidBitmap_unlockPixels(env, bitmap);
+    AndroidBitmap_unlockPixels(env, bitmap);*/
 
-    return code;
+    return env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, barcode.ID, barcode.roll, barcode.pitch, barcode.yaw);
 }
 
 #ifdef __cplusplus

@@ -49,7 +49,7 @@ namespace MarkerDetector
         return 0;
     }
 
-    int MarkerDetector::processImage(unsigned char *data)
+    STrackedObject MarkerDetector::processImage(unsigned char *data)
     {
         // Copy in new image data
         image->data = data;
@@ -87,7 +87,7 @@ namespace MarkerDetector
             {
                 // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Transforming tracked markers");
                 objectArray[i] = trans->transform(currentSegmentArray[i], true);
-                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
+//                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[i].ID, objectArray[i].x, objectArray[i].y, objectArray[i].z, objectArray[i].d, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw);
             }
             else
             {
@@ -99,7 +99,7 @@ namespace MarkerDetector
         {
         }*/
         // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[0].ID, objectArray[0].x, objectArray[0].y, objectArray[0].z, objectArray[0].d, objectArray[0].roll, objectArray[0].pitch, objectArray[0].yaw);
-        return objectArray[0].ID;
+        return objectArray[0];
         //return NOTHING;
     }
 }
