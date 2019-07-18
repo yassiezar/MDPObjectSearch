@@ -99,11 +99,24 @@ public class ActivityUnguided extends CameraActivityBase
             angle += Math.PI;
         }
 
-        Log.i(TAG, String.format("ID: %d Camera vector: %s marker vector %s angle: %f", barcode.getId(), Arrays.toString(cameraVector.asFloat()), Arrays.toString(markerVector.asFloat()), Math.toDegrees(angle)));
+        double mean = 0.0;
+        double std = Math.PI/6;
+        double max = 1.0/(std*Math.sqrt(2*Math.PI));
+        double noise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
+        int id = barcode.getId();
+
+        double sample = Math.random();
+        if(sample > noise)
+        {
+            id = 0;
+        }
+
+        Log.i(TAG, String.format("ID: %d angle: %f noise %f", id, angle, noise/max));
+//        Log.i(TAG, String.format("ID: %d Camera vector: %s marker vector %s", barcode.getId(), Arrays.toString(cameraVector.asFloat()), Arrays.toString(markerVector.asFloat())));
 //        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
 //        Log.i(TAG, String.format("ID: %d, valid: %b angles: %s quaternion: %s", barcode.getId(), barcode.getValid(), Arrays.toString(barcode.getAngles()), Arrays.toString(barcode.getRotationQuaternion())));
 
-        Objects.Observation observation = getObservation(barcode.getId());
+        Objects.Observation observation = getObservation(id);
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
         if(observation == target)
         {
