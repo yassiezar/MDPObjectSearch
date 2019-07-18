@@ -122,7 +122,7 @@ public class ActivityUnguided extends CameraActivityBase
             int objectIndex;
             do
             {
-                objectIndex = (int)(Math.random()*NUM_OBJECTS + 1);
+                objectIndex = (int)(Math.random()*(NUM_OBJECTS - 1) + 1);
             }while(objectIndex != id);
             id = objectIndex;
         }
