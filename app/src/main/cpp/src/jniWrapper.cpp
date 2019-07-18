@@ -55,6 +55,7 @@ JNIEXPORT bool JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobject obj)
 {
     bool kill = markerDetector->kill();
+    env->DeleteGlobalRef(globalBarcodeInformation);
     delete markerDetector;
 
     return kill;
@@ -82,7 +83,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     }
 
     globalBarcodeInformation = reinterpret_cast<jclass>(env->NewGlobalRef(localBarcodeInformation));
-    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/BarcodeScanner;IFFF)V");
+    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/BarcodeScanner;IFFFFFF)V");
 
     if(constructorBarcodeInformation == nullptr)
     {
@@ -122,7 +123,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     }
     AndroidBitmap_unlockPixels(env, bitmap);*/
 
-    return env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, barcode.ID, barcode.roll, barcode.pitch, barcode.yaw);
+    return env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, barcode.ID, barcode.roll, barcode.pitch, barcode.yaw, barcode.x, barcode.y, barcode.z);
 }
 
 #ifdef __cplusplus

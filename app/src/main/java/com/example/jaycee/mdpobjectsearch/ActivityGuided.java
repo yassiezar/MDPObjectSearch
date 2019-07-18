@@ -4,6 +4,8 @@ import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
 import com.example.jaycee.mdpobjectsearch.guidancetools.pomdp.GuidanceManager;
 import com.google.ar.core.Pose;
 
+import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
+
 public class ActivityGuided extends CameraActivityBase implements GuidanceInterface
 {
     private static final String TAG = ActivityGuided.class.getSimpleName();
@@ -62,9 +64,9 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     }
 
     @Override
-    public void onScanComplete(Objects.Observation observation)
+    public void onScanComplete(BarcodeScanner.BarcodeInformation barcode)
     {
-        this.observation = observation;
+        this.observation = getObservation(barcode.getId());
         if(observation == targetObservation)
         {
             onTargetFound();

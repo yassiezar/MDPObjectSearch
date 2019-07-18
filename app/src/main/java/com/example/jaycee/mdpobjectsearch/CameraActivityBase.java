@@ -238,6 +238,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             onBarcodeScannerStop();
         }
 
+        if(metrics != null)
+        {
+            metrics.stop();
+            metrics = null;
+        }
+
         if(backgroundHandler != null)
         {
             backgroundHandlerThread.quitSafely();
@@ -352,7 +358,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     public void onScanRequest() {}
 
     @Override
-    public void onScanComplete(Objects.Observation obs)
+    public void onScanComplete(BarcodeScanner.BarcodeInformation barcode)
     {}
 
 /*    @Override

@@ -3,6 +3,7 @@
 #include <whycon/common/CRawImage.h>
 
 #include <cstring>
+#include <cmath>
 
 #include <android/log.h>
 #include <jni.h>

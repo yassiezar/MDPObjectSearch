@@ -28,6 +28,7 @@ target_include_directories(MarkerDetector PRIVATE src/main/cpp/include/)
 target_link_libraries(MarkerDetector
                         log
                         jnigraphics
+                        m
                         whycon)
 
 add_library(JNI

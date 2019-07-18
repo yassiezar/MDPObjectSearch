@@ -4,9 +4,13 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 
+import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.CameraIntrinsics;
 
+import java.util.Arrays;
 import java.util.Locale;
+
+import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
 
 public class ActivityUnguided extends CameraActivityBase
 {
@@ -73,9 +77,15 @@ public class ActivityUnguided extends CameraActivityBase
     }
 
     @Override
-    public void onScanComplete(Objects.Observation observation)
+    public void onScanComplete(BarcodeScanner.BarcodeInformation barcode)
     {
-        super.onScanComplete(observation);
+        super.onScanComplete(barcode);
+
+        ClassHelpers.mVector cameraVector = ClassHelpers.getCameraVector(devicePose);
+//        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
+        Log.i(TAG, String.format("ID: %d, angles: %s", barcode.getId(), Arrays.toString(barcode.getAngles())));
+
+        Objects.Observation observation = getObservation(barcode.getId());
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
         if(observation == target)
         {

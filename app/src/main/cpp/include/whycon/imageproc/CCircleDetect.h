@@ -12,6 +12,7 @@
 
 #include <whycon/imageproc/CNecklace.h>
 #include <whycon/common/CRawImage.h>
+// #include <common/CTimer.h>
 #include <whycon/common/cmath.h>
 
 #include <math.h>
