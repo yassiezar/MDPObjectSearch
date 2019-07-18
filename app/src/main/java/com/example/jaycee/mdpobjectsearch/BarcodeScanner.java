@@ -52,13 +52,12 @@ public class BarcodeScanner implements Runnable
     public void run()
     {
         running = true;
-        BarcodeInformation info = new BarcodeInformation(-1, 0, 0, 0, 0, 0, 0);
+        BarcodeInformation info = new BarcodeInformation(-1, false, 0, 0, 0, 0, 0, 0);
         renderer.getScanner().getLock().lock();
-        Log.i(TAG, "Running barcode scanner");
         try
         {
             info = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
-            Log.i(TAG, String.format("Barcode ID: %d angles: %s quaternion: %s", info.getId(), Arrays.toString(info.getAngles()), Arrays.toString(info.getRotationQuaternion())));
+//            Log.i(TAG, String.format("Barcode ID: %d angles: %s quaternion: %s", info.getId(), Arrays.toString(info.getAngles()), Arrays.toString(info.getRotationQuaternion())));
         }
         catch(Exception e)
         {
@@ -68,7 +67,6 @@ public class BarcodeScanner implements Runnable
         {
             renderer.getScanner().getLock().unlock();
         }
-        Log.i(TAG, "Finished barcode scanner");
         running = false;
         barcodeListener.onScanComplete(info);
     }
@@ -98,8 +96,9 @@ public class BarcodeScanner implements Runnable
         private float[] angles = new float[3];
         private float roll, pitch, yaw, x, y, z, d;
         private int id;
+        private boolean valid;
 
-        public BarcodeInformation(int id, float roll, float pitch, float yaw, float x, float y, float z)
+        public BarcodeInformation(int id, boolean valid, float roll, float pitch, float yaw, float x, float y, float z)
         {
             this.id = id;
             this.roll = roll;//+(float)Math.PI/4;
@@ -121,6 +120,7 @@ public class BarcodeScanner implements Runnable
             return id;
         }
         public float[] getAngles() { return angles; }
+        public boolean getValid() { return valid; }
 
         public float[] getRotationQuaternion()
         {
@@ -150,6 +150,11 @@ public class BarcodeScanner implements Runnable
             quat[1] = (float)(Math.sin(yaw/2)*Math.cos(pitch/2)*Math.sin(roll/2) + Math.cos(yaw/2)*Math.sin(pitch/2)*Math.cos(roll/2));
             quat[2] = (float)(Math.sin(yaw/2)*Math.cos(pitch/2)*Math.cos(roll/2) - Math.cos(yaw/2)*Math.sin(pitch/2)*Math.sin(roll/2));
             quat[3] = (float)(Math.cos(yaw/2)*Math.cos(pitch/2)*Math.cos(roll/2) + Math.sin(yaw/2)*Math.sin(pitch/2)*Math.sin(roll/2));
+
+/*            quat[0] = (float)(Math.cos(pitch/2)*Math.cos(roll/2)*Math.sin(yaw/2) - Math.sin(pitch/2)*Math.sin(roll/2)*Math.cos(yaw/2));
+            quat[1] = (float)(Math.sin(pitch/2)*Math.cos(roll/2)*Math.sin(yaw/2) + Math.cos(pitch/2)*Math.sin(roll/2)*Math.cos(yaw/2));
+            quat[2] = (float)(Math.sin(pitch/2)*Math.cos(roll/2)*Math.cos(yaw/2) - Math.cos(pitch/2)*Math.sin(roll/2)*Math.sin(yaw/2));
+            quat[3] = (float)(Math.cos(pitch/2)*Math.cos(roll/2)*Math.cos(yaw/2) + Math.sin(pitch/2)*Math.sin(roll/2)*Math.sin(yaw/2));*/
 
             // Normalise
             float z = 0;

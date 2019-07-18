@@ -83,7 +83,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     }
 
     globalBarcodeInformation = reinterpret_cast<jclass>(env->NewGlobalRef(localBarcodeInformation));
-    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/BarcodeScanner;IFFFFFF)V");
+    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/BarcodeScanner;IZFFFFFF)V");
 
     if(constructorBarcodeInformation == nullptr)
     {
@@ -123,7 +123,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     }
     AndroidBitmap_unlockPixels(env, bitmap);*/
 
-    return env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, barcode.ID, barcode.roll, barcode.pitch, barcode.yaw, barcode.x, barcode.y, barcode.z);
+    return env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, barcode.ID, barcode.valid, barcode.roll, barcode.pitch, barcode.yaw, barcode.x, barcode.y, barcode.z);
 }
 
 #ifdef __cplusplus

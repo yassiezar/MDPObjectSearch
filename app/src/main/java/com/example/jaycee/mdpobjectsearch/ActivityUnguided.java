@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.CameraIntrinsics;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -82,8 +83,8 @@ public class ActivityUnguided extends CameraActivityBase
         super.onScanComplete(barcode);
 
         ClassHelpers.mVector cameraVector = ClassHelpers.getCameraVector(devicePose);
-//        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
-        Log.i(TAG, String.format("ID: %d, angles: %s", barcode.getId(), Arrays.toString(barcode.getAngles())));
+        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
+//        Log.i(TAG, String.format("ID: %d, valid: %b angles: %s quaternion: %s", barcode.getId(), barcode.getValid(), Arrays.toString(barcode.getAngles()), Arrays.toString(barcode.getRotationQuaternion())));
 
         Objects.Observation observation = getObservation(barcode.getId());
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
