@@ -57,6 +57,7 @@ public class BarcodeScanner implements Runnable
         try
         {
             info = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
+//            JNIBridge.drawSurfaceNormal(test, renderer.getScanner().getBuffer(), info);
 //            Log.i(TAG, String.format("Barcode ID: %d angles: %s quaternion: %s", info.getId(), Arrays.toString(info.getAngles()), Arrays.toString(info.getRotationQuaternion())));
         }
         catch(Exception e)

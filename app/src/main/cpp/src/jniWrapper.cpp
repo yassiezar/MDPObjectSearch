@@ -126,6 +126,19 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     return env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, barcode.ID, barcode.valid, barcode.roll, barcode.pitch, barcode.yaw, barcode.x, barcode.y, barcode.z);
 }
 
+JNIEXPORT void JNICALL
+Java_com_example_jaycee_mdpobjectsearch_JNIBridge_drawSurfaceNormal(JNIEnv* env, jobject obj, jobject bitmap, jobject data, jobject barcode)
+{
+    void* rawBytes = env->GetDirectBufferAddress(data);
+
+    if(rawBytes == nullptr)
+    {
+        __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Could not lock on ByteBuffer");
+        return;
+    }
+    auto imageData = reinterpret_cast<unsigned char*>(rawBytes);
+}
+
 #ifdef __cplusplus
 }
 #endif

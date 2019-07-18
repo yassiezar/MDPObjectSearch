@@ -83,7 +83,24 @@ public class ActivityUnguided extends CameraActivityBase
         super.onScanComplete(barcode);
 
         ClassHelpers.mVector cameraVector = ClassHelpers.getCameraVector(devicePose);
-        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
+        cameraVector.normalise();
+        ClassHelpers.mVector markerVector = new ClassHelpers.mVector(barcode.getAngles());
+        markerVector.normalise();
+        markerVector.rotateByQuaternion(devicePose.getRotationQuaternion());
+        markerVector.normalise();
+
+        double angle = cameraVector.getAngleBetweenVectors(markerVector);
+        if(angle > Math.PI/2)
+        {
+            angle -= Math.PI;
+        }
+        else if(angle < -Math.PI/2)
+        {
+            angle += Math.PI;
+        }
+
+        Log.i(TAG, String.format("ID: %d Camera vector: %s marker vector %s angle: %f", barcode.getId(), Arrays.toString(cameraVector.asFloat()), Arrays.toString(markerVector.asFloat()), Math.toDegrees(angle)));
+//        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
 //        Log.i(TAG, String.format("ID: %d, valid: %b angles: %s quaternion: %s", barcode.getId(), barcode.getValid(), Arrays.toString(barcode.getAngles()), Arrays.toString(barcode.getRotationQuaternion())));
 
         Objects.Observation observation = getObservation(barcode.getId());

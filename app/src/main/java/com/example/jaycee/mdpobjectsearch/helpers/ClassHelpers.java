@@ -156,6 +156,7 @@ public final class ClassHelpers
             this.x /= this.length;
             this.y /= this.length;
             this.z /= this.length;
+            this.length = 1.f;
         }
 
         public void denormalise()
@@ -209,6 +210,10 @@ public final class ClassHelpers
             return new float[] {-this.x, this.y, this.z};
         }
 
+        public double getAngleBetweenVectors(mVector v)
+        {
+            return Math.acos(dotProduct(v)/(v.length*this.length));
+        }
     }
 
     public static mVector getCameraVector(Pose pose)
