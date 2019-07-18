@@ -116,7 +116,7 @@ public class ActivityUnguided extends CameraActivityBase
 //        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
 //        Log.i(TAG, String.format("ID: %d, valid: %b angles: %s quaternion: %s", barcode.getId(), barcode.getValid(), Arrays.toString(barcode.getAngles()), Arrays.toString(barcode.getRotationQuaternion())));
 
-        double classifierNoise = 0.25;
+        double classifierNoise = getQualitySetting()*0.15;
         if(id != 0 && Math.random() < classifierNoise)
         {
             int objectIndex;

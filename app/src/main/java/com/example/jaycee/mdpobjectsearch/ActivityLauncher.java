@@ -1,12 +1,11 @@
 package com.example.jaycee.mdpobjectsearch;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Switch;
+import android.widget.SeekBar;
 
 import com.example.jaycee.mdpobjectsearch.helpers.PermissionHelper;
 
@@ -16,7 +15,7 @@ public class ActivityLauncher extends AppCompatActivity
     private static final int ACTIVITY_UNGUIDED = 2;
 
     private int activityToLaunch = -1;
-    private boolean highQuality = false;
+    private int qualitySetting = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,7 +23,7 @@ public class ActivityLauncher extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        Switch qualitySwitch = findViewById(R.id.quality_switch);
+/*        Switch qualitySwitch = findViewById(R.id.quality_switch);
         qualitySwitch.setOnCheckedChangeListener((view, isChecked) ->
         {
             if(isChecked)
@@ -35,6 +34,26 @@ public class ActivityLauncher extends AppCompatActivity
             {
                 highQuality = false;
             }
+        });*/
+
+        SeekBar seekBar = findViewById(R.id.quality_seekbar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                switch (progress)
+                {
+                    case 1: qualitySetting = 1; break;
+                    case 2: qualitySetting = 2; break;
+                    default: qualitySetting = 0;
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar){}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar){}
         });
 
         findViewById(R.id.button_guided).setOnClickListener(view ->
@@ -46,7 +65,7 @@ public class ActivityLauncher extends AppCompatActivity
                 return;
             }
             Intent intent = new Intent(ActivityLauncher.this, ActivityGuided.class);
-            intent.putExtra("ADD_NOISE", highQuality);
+            intent.putExtra("ADD_NOISE", qualitySetting);
             startActivity(intent);
         });
         findViewById(R.id.button_unguided).setOnClickListener(view ->
@@ -58,7 +77,7 @@ public class ActivityLauncher extends AppCompatActivity
                 return;
             }
             Intent intent = new Intent(ActivityLauncher.this, ActivityUnguided.class);
-            intent.putExtra("ADD_NOISE", highQuality);
+            intent.putExtra("ADD_NOISE", qualitySetting);
             startActivity(intent);
         });
     }

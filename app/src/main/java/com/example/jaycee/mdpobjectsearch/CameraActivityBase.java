@@ -34,6 +34,8 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
+import java.nio.IntBuffer;
+
 public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeScanner.BarcodeListener, RenderListener
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
@@ -62,6 +64,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected long frameTimestamp;
 
     protected int imageWidth, imageHeight;
+    private int qualitySetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -71,7 +74,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Intent intent = getIntent();
-        highQualityScanner = intent.getBooleanExtra("ADD_NOISE", false);
+//        highQualityScanner = intent.getBooleanExtra("ADD_NOISE", false);
+        qualitySetting = intent.getIntExtra("ADD_NOISE", 0);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -470,6 +474,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             metrics = null;
         }
     }
+
+    public int getQualitySetting() { return qualitySetting; }
 
     protected Session getSession() { return this.session; }
     protected CameraSurface getCameraSurface() { return this.surfaceView; }
