@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
+import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.NUM_OBJECTS;
 
 public class ActivityUnguided extends CameraActivityBase
 {
@@ -102,19 +103,29 @@ public class ActivityUnguided extends CameraActivityBase
         double mean = 0.0;
         double std = Math.PI/6;
         double max = 1.0/(std*Math.sqrt(2*Math.PI));
-        double noise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
+        double detectionNoise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
         int id = barcode.getId();
 
-        double sample = Math.random();
-        if(sample > noise)
+        if(id != 0 && Math.random() > detectionNoise)
         {
             id = 0;
         }
 
-        Log.i(TAG, String.format("ID: %d angle: %f noise %f", id, angle, noise/max));
+        Log.i(TAG, String.format("ID: %d angle: %f noise %f", id, angle, detectionNoise/max));
 //        Log.i(TAG, String.format("ID: %d Camera vector: %s marker vector %s", barcode.getId(), Arrays.toString(cameraVector.asFloat()), Arrays.toString(markerVector.asFloat())));
 //        Log.i(TAG, String.format("ID: %d, Surface normal: %s Quaternion: %s", barcode.getId(), Arrays.toString(barcode.getSurfaceNormal().asFloat()), Arrays.toString(barcode.getRotationQuaternion())));
 //        Log.i(TAG, String.format("ID: %d, valid: %b angles: %s quaternion: %s", barcode.getId(), barcode.getValid(), Arrays.toString(barcode.getAngles()), Arrays.toString(barcode.getRotationQuaternion())));
+
+        double classifierNoise = 0.25;
+        if(id != 0 && Math.random() < classifierNoise)
+        {
+            int objectIndex;
+            do
+            {
+                objectIndex = (int)(Math.random()*NUM_OBJECTS + 1);
+            }while(objectIndex != id);
+            id = objectIndex;
+        }
 
         Objects.Observation observation = getObservation(id);
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
