@@ -3,6 +3,7 @@ package com.example.jaycee.mdpobjectsearch.rendering;
 import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.Pose;
 
+@Deprecated
 public class ARObject
 {
     private static final float ANGLE_INTERVAL = 12f;
