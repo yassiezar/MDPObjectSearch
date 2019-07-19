@@ -40,9 +40,10 @@ public class Objects
 
     public static Objects.Observation getObservation(int code)
     {
+        // Updated for markers
         switch(code)
         {
-            case 0: return Observation.O_NOTHING;
+/*            case 0: return Observation.O_NOTHING;
             case 1: return Observation.T_COMPUTER_MONITOR;
             case 2: return Observation.T_COMPUTER_KEYBOARD;
             case 3: return Observation.T_COMPUTER_MOUSE;
@@ -58,7 +59,24 @@ public class Objects
             case 13: return Observation.T_TELEPHONE;
             case 14: return Observation.T_WHITEBOARD;
             case 15: return Observation.T_DOOR;
-            default: return Observation.UNDEFINED;
+            default: return Observation.UNDEFINED;*/
+            case 0: return Observation.O_NOTHING;
+            case 7: return Observation.T_COMPUTER_MONITOR;
+            case 14: return Observation.T_COMPUTER_KEYBOARD;
+            case 19: return Observation.T_COMPUTER_MOUSE;
+            case 20: return Observation.T_DOOR;
+            case 21: return Observation.T_WHITEBOARD;
+            case 24: return Observation.T_DESK;
+            case 27: return Observation.T_WINDOW;
+            case 28: return Observation.T_PLANT;
+//            case 29: return Observation.T_COMPUTER_MONITOR;
+/*            case 10: return Observation.T_CHAIR;
+            case 11: return Observation.T_COUCH;
+            case 12: return Observation.T_PLANT;
+            case 13: return Observation.T_TELEPHONE;
+            case 14: return Observation.T_WHITEBOARD;
+            case 15: return Observation.T_DOOR;*/
+            default: return Observation.O_NOTHING;
         }
     }
 }
