@@ -41,7 +41,7 @@ public class GuidanceManager implements Runnable
 
     private Objects.Observation observation = Objects.Observation.O_NOTHING;
 
-    public GuidanceManager(Session session, Pose pose, Context context, Objects.Observation target)
+    public GuidanceManager(Session session, Pose pose, Context context, Objects.Observation target, int noise)
     {
         this.guidanceInterface = (GuidanceInterface)context;
 
@@ -52,7 +52,7 @@ public class GuidanceManager implements Runnable
         this.policy = new Policy(context);
         this.model = new Model(context, target);
         this.belief = new Belief(model);
-        this.policy.setTarget(target);
+        this.policy.setTarget(target, noise);
 
         this.soundGenerator = new SoundGenerator();
 

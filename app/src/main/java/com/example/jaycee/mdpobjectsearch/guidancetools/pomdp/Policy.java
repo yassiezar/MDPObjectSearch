@@ -30,18 +30,20 @@ public class Policy
         this.context = context;
     }
 
-    public boolean setTarget(Objects.Observation target)
+    public boolean setTarget(Objects.Observation target, int noise)
     {
         int numStates = NUM_STATES;
 
         ArrayList<ArrayList<VEntry>> policy = new ArrayList<>();
         ArrayList<VEntry> horizon;
 
+        String quality = String.valueOf(100-noise);
+
         Scanner reader = null;
         try
         {
             /* TODO: add option to select scanner quality */
-            String fileName = "POMDPPolicies/100/" + target.getFileName();
+            String fileName = "POMDPPolicies/" + quality + "/" + target.getFileName();
             reader = new Scanner(new InputStreamReader(context.getAssets().open(fileName)));
             reader.useDelimiter("\\n");
 

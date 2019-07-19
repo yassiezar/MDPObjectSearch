@@ -18,7 +18,10 @@ public class Metrics implements Runnable
     private static final String TAG = Metrics.class.getSimpleName();
     private static final String DELIMITER = ",";
 
-    private WifiDataSend dataStreamer = null;
+    private static final String SERVER_IP = "10.5.42.29";
+    private static final int PORT = 6666;
+
+//    private WifiDataSend dataStreamer = null;
 
     private double timestamp;
     private double waypointX, waypointY, waypointZ;
@@ -54,11 +57,39 @@ public class Metrics implements Runnable
                 deviceQz + DELIMITER +
                 deviceQw + DELIMITER;
 
-        if(dataStreamer == null ||
+/*        if(dataStreamer == null ||
                 dataStreamer.getStatus() != AsyncTask.Status.RUNNING)
         {
             dataStreamer = new WifiDataSend();
             dataStreamer.execute(wifiString);
+        }*/
+
+        try
+        {
+            Socket socket = new Socket(SERVER_IP, PORT);
+            OutputStream stream = socket.getOutputStream();
+            PrintWriter writer = new PrintWriter(stream);
+
+            int bufferLen = 1024;
+            char[] tempBuffer = new char[bufferLen];
+
+            BufferedReader bufferedReader = new BufferedReader(new StringReader(wifiString));
+
+            Log.d(TAG, "Writing to WiFi");
+            while(bufferedReader.read(tempBuffer, 0, bufferLen) != -1)
+            {
+                writer.print(tempBuffer);
+            }
+            writer.write("\n");
+
+            writer.flush();
+            writer.close();
+
+            socket.close();
+        }
+        catch(IOException e)
+        {
+            Log.e(TAG, "Wifi write error: ", e);
         }
 
         handler.postDelayed(this, 40);
@@ -101,7 +132,7 @@ public class Metrics implements Runnable
     public void updateFilteredObservation(Objects.Observation observation) { this.filteredObservation = observation; }
     public void updateTarget (Objects.Observation target) { this.target = target; }
 
-    private static class WifiDataSend extends AsyncTask<String, Void, Void>
+/*    private static class WifiDataSend extends AsyncTask<String, Void, Void>
     {
         private String serverIdAddress = "10.5.42.29";
         private int connectionPort = 6666;
@@ -141,5 +172,5 @@ public class Metrics implements Runnable
 
             return null;
         }
-    }
+    }*/
 }

@@ -43,7 +43,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
 
         targetObservation = target;
 
-        guidanceManager = new GuidanceManager(getSession(), devicePose, ActivityGuided.this, target);
+        guidanceManager = new GuidanceManager(getSession(), devicePose, ActivityGuided.this, target, getQualitySetting());
         guidanceManager.start();
 
         setDrawWaypoint(true);
