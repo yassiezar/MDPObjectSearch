@@ -1,10 +1,14 @@
 package com.example.jaycee.mdpobjectsearch;
 
+import android.util.Log;
+
 import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
 import com.example.jaycee.mdpobjectsearch.guidancetools.pomdp.GuidanceManager;
+import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.Pose;
 
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
+import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.NUM_OBJECTS;
 
 public class ActivityGuided extends CameraActivityBase implements GuidanceInterface
 {
@@ -66,7 +70,50 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     @Override
     public void onScanComplete(BarcodeScanner.BarcodeInformation barcode)
     {
-        this.observation = getObservation(barcode.getId());
+        super.onScanComplete(barcode);
+
+        ClassHelpers.mVector cameraVector = ClassHelpers.getCameraVector(devicePose);
+        cameraVector.normalise();
+        ClassHelpers.mVector markerVector = new ClassHelpers.mVector(barcode.getAngles());
+        markerVector.normalise();
+        markerVector.rotateByQuaternion(devicePose.getRotationQuaternion());
+        markerVector.normalise();
+
+        double angle = cameraVector.getAngleBetweenVectors(markerVector);
+        if(angle > Math.PI/2)
+        {
+            angle -= Math.PI;
+        }
+        else if(angle < -Math.PI/2)
+        {
+            angle += Math.PI;
+        }
+
+        double mean = 0.0;
+        double std = Math.PI/6;
+        double max = 1.0/(std*Math.sqrt(2*Math.PI));
+        double detectionNoise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
+        int id = barcode.getId();
+
+        if(id != 0 && Math.random() > detectionNoise)
+        {
+            id = 0;
+        }
+
+        Log.i(TAG, String.format("ID: %d angle: %f noise %f", id, angle, detectionNoise/max));
+
+        double classifierNoise = getQualitySetting()*NOISE_INTERVAL;
+        if(id != 0 && Math.random() < classifierNoise)
+        {
+            int objectIndex;
+            do
+            {
+                objectIndex = (int)(Math.random()*(NUM_OBJECTS - 1) + 1);
+            }while(objectIndex != id);
+            id = objectIndex;
+        }
+
+        this.observation = getObservation(id);
         if(observation == targetObservation)
         {
             onTargetFound();

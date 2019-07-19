@@ -3,13 +3,10 @@ package com.example.jaycee.mdpobjectsearch;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Vibrator;
-import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.CameraIntrinsics;
@@ -34,11 +30,10 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
-import java.nio.IntBuffer;
-
 public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeScanner.BarcodeListener, RenderListener
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
+    protected static final double NOISE_INTERVAL = 0.25;
 
     private CameraSurface surfaceView;
     private DrawerLayout drawerLayout;
@@ -57,7 +52,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected BarcodeScanner barcodeScanner;
 
     private boolean requestARCoreInstall = true;
-    private boolean highQualityScanner = false;
     private boolean targetSet = false;
 
     private long currentTimestamp, startTimestamp;
@@ -278,53 +272,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         }
         return super.onOptionsItemSelected(item);
     }
-
-/*    @Override
-    public Objects.Observation onBarcodeCodeRequest()
-    {
-        if(scannerHandler != null && !barcodeScanner.isRunning())
-        {
-            scannerHandler.post(barcodeScanner);
-        }
-
-        Objects.Observation scannedObject = Objects.Observation.O_NOTHING;
-        if(barcodeScanner != null)
-        {
-            scannedObject = Objects.getObservation(barcodeScanner.getCode());
-        }
-
-        if(metrics != null)
-        {
-            metrics.updateObservation(scannedObject.getCode());
-        }
-
-        if(scannedObject != Objects.Observation.O_NOTHING)
-        {
-            if (toast != null)
-            {
-                toast.cancel();
-            }
-            toast = Toast.makeText(this, scannedObject.getFriendlyName(), Toast.LENGTH_SHORT);
-            toast.show();
-        }
-
-        return scannedObject;
-    }*/
-
-/*    @Override
-    public void onBarcodeScannerStart()
-    {
-        scannerHandlerThread = new HandlerThread("BarcodeScanner thread");
-        scannerHandlerThread.start();
-        scannerHandler = new Handler(scannerHandlerThread.getLooper());
-
-        // TODO: Replace distortion matrix with real one
-        float[] distortionMatrix = new float[] {1.f, 0.00486219f, -0.44772422f, -0.01138138f, 0.0291972f, 0.70109351f};
-
-        Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(intrinsics.getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
-        barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), intrinsics.getFocalLength(), intrinsics.getPrincipalPoint(), distortionMatrix);
-        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
-    }*/
 
     @Override
     public void onBarcodeScannerStop()
