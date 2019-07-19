@@ -30,6 +30,9 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
+import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
+import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.SEARCH_TIME_LIMIT;
+
 public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeScanner.BarcodeListener, RenderListener
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
@@ -48,7 +51,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     protected Pose devicePose;
     private CameraIntrinsics intrinsics;
 
-    private Metrics metrics;
+    protected Metrics metrics;
     protected BarcodeScanner barcodeScanner;
 
     private boolean requestARCoreInstall = true;
@@ -68,7 +71,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Intent intent = getIntent();
-//        highQualityScanner = intent.getBooleanExtra("ADD_NOISE", false);
         qualitySetting = intent.getIntExtra("ADD_NOISE", 0);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -300,9 +302,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         scannerHandlerThread.start();
         scannerHandler = new Handler(scannerHandlerThread.getLooper());
 
-//        Log.i(TAG, "Focal len: %f principle point: %f" + Arrays.toString(getIntrinsics().getFocalLength()) + Arrays.toString(intrinsics.getPrincipalPoint()));
         barcodeScanner = new BarcodeScanner(this, getCameraSurface().getRenderer(), intrinsics, imageWidth, imageHeight);
-        // barcodeScanner = new BarcodeScanner(1440, 2280, surfaceView.getRenderer(), new float[] {5522.19584f, 5496.99633f}, new float[] {2723.53276f, 2723.53276f}, distortionMatrix);    // Params measures from opencv calibration procedure
     }
 
     @Override
@@ -310,7 +310,9 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
 
     @Override
     public void onScanComplete(BarcodeScanner.BarcodeInformation barcode)
-    {}
+    {
+        metrics.updateRawObservation(getObservation(barcode.getId()));
+    }
 
 /*    @Override
     public void onPreviewRequest()
@@ -351,12 +353,15 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
                 startTimestamp = currentTimestamp;
             }
 
-            if(currentTimestamp - startTimestamp > 180000)
+            if(currentTimestamp - startTimestamp > SEARCH_TIME_LIMIT)
             {
                 finish();
             }
 
             devicePose = newFrame.getCamera().getPose();
+            metrics.updateDevicePose(devicePose);
+            metrics.updateTimestamp(frameTimestamp);
+
             intrinsics = newFrame.getCamera().getImageIntrinsics();
 
             if(targetSet)

@@ -24,7 +24,7 @@ public class Metrics implements Runnable
     private double waypointX, waypointY, waypointZ;
     private double deviceX, deviceY, deviceZ;
     private double deviceQx, deviceQy, deviceQz, deviceQw;
-    private long observation;
+    private Objects.Observation rawObservation, filteredObservation;
     private Objects.Observation target;
 
     private Handler handler = new Handler();
@@ -39,20 +39,20 @@ public class Metrics implements Runnable
             return;
         }
 
-        String wifiString = String.valueOf(timestamp) + DELIMITER +
-                String.valueOf(observation) + DELIMITER +
-//                String.valueOf(targetObservation) + DELIMITER +
-                String.valueOf(target.getCode()) + DELIMITER +
-                String.valueOf(waypointX) + DELIMITER +
-                String.valueOf(waypointY) + DELIMITER +
-                String.valueOf(waypointZ) + DELIMITER +
-                String.valueOf(deviceX) + DELIMITER +
-                String.valueOf(deviceY) + DELIMITER +
-                String.valueOf(deviceZ) + DELIMITER +
-                String.valueOf(deviceQx) + DELIMITER +
-                String.valueOf(deviceQy) + DELIMITER +
-                String.valueOf(deviceQz) + DELIMITER +
-                String.valueOf(deviceQw) + DELIMITER;
+        String wifiString = timestamp + DELIMITER +
+                rawObservation.getCode() + DELIMITER +
+                filteredObservation.getCode() + DELIMITER +
+                target.getCode() + DELIMITER +
+                waypointX + DELIMITER +
+                waypointY + DELIMITER +
+                waypointZ + DELIMITER +
+                deviceX + DELIMITER +
+                deviceY + DELIMITER +
+                deviceZ + DELIMITER +
+                deviceQx + DELIMITER +
+                deviceQy + DELIMITER +
+                deviceQz + DELIMITER +
+                deviceQw + DELIMITER;
 
         if(dataStreamer == null ||
                 dataStreamer.getStatus() != AsyncTask.Status.RUNNING)
@@ -97,7 +97,8 @@ public class Metrics implements Runnable
         deviceQw = q[3];
     }
 
-    public void updateObservation(long observation) { this.observation = observation; }
+    public void updateRawObservation(Objects.Observation observation) { this.rawObservation = observation; }
+    public void updateFilteredObservation(Objects.Observation observation) { this.filteredObservation = observation; }
     public void updateTarget (Objects.Observation target) { this.target = target; }
 
     private static class WifiDataSend extends AsyncTask<String, Void, Void>

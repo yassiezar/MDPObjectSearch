@@ -114,6 +114,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         }
 
         this.observation = getObservation(id);
+        metrics.updateFilteredObservation(observation);
         if(observation == targetObservation)
         {
             onTargetFound();
@@ -151,7 +152,10 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     {
         if(guidanceManager != null)
         {
-            return guidanceManager.getWaypointPose();
+            Pose waypointPose = guidanceManager.getWaypointPose();
+            metrics.updateWaypointPosition(waypointPose);
+
+            return waypointPose;
         }
         return null;
     }

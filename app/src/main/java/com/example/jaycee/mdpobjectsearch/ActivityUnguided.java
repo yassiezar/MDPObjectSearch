@@ -125,6 +125,7 @@ public class ActivityUnguided extends CameraActivityBase
         }
 
         Objects.Observation observation = getObservation(id);
+        metrics.updateFilteredObservation(observation);
         tts.speak(observation.getFriendlyName(), TextToSpeech.QUEUE_ADD, null, "");
         if(observation == target)
         {

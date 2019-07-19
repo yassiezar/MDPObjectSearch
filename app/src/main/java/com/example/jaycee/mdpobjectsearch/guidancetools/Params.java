@@ -11,7 +11,7 @@ public final class Params
     public static final int A_LEFT = 2;
     public static final int A_RIGHT = 3;
 
-    public static final long SEARCH_TIME_LIMIT = 180000;
+    public static final long SEARCH_TIME_LIMIT = 120000;
     public static final int HORIZON_DISTANCE = 6;
 
     public static final int NUM_OBJECTS = 15;
