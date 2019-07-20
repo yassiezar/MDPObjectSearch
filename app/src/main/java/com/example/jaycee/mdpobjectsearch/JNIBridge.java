@@ -3,7 +3,6 @@ package com.example.jaycee.mdpobjectsearch;
 import android.graphics.Bitmap;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 public class JNIBridge
 {
@@ -18,7 +17,7 @@ public class JNIBridge
 
     public static native boolean initDetector(int width, int height, float[] focalLength, float[] principlePoint, float[] distortionMatrix);
     public static native boolean killDetector();
-    public static native BarcodeScanner.BarcodeInformation processImage(Bitmap bitmap, ByteBuffer data);
-    public static native void drawSurfaceNormal(Bitmap bitmap, ByteBuffer buffer, BarcodeScanner.BarcodeInformation info);
+    public static native MarkerScanner.MarkerInformation[] processImage(Bitmap bitmap, ByteBuffer data);
+    public static native void drawSurfaceNormal(Bitmap bitmap, ByteBuffer buffer, MarkerScanner.MarkerInformation info);
     public static native boolean getBitmap(Bitmap bitmap, ByteBuffer data, int width, int height, int bpp);
 }

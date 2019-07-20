@@ -33,7 +33,7 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
 import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.SEARCH_TIME_LIMIT;
 
-public abstract class CameraActivityBase extends AppCompatActivity implements BarcodeScanner.BarcodeListener, RenderListener
+public abstract class CameraActivityBase extends AppCompatActivity implements MarkerScanner.ScannerListener, RenderListener
 {
     private static final String TAG = CameraActivityBase.class.getSimpleName();
     protected static final double NOISE_INTERVAL = 0.25;
@@ -52,7 +52,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     private CameraIntrinsics intrinsics;
 
     protected Metrics metrics;
-    protected BarcodeScanner barcodeScanner;
+    protected MarkerScanner markerScanner;
 
     private boolean requestARCoreInstall = true;
     private boolean targetSet = false;
@@ -231,11 +231,11 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             session.pause();
         }
 
-        if(barcodeScanner != null)
+        if(markerScanner != null)
         {
-            barcodeScanner.stop();
-            barcodeScanner = null;
-            onBarcodeScannerStop();
+            markerScanner.stop();
+            markerScanner= null;
+            onScannerStop();
         }
 
         if(metrics != null)
@@ -276,7 +276,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     }
 
     @Override
-    public void onBarcodeScannerStop()
+    public void onScannerStop()
     {
         if(scannerHandler != null)
         {
@@ -296,22 +296,28 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
     }
 
     @Override
-    public void onBarcodeScannerStart(CameraIntrinsics intrinsics)
+    public void onScannerStart(CameraIntrinsics intrinsics)
     {
         scannerHandlerThread = new HandlerThread("BarcodeScanner thread");
         scannerHandlerThread.start();
         scannerHandler = new Handler(scannerHandlerThread.getLooper());
 
-        barcodeScanner = new BarcodeScanner(this, getCameraSurface().getRenderer(), intrinsics, imageWidth, imageHeight);
+        markerScanner = new MarkerScanner(this, getCameraSurface().getRenderer(), intrinsics, imageWidth, imageHeight);
     }
 
     @Override
     public void onScanRequest() {}
 
     @Override
-    public void onScanComplete(BarcodeScanner.BarcodeInformation barcode)
+    public void onScanComplete(MarkerScanner.MarkerInformation[] markers)
     {
-        metrics.updateRawObservation(getObservation(barcode.getId()));
+        if(metrics != null)
+        {
+            for(MarkerScanner.MarkerInformation marker : markers)
+            {
+                metrics.addRawObservation(getObservation(marker.getId()));
+            }
+        }
     }
 
 /*    @Override
@@ -359,8 +365,12 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
             }
 
             devicePose = newFrame.getCamera().getPose();
-            metrics.updateDevicePose(devicePose);
-            metrics.updateTimestamp(frameTimestamp);
+
+            if(metrics != null)
+            {
+                metrics.updateDevicePose(devicePose);
+                metrics.updateTimestamp(frameTimestamp);
+            }
 
             intrinsics = newFrame.getCamera().getImageIntrinsics();
 
@@ -412,7 +422,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ba
         metrics.run();
 
         targetSet = true;
-        onBarcodeScannerStart(intrinsics);
+        onScannerStart(intrinsics);
     }
 
     public void onTargetFound()

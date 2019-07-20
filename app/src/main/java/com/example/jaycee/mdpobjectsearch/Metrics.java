@@ -12,6 +12,11 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
 
 public class Metrics implements Runnable
 {
@@ -21,13 +26,14 @@ public class Metrics implements Runnable
     private static final String SERVER_IP = "10.5.42.29";
     private static final int PORT = 6666;
 
-//    private WifiDataSend dataStreamer = null;
+    private WifiDataSend dataStreamer = null;
 
     private double timestamp;
     private double waypointX, waypointY, waypointZ;
     private double deviceX, deviceY, deviceZ;
     private double deviceQx, deviceQy, deviceQz, deviceQw;
-    private Objects.Observation rawObservation, filteredObservation;
+    private ArrayList<Objects.Observation> rawObservations = new ArrayList<>();// = Objects.Observation.O_NOTHING;
+    private ArrayList<Objects.Observation> filteredObservations = new ArrayList<>();// = Objects.Observation.O_NOTHING;
     private Objects.Observation target;
 
     private Handler handler = new Handler();
@@ -42,9 +48,11 @@ public class Metrics implements Runnable
             return;
         }
 
+        String rawObs = rawObservations.isEmpty() ? "0;" : rawObservations.stream().map(Objects.Observation::toString).collect(Collectors.joining(";"));
+        String filteredObs = filteredObservations.isEmpty() ? "0;" : filteredObservations.stream().map(Objects.Observation::toString).collect(Collectors.joining(";"));
         String wifiString = timestamp + DELIMITER +
-                rawObservation.getCode() + DELIMITER +
-                filteredObservation.getCode() + DELIMITER +
+                rawObs + DELIMITER +
+                filteredObs + DELIMITER +
                 target.getCode() + DELIMITER +
                 waypointX + DELIMITER +
                 waypointY + DELIMITER +
@@ -57,14 +65,17 @@ public class Metrics implements Runnable
                 deviceQz + DELIMITER +
                 deviceQw + DELIMITER;
 
-/*        if(dataStreamer == null ||
+        rawObservations.clear();
+        filteredObservations.clear();
+
+        if(dataStreamer == null ||
                 dataStreamer.getStatus() != AsyncTask.Status.RUNNING)
         {
             dataStreamer = new WifiDataSend();
             dataStreamer.execute(wifiString);
-        }*/
+        }
 
-        try
+/*        try
         {
             Socket socket = new Socket(SERVER_IP, PORT);
             OutputStream stream = socket.getOutputStream();
@@ -90,7 +101,7 @@ public class Metrics implements Runnable
         catch(IOException e)
         {
             Log.e(TAG, "Wifi write error: ", e);
-        }
+        }*/
 
         handler.postDelayed(this, 40);
     }
@@ -128,15 +139,30 @@ public class Metrics implements Runnable
         deviceQw = q[3];
     }
 
-    public void updateRawObservation(Objects.Observation observation) { this.rawObservation = observation; }
-    public void updateFilteredObservation(Objects.Observation observation) { this.filteredObservation = observation; }
+    public void addRawObservation(Objects.Observation observation)
+    {
+        rawObservations.add(observation);
+/*        Objects.Observation[] observations = new Objects.Observation[markers.length];
+        for(int i = 0; i < observations.length; i++)
+        {
+            observations[i] = getObservation(markers[i].getId());
+        }
+        this.rawObservations = observations;*/
+    }
+    public void addFilteredObservation(Objects.Observation observation)
+    {
+        filteredObservations.add(observation);
+/*        Objects.Observation[] observations = new Objects.Observation[markers.length];
+        for(int i = 0; i < observations.length; i++)
+        {
+            observations[i] = getObservation(markers[i].getId());
+        }
+        this.filteredObservations = observations;*/
+    }
     public void updateTarget (Objects.Observation target) { this.target = target; }
 
-/*    private static class WifiDataSend extends AsyncTask<String, Void, Void>
+    private static class WifiDataSend extends AsyncTask<String, Void, Void>
     {
-        private String serverIdAddress = "10.5.42.29";
-        private int connectionPort = 6666;
-
         public WifiDataSend() { }
 
         @Override
@@ -144,7 +170,7 @@ public class Metrics implements Runnable
         {
             try
             {
-                Socket socket = new Socket(serverIdAddress, connectionPort);
+                Socket socket = new Socket(SERVER_IP, PORT);
                 OutputStream stream = socket.getOutputStream();
                 PrintWriter writer = new PrintWriter(stream);
 
@@ -172,5 +198,5 @@ public class Metrics implements Runnable
 
             return null;
         }
-    }*/
+    }
 }

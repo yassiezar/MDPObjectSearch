@@ -8,7 +8,7 @@
 #include <android/log.h>
 #include <jni.h>
 
-#define MAX_IDS 1
+#define MAX_IDS 8
 #define MARKERLOG "MarkerDetector"
 #define NOTHING 0
 
@@ -23,15 +23,14 @@ namespace MarkerDetector
         bool init(float *focalLen, float *principalPoint, float *distortionMatrix);
         bool kill();
 
-        STrackedObject processImage(unsigned char* data);
+        std::vector<STrackedObject> processImage(unsigned char *data);
         const int getImageWidth() { return imageWidth; }
         const int getImageHeight() { return imageHeight; }
 
     private:
         CCircleDetect* patternDetectors[MAX_IDS];
-        SSegment currentSegmentArray[MAX_IDS];
-        SSegment lastSegmentArray[MAX_IDS];
-        STrackedObject objectArray[MAX_IDS];
+         SSegment currentSegmentArray[MAX_IDS];
+         SSegment lastSegmentArray[MAX_IDS];
 
         CTransformation* trans;
         CRawImage* image;

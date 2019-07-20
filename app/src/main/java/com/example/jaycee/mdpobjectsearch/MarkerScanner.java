@@ -8,33 +8,29 @@ import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import com.example.jaycee.mdpobjectsearch.rendering.SurfaceRenderer;
 import com.google.ar.core.CameraIntrinsics;
 
-import java.util.Arrays;
-
-import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
-
-public class BarcodeScanner implements Runnable
+public class MarkerScanner implements Runnable
 {
-    private static final String TAG = BarcodeScanner.class.getSimpleName();
+    private static final String TAG = MarkerScanner.class.getSimpleName();
 
     private Bitmap test;
 
     private SurfaceRenderer renderer;
-    private BarcodeListener barcodeListener;
+    private ScannerListener scannerListener;
 
     private boolean running = false;
 
-    public interface BarcodeListener
+    public interface ScannerListener
     {
-        void onBarcodeScannerStart(CameraIntrinsics intrinsics);
-        void onBarcodeScannerStop();
+        void onScannerStart(CameraIntrinsics intrinsics);
+        void onScannerStop();
         void onScanRequest();
-        void onScanComplete(BarcodeInformation barcode);
+        void onScanComplete(MarkerInformation[] barcode);
     }
 
-    public BarcodeScanner(Context context, SurfaceRenderer renderer, CameraIntrinsics intrinsics, int scannerWidth, int scannerHeight)
+    public MarkerScanner(Context context, SurfaceRenderer renderer, CameraIntrinsics intrinsics, int scannerWidth, int scannerHeight)
     {
         this.renderer = renderer;
-        this.barcodeListener = (BarcodeListener)context;
+        this.scannerListener = (ScannerListener) context;
 
         this.test = Bitmap.createBitmap(scannerWidth, scannerHeight, Bitmap.Config.ARGB_8888);
 
@@ -52,13 +48,14 @@ public class BarcodeScanner implements Runnable
     public void run()
     {
         running = true;
-        BarcodeInformation info = new BarcodeInformation(-1, false, 0, 0, 0, 0, 0, 0);
+        MarkerInformation[] info;
         renderer.getScanner().getLock().lock();
         try
         {
             info = JNIBridge.processImage(test, renderer.getScanner().getBuffer());
 //            JNIBridge.drawSurfaceNormal(test, renderer.getScanner().getBuffer(), info);
 //            Log.i(TAG, String.format("Barcode ID: %d angles: %s quaternion: %s", info.getId(), Arrays.toString(info.getAngles()), Arrays.toString(info.getRotationQuaternion())));
+            scannerListener.onScanComplete(info);
         }
         catch(Exception e)
         {
@@ -69,7 +66,6 @@ public class BarcodeScanner implements Runnable
             renderer.getScanner().getLock().unlock();
         }
         running = false;
-        barcodeListener.onScanComplete(info);
     }
 
     public void stop()
@@ -92,14 +88,14 @@ public class BarcodeScanner implements Runnable
         return this.test;
     }
 
-    public class BarcodeInformation
+    public class MarkerInformation
     {
         private float[] angles = new float[3];
         private float roll, pitch, yaw, x, y, z, d;
         private int id;
         private boolean valid;
 
-        public BarcodeInformation(int id, boolean valid, float roll, float pitch, float yaw, float x, float y, float z)
+        public MarkerInformation(int id, boolean valid, float roll, float pitch, float yaw, float x, float y, float z)
         {
             this.id = id;
             this.roll = roll;//+(float)Math.PI/4;

@@ -49,11 +49,12 @@ namespace MarkerDetector
         return 0;
     }
 
-    STrackedObject MarkerDetector::processImage(unsigned char *data)
+    std::vector<STrackedObject> MarkerDetector::processImage(unsigned char *data)
     {
         // Copy in new image data
         image->data = data;
 
+        std::vector<STrackedObject> markers;
         // Track markers found in previous search
         for(int i = 0; i < MAX_IDS; i ++)
         {
@@ -81,25 +82,27 @@ namespace MarkerDetector
         }
 
         // Perform coordinate transformation
-        for(int i = 0; i < MAX_IDS; i++)
+//        for(int i = 0; i < MAX_IDS; i++)
+        for(auto segment : currentSegmentArray)
         {
-            if(currentSegmentArray[i].valid)
+            if(segment.valid)
             {
+                markers.push_back(trans->transform(segment));
 //                 __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "Transforming tracked markers");
-                objectArray[i] = trans->transform(currentSegmentArray[i]);
+//                objectArray[i] = trans->transform(currentSegmentArray[i]);
 //                __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "ID: %d angle: %f, %f, %f norm: %f", objectArray[i].ID, objectArray[i].roll, objectArray[i].pitch, objectArray[i].yaw, sqrt(objectArray[i].roll*objectArray[i].roll + objectArray[i].pitch*objectArray[i].pitch + objectArray[i].yaw*objectArray[i].yaw));
             }
-            else
+/*            else
             {
                  objectArray[i].ID = NOTHING;
-            }
+            }*/
         }
 
 /*        if(currentSegmentArray[0].valid)
         {
         }*/
         // __android_log_print(ANDROID_LOG_INFO, MARKERLOG, "new track: Segment %d coords: %f, %f, %f, %f angle: %f, %f, %f", objectArray[0].ID, objectArray[0].x, objectArray[0].y, objectArray[0].z, objectArray[0].d, objectArray[0].roll, objectArray[0].pitch, objectArray[0].yaw);
-        return objectArray[0];
+        return markers;
         //return NOTHING;
     }
 }

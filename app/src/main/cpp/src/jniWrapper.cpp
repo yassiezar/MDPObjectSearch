@@ -61,7 +61,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobj
     return kill;
 }
 
-JNIEXPORT jobject JNICALL
+JNIEXPORT jobjectArray JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject bitmap, jobject data)
 {
     env->DeleteGlobalRef(globalBarcodeInformation);
@@ -73,9 +73,9 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
         return nullptr;
     }
     auto imageData = reinterpret_cast<unsigned char*>(rawBytes);
-    STrackedObject barcode = markerDetector->processImage(imageData);
+    std::vector<STrackedObject> rawMarkers = markerDetector->processImage(imageData);
 
-    jclass localBarcodeInformation = env->FindClass("com/example/jaycee/mdpobjectsearch/BarcodeScanner$BarcodeInformation");
+    jclass localBarcodeInformation = env->FindClass("com/example/jaycee/mdpobjectsearch/MarkerScanner$MarkerInformation");
     if(localBarcodeInformation == nullptr)
     {
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "Error creating BarcodeInformation class");
@@ -83,7 +83,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     }
 
     globalBarcodeInformation = reinterpret_cast<jclass>(env->NewGlobalRef(localBarcodeInformation));
-    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/BarcodeScanner;IZFFFFFF)V");
+    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/MarkerScanner;IZFFFFFF)V");
 
     if(constructorBarcodeInformation == nullptr)
     {
@@ -91,7 +91,14 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
         return nullptr;
     }
 
-/*    AndroidBitmapInfo info = {0};
+    jobjectArray returnMarkers = env->NewObjectArray((jsize)rawMarkers.size(), globalBarcodeInformation, nullptr);
+    for(int i = 0; i < rawMarkers.size(); i++)
+    {
+        jobject marker = env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, rawMarkers.at(i).ID, rawMarkers.at(i).valid, rawMarkers.at(i).roll, rawMarkers.at(i).pitch, rawMarkers.at(i).yaw, rawMarkers.at(i).x, rawMarkers.at(i).y, rawMarkers.at(i).z);
+        env->SetObjectArrayElement(returnMarkers, i, marker);
+    }
+
+    AndroidBitmapInfo info = {0};
     int r = AndroidBitmap_getInfo(env, bitmap, &info);
     if (r != 0)
     {
@@ -121,12 +128,12 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     {
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "only grayscale -> RGBA is supported bytesPerPixel=%d", bytesPerPixel);
     }
-    AndroidBitmap_unlockPixels(env, bitmap);*/
+    AndroidBitmap_unlockPixels(env, bitmap);
 
-    return env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, barcode.ID, barcode.valid, barcode.roll, barcode.pitch, barcode.yaw, barcode.x, barcode.y, barcode.z);
+    return returnMarkers;
 }
 
-JNIEXPORT void JNICALL
+/*JNIEXPORT void JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_drawSurfaceNormal(JNIEnv* env, jobject obj, jobject bitmap, jobject data, jobject barcode)
 {
     void* rawBytes = env->GetDirectBufferAddress(data);
@@ -137,7 +144,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_drawSurfaceNormal(JNIEnv* env,
         return;
     }
     auto imageData = reinterpret_cast<unsigned char*>(rawBytes);
-}
+}*/
 
 #ifdef __cplusplus
 }
