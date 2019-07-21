@@ -100,16 +100,16 @@ public class GuidanceManager implements Runnable
     public void provideGuidance(Objects.Observation observation)
     {
         Policy.ActionId actionId;
-        if(observation.getCode() == -1 || state.getEncodedState()[S_STEPS] > HORIZON_DISTANCE)
+        if(Objects.getPOMDPFriendlyCode(observation) == -1 || state.getEncodedState()[S_STEPS] > HORIZON_DISTANCE)
         {
             actionId = policy.getAction(belief.getBelief(), HORIZON_DISTANCE);
         }
         else
         {
-            actionId = policy.getAction(observation.getCode(), state);
+            actionId = policy.getAction(Objects.getPOMDPFriendlyCode(observation), state);
         }
         int action = actionId.action;
-        belief.updateBeliefState(action, observation.getCode());
+        belief.updateBeliefState(action, Objects.getPOMDPFriendlyCode(observation));
 
         float[] phoneRotationAngles = getCameraVector();
         float cameraPan = -phoneRotationAngles[1];

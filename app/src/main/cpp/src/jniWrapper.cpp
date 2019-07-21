@@ -98,7 +98,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
         env->SetObjectArrayElement(returnMarkers, i, marker);
     }
 
-    AndroidBitmapInfo info = {0};
+/*    AndroidBitmapInfo info = {0};
     int r = AndroidBitmap_getInfo(env, bitmap, &info);
     if (r != 0)
     {
@@ -128,7 +128,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     {
         __android_log_print(ANDROID_LOG_ERROR, MARKERLOG, "only grayscale -> RGBA is supported bytesPerPixel=%d", bytesPerPixel);
     }
-    AndroidBitmap_unlockPixels(env, bitmap);
+    AndroidBitmap_unlockPixels(env, bitmap);*/
 
     return returnMarkers;
 }

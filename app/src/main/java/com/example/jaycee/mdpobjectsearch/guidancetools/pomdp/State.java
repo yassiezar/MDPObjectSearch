@@ -42,7 +42,7 @@ class State
         int state = 0;
         int multiplier = 1;
 
-        state += (multiplier * observation.getCode());
+        state += (multiplier * Objects.getPOMDPFriendlyCode(observation));
         multiplier *= NUM_OBJECTS;
         state += (multiplier * steps);
         multiplier *= MAX_STEPS;

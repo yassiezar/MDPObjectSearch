@@ -57,6 +57,22 @@ public class Objects
         return OBSERVATIONS.get(index).getCode();
     }
 
+    public static int getPOMDPFriendlyCode(Observation obs)
+    {
+        switch(obs)
+        {
+            case T_COMPUTER_MONITOR: return 1;
+            case T_COMPUTER_KEYBOARD: return 2;
+            case T_COMPUTER_MOUSE: return 3;
+            case T_DESK: return 4;
+            case T_WINDOW: return 7;
+            case T_PLANT: return 11;
+            case T_WHITEBOARD: return 13;
+            case T_DOOR: return 14;
+            default: return 0;
+        }
+    }
+
     public static Objects.Observation getObservation(int code)
     {
         // Updated for markers

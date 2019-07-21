@@ -22,16 +22,14 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     protected void onResume()
     {
         super.onResume();
-
         JNIBridge.initSound();
     }
 
     @Override
     protected void onPause()
     {
-        JNIBridge.killSound();
-
         endGuidance();
+        JNIBridge.killSound();
 
         super.onPause();
     }
@@ -54,6 +52,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
     {
         super.onTargetFound();
         endGuidance();
+        JNIBridge.killSound();
     }
 
     private void endGuidance()
@@ -92,7 +91,6 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
             }
 
             int id = marker.getId();
-            Log.i(TAG, String.format("ID: %d angle: %f", id, angle));
 
             id = addNoise(id, angle);
 /*            double mean = 0.0;

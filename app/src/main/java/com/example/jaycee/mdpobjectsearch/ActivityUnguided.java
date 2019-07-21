@@ -13,7 +13,7 @@ import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
 public class ActivityUnguided extends CameraActivityBase
 {
     private static final String TAG = ActivityUnguided.class.getSimpleName();
-    private static final int SPEECH_FREQUENCY = 200;       // 1s between utterances
+    private static final int SPEECH_FREQUENCY = 500;       // 1s between utterances
 
     private TextToSpeech tts;
 

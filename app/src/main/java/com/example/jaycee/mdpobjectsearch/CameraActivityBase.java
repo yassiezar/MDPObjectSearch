@@ -458,7 +458,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
         {
             id = getRandomObservation(id);
         }
-        Log.i(TAG, String.format("postfilter ID: %d", id));
+        Log.d(TAG, String.format("postfilter ID: %d", id));
 
         return id;
     }
