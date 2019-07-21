@@ -90,7 +90,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
             Objects.Observation target;
             switch (item.getItemId())
             {
-                case R.id.item_object_backpack:
+/*                case R.id.item_object_backpack:
                     target = Objects.Observation.T_BACKPACK;
                     break;
                 case R.id.item_object_chair:
@@ -98,7 +98,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
                     break;
                 case R.id.item_object_couch:
                     target = Objects.Observation.T_COUCH;
-                    break;
+                    break;*/
                 case R.id.item_object_desk:
                     target = Objects.Observation.T_DESK;
                     break;
@@ -108,24 +108,24 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
                 case R.id.item_object_keyboard:
                     target = Objects.Observation.T_COMPUTER_KEYBOARD;
                     break;
-                case R.id.item_object_laptop:
+/*                case R.id.item_object_laptop:
                     target = Objects.Observation.T_LAPTOP;
-                    break;
+                    break;*/
                 case R.id.item_object_monitor:
                     target = Objects.Observation.T_COMPUTER_MONITOR;
                     break;
                 case R.id.item_object_mouse:
                     target = Objects.Observation.T_COMPUTER_MOUSE;
                     break;
-                case R.id.item_object_mug:
+/*                case R.id.item_object_mug:
                     target = Objects.Observation.T_MUG;
-                    break;
+                    break;*/
                 case R.id.item_object_plant:
                     target = Objects.Observation.T_PLANT;
                     break;
-                case R.id.item_object_telephone:
+/*                case R.id.item_object_telephone:
                     target = Objects.Observation.T_TELEPHONE;
-                    break;
+                    break;*/
                 case R.id.item_object_whiteboard:
                     target = Objects.Observation.T_WHITEBOARD;
                     break;

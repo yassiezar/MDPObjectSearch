@@ -99,11 +99,13 @@ public class ActivityUnguided extends CameraActivityBase
                 angle += Math.PI;
             }
 
-            double mean = 0.0;
+            int id = marker.getId();
+            Log.i(TAG, String.format("ID: %d angle: %f", id, angle));
+
+/*            double mean = 0.0;
             double std = Math.PI/6;
             double max = 1.0/(std*Math.sqrt(2*Math.PI));
             double detectionNoise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
-            int id = marker.getId();
 
             if(id != 0 && Math.random() > detectionNoise)
             {
@@ -121,7 +123,7 @@ public class ActivityUnguided extends CameraActivityBase
                     objectIndex = (int)(Math.random()*(NUM_OBJECTS - 1) + 1);
                 }while(objectIndex != id);
                 id = objectIndex;
-            }
+            }*/
 
             Objects.Observation observation = getObservation(id);
             metrics.addFilteredObservation(observation);

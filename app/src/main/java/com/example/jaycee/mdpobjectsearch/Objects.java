@@ -10,15 +10,15 @@ public class Objects
         T_COMPUTER_KEYBOARD (2, "keyboard.txt", "Keyboard"),
         T_COMPUTER_MOUSE (3, "mouse.txt", "Mouse"),
         T_DESK (4, "desk.txt", "Desk"),
-        T_LAPTOP (5, "laptop.txt", "Laptop"),
-        T_MUG (6, "mug.txt", "Mug"),
+//        T_LAPTOP (5, "laptop.txt", "Laptop"),
+//        T_MUG (6, "mug.txt", "Mug"),
         T_WINDOW (7, "window.txt", "Window"),
-        T_LAMP (8, "lamp.txt", "Lamp"),
-        T_BACKPACK (9, "backpack.txt", "Backpack"),
+//        T_LAMP (8, "lamp.txt", "Lamp"),
+//        T_BACKPACK (9, "backpack.txt", "Backpack"),
         T_CHAIR (10, "chair.txt", "Chair"),
-        T_COUCH (11, "couch.txt", "Couch"),
+//        T_COUCH (11, "couch.txt", "Couch"),
         T_PLANT (12, "plant.txt", "Plant"),
-        T_TELEPHONE (13, "telephone.txt", "Telephone"),
+//        T_TELEPHONE (13, "telephone.txt", "Telephone"),
         T_WHITEBOARD (14, "whiteboard.txt", "Whiteboard"),
         T_DOOR (15, "door.txt", "Door");
 
@@ -60,7 +60,17 @@ public class Objects
             case 14: return Observation.T_WHITEBOARD;
             case 15: return Observation.T_DOOR;
             default: return Observation.UNDEFINED;*/
+
             case 0: return Observation.O_NOTHING;
+            case 7: return Observation.T_COMPUTER_MONITOR;
+            case 14: return Observation.T_COMPUTER_KEYBOARD;
+            case 19: return Observation.T_COMPUTER_MOUSE;
+            case 21: return Observation.T_WHITEBOARD;
+            case 24: return Observation.T_DESK;
+            case 25: return Observation.T_DOOR;
+            case 27: return Observation.T_WINDOW;
+            case 28: return Observation.T_PLANT;
+/*            case 0: return Observation.O_NOTHING;
             case 7: return Observation.T_COMPUTER_MONITOR;
             case 14: return Observation.T_COMPUTER_KEYBOARD;
             case 19: return Observation.T_COMPUTER_MOUSE;
@@ -68,14 +78,7 @@ public class Objects
             case 21: return Observation.T_WHITEBOARD;
             case 24: return Observation.T_DESK;
             case 27: return Observation.T_WINDOW;
-            case 28: return Observation.T_PLANT;
-//            case 29: return Observation.T_COMPUTER_MONITOR;
-/*            case 10: return Observation.T_CHAIR;
-            case 11: return Observation.T_COUCH;
-            case 12: return Observation.T_PLANT;
-            case 13: return Observation.T_TELEPHONE;
-            case 14: return Observation.T_WHITEBOARD;
-            case 15: return Observation.T_DOOR;*/
+            case 28: return Observation.T_PLANT;*/
             default: return Observation.O_NOTHING;
         }
     }
