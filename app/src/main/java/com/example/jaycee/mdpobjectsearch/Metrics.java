@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class Metrics implements Runnable
     private static final String TAG = Metrics.class.getSimpleName();
     private static final String DELIMITER = ",";
 
-    private static final String SERVER_IP = "10.5.42.29";
+    private static final String SERVER_IP = "10.42.0.1";
     private static final int PORT = 6666;
 
     private WifiDataSend dataStreamer = null;
@@ -48,8 +49,8 @@ public class Metrics implements Runnable
             return;
         }
 
-        String rawObs = rawObservations.isEmpty() ? "0;" : rawObservations.stream().map(Objects.Observation::toString).collect(Collectors.joining(";"));
-        String filteredObs = filteredObservations.isEmpty() ? "0;" : filteredObservations.stream().map(Objects.Observation::toString).collect(Collectors.joining(";"));
+        String rawObs = rawObservations.isEmpty() ? "0;" : rawObservations.stream().map(n -> Integer.toString(n.getCode())).collect(Collectors.joining(";"));
+        String filteredObs = filteredObservations.isEmpty() ? "0;" : filteredObservations.stream().map(n -> Integer.toString(n.getCode())).collect(Collectors.joining(";"));
         String wifiString = timestamp + DELIMITER +
                 rawObs + DELIMITER +
                 filteredObs + DELIMITER +

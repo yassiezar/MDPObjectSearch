@@ -30,7 +30,11 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
+import java.util.Random;
+
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
+import static com.example.jaycee.mdpobjectsearch.Objects.getRandomObservation;
+import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.NUM_OBJECTS;
 import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.SEARCH_TIME_LIMIT;
 
 public abstract class CameraActivityBase extends AppCompatActivity implements MarkerScanner.ScannerListener, RenderListener
@@ -234,7 +238,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
         if(markerScanner != null)
         {
             markerScanner.stop();
-            markerScanner= null;
+            markerScanner = null;
             onScannerStop();
         }
 
@@ -347,9 +351,15 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
     @Override
     public Frame onFrameRequest()
     {
+        if(targetSet)
+        {
+            onScanRequest();
+        }
         try
         {
             Frame newFrame = session.update();
+            intrinsics = newFrame.getCamera().getImageIntrinsics();
+            devicePose = newFrame.getCamera().getPose();
 
             frameTimestamp = newFrame.getTimestamp();
             currentTimestamp = System.currentTimeMillis();
@@ -364,19 +374,10 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
                 finish();
             }
 
-            devicePose = newFrame.getCamera().getPose();
-
             if(metrics != null)
             {
                 metrics.updateDevicePose(devicePose);
                 metrics.updateTimestamp(frameTimestamp);
-            }
-
-            intrinsics = newFrame.getCamera().getImageIntrinsics();
-
-            if(targetSet)
-            {
-                onScanRequest();
             }
 
             return newFrame;
@@ -435,6 +436,31 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
             metrics.stop();
             metrics = null;
         }
+    }
+
+    protected int addNoise(int id, double angle)
+    {
+        Log.i(TAG, String.format("prefilter ID: %d angle: %f", id, angle));
+/*        double mean = 0.0;
+        double std = Math.PI/6;
+        double max = 1.0/(std*Math.sqrt(2*Math.PI));
+        double detectionNoise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
+
+        if(id != 0 && Math.random() > detectionNoise/max)
+        {
+            id = 0;
+        }
+
+        Log.i(TAG, String.format("midfilter ID: %d noise: %f", id, detctionNoise/max));*/
+
+        double classifierNoise = getQualitySetting()/100.0;
+        if(id != 0 && Math.random() < classifierNoise)
+        {
+            id = getRandomObservation(id);
+        }
+        Log.i(TAG, String.format("postfilter ID: %d", id));
+
+        return id;
     }
 
     public int getQualitySetting() { return qualitySetting; }

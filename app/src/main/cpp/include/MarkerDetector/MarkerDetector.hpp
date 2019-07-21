@@ -39,6 +39,6 @@ namespace MarkerDetector
 
 //        const float circleDiameter = 0.017;//
         const float circleDiameter = 0.125;//
-//        const float circleDiameter = 0.214;//
+//        const float circleDiameter = 0.246;//
     };
 }

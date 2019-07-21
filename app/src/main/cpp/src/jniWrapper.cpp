@@ -54,8 +54,8 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobj
 JNIEXPORT bool JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobject obj)
 {
-    bool kill = markerDetector->kill();
     env->DeleteGlobalRef(globalBarcodeInformation);
+    bool kill = markerDetector->kill();
     delete markerDetector;
 
     return kill;
@@ -83,7 +83,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     }
 
     globalBarcodeInformation = reinterpret_cast<jclass>(env->NewGlobalRef(localBarcodeInformation));
-    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/MarkerScanner;IZFFFFFF)V");
+    jmethodID constructorBarcodeInformation = env->GetMethodID(globalBarcodeInformation, "<init>", "(Lcom/example/jaycee/mdpobjectsearch/MarkerScanner;IFFFFFF)V");
 
     if(constructorBarcodeInformation == nullptr)
     {
@@ -94,7 +94,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobj
     jobjectArray returnMarkers = env->NewObjectArray((jsize)rawMarkers.size(), globalBarcodeInformation, nullptr);
     for(int i = 0; i < rawMarkers.size(); i++)
     {
-        jobject marker = env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, rawMarkers.at(i).ID, rawMarkers.at(i).valid, rawMarkers.at(i).roll, rawMarkers.at(i).pitch, rawMarkers.at(i).yaw, rawMarkers.at(i).x, rawMarkers.at(i).y, rawMarkers.at(i).z);
+        jobject marker = env->NewObject(globalBarcodeInformation, constructorBarcodeInformation, nullptr, rawMarkers.at(i).ID, rawMarkers.at(i).roll, rawMarkers.at(i).pitch, rawMarkers.at(i).yaw, rawMarkers.at(i).x, rawMarkers.at(i).y, rawMarkers.at(i).z);
         env->SetObjectArrayElement(returnMarkers, i, marker);
     }
 

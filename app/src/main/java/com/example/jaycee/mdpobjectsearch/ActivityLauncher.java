@@ -44,8 +44,8 @@ public class ActivityLauncher extends AppCompatActivity
             {
                 switch (progress)
                 {
-                    case 1: qualitySetting = 1; break;
-                    case 2: qualitySetting = 2; break;
+                    case 1: qualitySetting = 25; break;
+                    case 2: qualitySetting = 50; break;
                     default: qualitySetting = 0;
                 }
             }

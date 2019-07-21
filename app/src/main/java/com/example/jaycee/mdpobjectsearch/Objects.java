@@ -1,26 +1,35 @@
 package com.example.jaycee.mdpobjectsearch;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 public class Objects
 {
+    private static final Random rand = new Random();
+    private static final List<Observation> OBSERVATIONS = Collections.unmodifiableList(Arrays.asList(Observation.values()));
+    private static final int SIZE = OBSERVATIONS.size();
+
     public enum Observation
     {
         UNDEFINED(-1, "", "UNDEFINED"),
         O_NOTHING (0, "", "Nothing"),
-        T_COMPUTER_MONITOR (1, "monitor.txt", "Monitor"),
-        T_COMPUTER_KEYBOARD (2, "keyboard.txt", "Keyboard"),
-        T_COMPUTER_MOUSE (3, "mouse.txt", "Mouse"),
-        T_DESK (4, "desk.txt", "Desk"),
+        T_COMPUTER_MONITOR (7, "monitor.txt", "Monitor"),
+        T_COMPUTER_KEYBOARD (14, "keyboard.txt", "Keyboard"),
+        T_COMPUTER_MOUSE (19, "mouse.txt", "Mouse"),
+        T_DESK (24, "desk.txt", "Desk"),
 //        T_LAPTOP (5, "laptop.txt", "Laptop"),
 //        T_MUG (6, "mug.txt", "Mug"),
-        T_WINDOW (7, "window.txt", "Window"),
+        T_WINDOW (27, "window.txt", "Window"),
 //        T_LAMP (8, "lamp.txt", "Lamp"),
 //        T_BACKPACK (9, "backpack.txt", "Backpack"),
         T_CHAIR (10, "chair.txt", "Chair"),
 //        T_COUCH (11, "couch.txt", "Couch"),
-        T_PLANT (12, "plant.txt", "Plant"),
+        T_PLANT (28, "plant.txt", "Plant"),
 //        T_TELEPHONE (13, "telephone.txt", "Telephone"),
-        T_WHITEBOARD (14, "whiteboard.txt", "Whiteboard"),
-        T_DOOR (15, "door.txt", "Door");
+        T_WHITEBOARD (21, "whiteboard.txt", "Whiteboard"),
+        T_DOOR (25, "door.txt", "Door");
 
         private final int obsCode;
         private final String fileName;
@@ -36,6 +45,16 @@ public class Objects
         public int getCode() { return this.obsCode; }
         public String getFileName() { return this.fileName; }
         public String getFriendlyName() { return this.friendlyName; }
+    }
+
+    public static int getRandomObservation(int code)
+    {
+        int index;
+        do
+        {
+            index = rand.nextInt(SIZE);
+        } while(index == code);
+        return OBSERVATIONS.get(index).getCode();
     }
 
     public static Objects.Observation getObservation(int code)

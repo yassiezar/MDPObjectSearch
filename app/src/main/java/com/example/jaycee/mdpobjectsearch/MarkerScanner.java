@@ -93,9 +93,8 @@ public class MarkerScanner implements Runnable
         private float[] angles = new float[3];
         private float roll, pitch, yaw, x, y, z, d;
         private int id;
-        private boolean valid;
 
-        public MarkerInformation(int id, boolean valid, float roll, float pitch, float yaw, float x, float y, float z)
+        public MarkerInformation(int id, float roll, float pitch, float yaw, float x, float y, float z)
         {
             this.id = id;
             this.roll = roll;//+(float)Math.PI/4;
@@ -117,7 +116,6 @@ public class MarkerScanner implements Runnable
             return id;
         }
         public float[] getAngles() { return angles; }
-        public boolean getValid() { return valid; }
 
         public float[] getRotationQuaternion()
         {

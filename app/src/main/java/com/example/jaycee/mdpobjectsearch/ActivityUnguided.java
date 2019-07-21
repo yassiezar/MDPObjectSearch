@@ -9,12 +9,11 @@ import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import java.util.Locale;
 
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
-import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.NUM_OBJECTS;
 
 public class ActivityUnguided extends CameraActivityBase
 {
     private static final String TAG = ActivityUnguided.class.getSimpleName();
-    private static final int SPEECH_FREQUENCY = 1000;       // 1s between utterances
+    private static final int SPEECH_FREQUENCY = 200;       // 1s between utterances
 
     private TextToSpeech tts;
 
@@ -100,30 +99,9 @@ public class ActivityUnguided extends CameraActivityBase
             }
 
             int id = marker.getId();
-            Log.i(TAG, String.format("ID: %d angle: %f", id, angle));
+//            Log.i(TAG, String.format("ID: %d angle: %f", id, angle));
 
-/*            double mean = 0.0;
-            double std = Math.PI/6;
-            double max = 1.0/(std*Math.sqrt(2*Math.PI));
-            double detectionNoise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
-
-            if(id != 0 && Math.random() > detectionNoise)
-            {
-                id = 0;
-            }
-
-            Log.i(TAG, String.format("ID: %d angle: %f noise %f", id, angle, detectionNoise/max));
-
-            double classifierNoise = getQualitySetting()*NOISE_INTERVAL;
-            if(id != 0 && Math.random() < classifierNoise)
-            {
-                int objectIndex;
-                do
-                {
-                    objectIndex = (int)(Math.random()*(NUM_OBJECTS - 1) + 1);
-                }while(objectIndex != id);
-                id = objectIndex;
-            }*/
+            id = addNoise(id, angle);
 
             Objects.Observation observation = getObservation(id);
             metrics.addFilteredObservation(observation);
