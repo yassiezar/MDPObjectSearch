@@ -22,7 +22,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_example_jaycee_mdpobjectsearch_JNIBridge
 SoundGenerator::SoundGenerator *soundGenerator;
 MarkerDetector::MarkerDetector *markerDetector;
 
-jclass globalBarcodeInformation;
+static jclass globalBarcodeInformation;
 
 #ifdef __cplusplus
 }

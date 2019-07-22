@@ -238,8 +238,6 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
 
         if(markerScanner != null)
         {
-            markerScanner.stop();
-            markerScanner = null;
             onScannerStop();
         }
 
@@ -283,6 +281,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
     @Override
     public void onScannerStop()
     {
+        markerScanner.stop();
+        markerScanner = null;
         if(scannerHandler != null)
         {
             scannerHandlerThread.quitSafely();
@@ -420,12 +420,19 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
 
     public void targetSelected(Objects.Observation target)
     {
-        metrics = new Metrics();
+        if(metrics == null)
+        {
+
+            metrics = new Metrics();
+        }
         metrics.updateTarget(target);
         metrics.run();
 
         targetSet = true;
-        onScannerStart(intrinsics);
+        if(markerScanner == null)
+        {
+            onScannerStart(intrinsics);
+        }
     }
 
     public void onTargetFound()

@@ -38,6 +38,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_initDetector(JNIEnv* env, jobj
 
     jboolean isCopy;
 
+
     float* focalLength = env->GetFloatArrayElements(_focalLength, &isCopy);
     float* principlePoint = env->GetFloatArrayElements(_principlePoint, &isCopy);
     float* distortionMatrix = env->GetFloatArrayElements(_distortionMatrix, &isCopy);
@@ -64,7 +65,7 @@ Java_com_example_jaycee_mdpobjectsearch_JNIBridge_killDetector(JNIEnv* env, jobj
 JNIEXPORT jobjectArray JNICALL
 Java_com_example_jaycee_mdpobjectsearch_JNIBridge_processImage(JNIEnv* env, jobject obj, jobject bitmap, jobject data)
 {
-    env->DeleteGlobalRef(globalBarcodeInformation);
+//    env->DeleteGlobalRef(globalBarcodeInformation);
     void* rawBytes = env->GetDirectBufferAddress(data);
 
     if(rawBytes == nullptr)
