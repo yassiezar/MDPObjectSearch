@@ -75,9 +75,16 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
         for(MarkerScanner.MarkerInformation marker : markers)
         {
             ClassHelpers.mVector cameraVector = ClassHelpers.getCameraVector(devicePose);
-            cameraVector.normalise();
+/*            cameraVector.normalise();
             ClassHelpers.mVector markerVector = new ClassHelpers.mVector(marker.getAngles());
             markerVector.normalise();
+            markerVector.rotateByQuaternion(devicePose.getRotationQuaternion());
+            markerVector.normalise();*/
+
+            float tmp = cameraVector.x;
+            cameraVector.x = -cameraVector.y;
+            cameraVector.y = -tmp;
+            ClassHelpers.mVector markerVector = new ClassHelpers.mVector(marker.getPosition());
             markerVector.rotateByQuaternion(devicePose.getRotationQuaternion());
             markerVector.normalise();
 
@@ -94,28 +101,6 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
             int id = marker.getId();
 
             id = addNoise(id, angle);
-/*            double mean = 0.0;
-            double std = Math.PI/6;
-            double max = 1.0/(std*Math.sqrt(2*Math.PI));
-            double detectionNoise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
-
-            if(id != 0 && Math.random() > detectionNoise)
-            {
-                id = 0;
-            }
-
-            Log.i(TAG, String.format("ID: %d angle: %f noise %f", id, angle, detectionNoise/max));
-
-            double classifierNoise = getQualitySetting()*NOISE_INTERVAL;
-            if(id != 0 && Math.random() < classifierNoise)
-            {
-                int objectIndex;
-                do
-                {
-                    objectIndex = (int)(Math.random()*(NUM_OBJECTS - 1) + 1);
-                }while(objectIndex != id);
-                id = objectIndex;
-            }*/
 
             this.observation = getObservation(id);
             Toast.makeText(this, this.observation.getFriendlyName(), Toast.LENGTH_SHORT).show();

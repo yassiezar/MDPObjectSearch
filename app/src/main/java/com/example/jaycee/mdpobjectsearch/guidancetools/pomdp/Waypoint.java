@@ -44,8 +44,8 @@ class Waypoint
         // Discretise pan/tilt into grid
         int pan = (int)((Math.floor(Math.toDegrees(cameraPan)/ANGLE_INTERVAL)) + GRID_SIZE_PAN/2 - 1);
         int tilt = (int)((Math.floor(Math.toDegrees(cameraTilt)/ANGLE_INTERVAL)) + GRID_SIZE_TILT/2 - 1);
-        Log.i(TAG, String.format("pan %f tilt %f", cameraPan, cameraTilt));
-        Log.i(TAG, String.format("action %d Old pan %d tilt %d", action, pan, tilt));
+//        Log.i(TAG, String.format("pan %f tilt %f", cameraPan, cameraTilt));
+//        Log.i(TAG, String.format("action %d Old pan %d tilt %d", action, pan, tilt));
 
         if(action == A_LEFT)
         {
@@ -70,7 +70,7 @@ class Waypoint
         if(tilt < 0) tilt = GRID_SIZE_TILT - 1;
         if(tilt > GRID_SIZE_TILT - 1) tilt = 0;
 
-        Log.i(TAG, String.format("new pan: %d new tilt: %d", pan, tilt));
+//        Log.i(TAG, String.format("new pan: %d new tilt: %d", pan, tilt));
         float z = cameraZ - 1.f;
         wayPointTranslation[0] = (float)Math.sin(Math.toRadians(ANGLE_INTERVAL*(pan - GRID_SIZE_PAN/2 + 1)));
         wayPointTranslation[1] = (float)Math.sin(Math.toRadians(ANGLE_INTERVAL*(tilt - GRID_SIZE_TILT/2 + 1)));

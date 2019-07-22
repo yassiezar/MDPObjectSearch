@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
@@ -82,9 +83,12 @@ public class ActivityUnguided extends CameraActivityBase
         for(MarkerScanner.MarkerInformation marker : markers)
         {
             ClassHelpers.mVector cameraVector = ClassHelpers.getCameraVector(devicePose);
-            cameraVector.normalise();
-            ClassHelpers.mVector markerVector = new ClassHelpers.mVector(marker.getAngles());
-            markerVector.normalise();
+//            cameraVector.normalise();
+            // swap to make axes line up properly
+            float tmp = cameraVector.x;
+            cameraVector.x = -cameraVector.y;
+            cameraVector.y = -tmp;
+            ClassHelpers.mVector markerVector = new ClassHelpers.mVector(marker.getPosition());
             markerVector.rotateByQuaternion(devicePose.getRotationQuaternion());
             markerVector.normalise();
 

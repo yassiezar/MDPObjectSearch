@@ -116,6 +116,7 @@ public class MarkerScanner implements Runnable
             return id;
         }
         public float[] getAngles() { return angles; }
+        public float[] getPosition() { return new float[] {x, y, -z}; }
 
         public float[] getRotationQuaternion()
         {

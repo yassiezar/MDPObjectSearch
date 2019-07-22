@@ -442,8 +442,8 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
 
     protected int addNoise(int id, double angle)
     {
-        Log.i(TAG, String.format("prefilter ID: %d angle: %f", id, angle));
-/*        double mean = 0.0;
+        Log.i(TAG, String.format("prefilter ID: %d", id));
+        double mean = 0.0;
         double std = Math.PI/6;
         double max = 1.0/(std*Math.sqrt(2*Math.PI));
         double detectionNoise = max*Math.exp(-0.5*Math.pow((angle - mean)/std, 2));
@@ -453,7 +453,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
             id = 0;
         }
 
-        Log.i(TAG, String.format("midfilter ID: %d noise: %f", id, detctionNoise/max));*/
+        Log.i(TAG, String.format("midfilter ID: %d angle: %f noise: %f", id, angle, detectionNoise/max));
 
         double classifierNoise = getQualitySetting()/100.0;
         if(id != 0 && Math.random() < classifierNoise)

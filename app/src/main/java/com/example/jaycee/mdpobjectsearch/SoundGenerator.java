@@ -15,9 +15,7 @@ public class SoundGenerator
 {
     private static final String TAG = SoundGenerator.class.getSimpleName();
 
-    public SoundGenerator()
-    {
-    }
+    public SoundGenerator() { }
 
     public void playSound(Pose waypointPose, float[] cameraVector)
     {

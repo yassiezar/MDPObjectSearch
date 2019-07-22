@@ -37,8 +37,7 @@ namespace MarkerDetector
 
         int imageWidth, imageHeight;
 
-//        const float circleDiameter = 0.017;//
-//        const float circleDiameter = 0.125;//
-        const float circleDiameter = 0.246;//
+        const float circleDiameter = 0.125;//
+//        const float circleDiameter = 0.246;//
     };
 }
