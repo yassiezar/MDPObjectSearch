@@ -112,7 +112,7 @@ public class GuidanceManager implements Runnable
         belief.updateBeliefState(action, Objects.getPOMDPFriendlyCode(observation));
 
         float[] phoneRotationAngles = getCameraVector();
-        float cameraPan = -phoneRotationAngles[1];
+        float cameraPan = phoneRotationAngles[1];
         float cameraTilt = -phoneRotationAngles[2];
 
         waypoint.updateWaypoint(action, session, cameraPan, cameraTilt, devicePose.tz());

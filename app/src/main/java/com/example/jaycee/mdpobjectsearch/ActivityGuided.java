@@ -1,6 +1,7 @@
 package com.example.jaycee.mdpobjectsearch;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.jaycee.mdpobjectsearch.guidancetools.GuidanceInterface;
 import com.example.jaycee.mdpobjectsearch.guidancetools.pomdp.GuidanceManager;
@@ -117,6 +118,7 @@ public class ActivityGuided extends CameraActivityBase implements GuidanceInterf
             }*/
 
             this.observation = getObservation(id);
+            Toast.makeText(this, this.observation.getFriendlyName(), Toast.LENGTH_SHORT).show();
             metrics.addFilteredObservation(observation);
             if(observation == targetObservation)
             {

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import com.example.jaycee.mdpobjectsearch.helpers.ClassHelpers;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.CameraIntrinsics;
 import com.google.ar.core.Config;
@@ -30,11 +31,11 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
-import java.util.Random;
+
+import java.util.Arrays;
 
 import static com.example.jaycee.mdpobjectsearch.Objects.getObservation;
 import static com.example.jaycee.mdpobjectsearch.Objects.getRandomObservation;
-import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.NUM_OBJECTS;
 import static com.example.jaycee.mdpobjectsearch.guidancetools.Params.SEARCH_TIME_LIMIT;
 
 public abstract class CameraActivityBase extends AppCompatActivity implements MarkerScanner.ScannerListener, RenderListener
@@ -360,6 +361,7 @@ public abstract class CameraActivityBase extends AppCompatActivity implements Ma
             Frame newFrame = session.update();
             intrinsics = newFrame.getCamera().getImageIntrinsics();
             devicePose = newFrame.getCamera().getPose();
+//            Log.i(TAG, Arrays.toString(ClassHelpers.getCameraVector(devicePose).getEuler()));
 
             frameTimestamp = newFrame.getTimestamp();
             currentTimestamp = System.currentTimeMillis();
